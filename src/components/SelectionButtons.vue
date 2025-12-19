@@ -9,19 +9,38 @@ function goNext(){
 </script>
 
 <template>
-    <div class="container-fluid min-vh-100">
-        <div class="row min-vh-100">
-            <div class="col-12 col-md-6 d-flex align-items-center justify-content-center">
-                <button class="btn btn-primary w-100 h-50 fs-2" @click="goNext">
-                    Shop Manager
-                </button>
-            </div>
-
-            <div class="col-12 col-md-6 d-flex align-items-center justify-content-center">
-                <button class="btn btn-primary w-100 h-50 fs-2" @click="goNext">
-                    Menu Generator
-                </button>
-            </div>
+         <div class="button">
+             <button @click="goNext">
+                Shop Manager
+            </button>
         </div>
-    </div>
+
+        <div class="button">
+            <button @click="goNext">
+                Menu Generator
+            </button>
+        </div>
 </template>
+
+<style scoped>
+    .button{
+        width: 30%;
+        height: 50%;
+        background-color: yellow;
+        border-radius: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    button{
+        all: unset;
+        text-align: center;
+        width: 100%;
+        height: 100%;
+    }
+
+    button:hover{
+        cursor: pointer;
+    }
+</style>

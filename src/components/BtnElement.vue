@@ -1,6 +1,20 @@
 <template>
-    <div class="d-flex justify-content-end gap-2">
-        <button class="btn btn-outline-secondary">Save</button>
-        <button class="btn btn-primary">Exit</button>
+    <div id="buttons">
+        <button>Save</button>
+        <button>Exit</button>
     </div>
 </template>
+
+<style scoped>
+    #buttons{
+        width: 100%;
+        height: 10%;
+        background-color: blueviolet;
+        display: flex;
+        justify-content: space-evenly;
+    }
+    button{
+        all:unset;
+
+    }
+</style>

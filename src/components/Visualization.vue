@@ -1,5 +1,11 @@
 <template>
-    <div class="border p-3 mb-3" style="min-height: 500px;">
-        <p>Infos will come here</p>
+    <div id="panel">
     </div>
 </template>
+
+<style scoped>
+#panel{
+    height: 90%;
+    background-color: #777;
+}
+</style>

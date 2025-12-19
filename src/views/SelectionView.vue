@@ -3,11 +3,17 @@
 </script>
 
 <template>
-    <div class="flex-grow-10">
-        <div class="row justify-content-center">
-            <div class="col-12 col-md-8">
+    <div id="main-body">
                 <SelectionButtons />
-            </div>
-        </div>
     </div>
 </template>
+
+<style scoped>
+    #main-body{
+        height: 85%;
+        background-color: brown;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+    }
+</style>
