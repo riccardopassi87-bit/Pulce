@@ -1,11 +1,12 @@
 <script setup>
 import AppHeader from './components/AppHeader.vue';
+import StartingView from './views/StartingView.vue';
 </script>
 
 <template>
   <div id="main">
     <AppHeader />
-    <router-view />
+    <StartingView />
   </div>
 </template>
 

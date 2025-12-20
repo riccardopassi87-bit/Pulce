@@ -1,19 +1,15 @@
-<script setup>
-    import SelectionButtons from '@/components/SelectionButtons.vue';
-</script>
-
 <template>
     <div id="main-body">
-                <SelectionButtons />
+        <router-view />
     </div>
 </template>
 
 <style scoped>
     #main-body{
-        height: 85%;
-        background-color: brown;
+        height: 100%;
         display: flex;
         justify-content: space-evenly;
         align-items: center;
+        background-color: greenyellow;
     }
 </style>

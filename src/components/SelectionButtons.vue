@@ -1,46 +1,48 @@
 <script setup>
 import { useRouter } from 'vue-router';
 
-const router = useRouter()
+const route = useRouter()
 
 function goNext(){
-    router.push('/configure');
+    route.push('/configure');
 }
 </script>
 
 <template>
-         <div class="button">
-             <button @click="goNext">
-                Shop Manager
-            </button>
-        </div>
+    <div class="button">
+        <button @click="goNext">
+            Shop Manager
+        </button>
+    </div>
 
-        <div class="button">
-            <button @click="goNext">
-                Menu Generator
-            </button>
-        </div>
+    <div class="button">
+        <button @click="goNext">
+            Menu Generator
+        </button>
+    </div>
 </template>
 
 <style scoped>
     .button{
-        width: 30%;
-        height: 50%;
-        background-color: yellow;
-        border-radius: 5px;
+        flex: 1;
+        height: 100%;
         display: flex;
         justify-content: center;
         align-items: center;
+        border-style: solid;
+        border-left-width: 1px;
+        border-color: #444;
     }
 
+    .button:hover{
+        cursor: pointer;
+        background-color: #444;
+    }
+    
     button{
         all: unset;
-        text-align: center;
-        width: 100%;
-        height: 100%;
-    }
-
-    button:hover{
-        cursor: pointer;
+        font-size: 2rem;
+        font-weight: 100;
+        color: white;
     }
 </style>

@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import SelectionView from '../views/SelectionView.vue';
-import ConfigureView from '../views/ConfigureView.vue';
+import StartingView from '@/views/StartingView.vue';
+import ShopView from '@/views/ShopView.vue';
 
 const routes = [
-    { path: '/', component: SelectionView },
-    { path: '/configure', component: ConfigureView }
+    { path: '/', component: StartingView },
+    { path: '/configure', component: ShopView }
 ]
 
 const router = createRouter({

@@ -19,21 +19,16 @@
 
 <style scoped>
     #main{
-        height: 85%;
+        height: 100%;
         width: 100%;
-        background-color: aqua;
         display: flex;
         flex-direction: row;
         justify-content: space-evenly;
     }
     #left{
-        background-color: aquamarine;
         flex: 1;
-        display: flex;
-        flex-direction: column;
     }
     #right{
-        background-color: bisque;
         flex: 2;
     }
 </style>
