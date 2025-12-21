@@ -1,6 +1,6 @@
 <script setup>
-import AppHeader from './components/AppHeader.vue';
-import StartingView from './views/StartingView.vue';
+import AppHeader from './commonStart/AppHeader.vue';
+import StartingView from './commonStart/StartingView.vue';
 </script>
 
 <template>

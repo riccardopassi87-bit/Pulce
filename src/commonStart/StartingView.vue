@@ -8,8 +8,9 @@
     #main-body{
         height: 100%;
         display: flex;
+        flex-direction: column;
         justify-content: space-evenly;
         align-items: center;
-        background-color: greenyellow;
+        background-color: #222;
     }
 </style>

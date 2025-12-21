@@ -1,18 +1,18 @@
 <script setup>
-    import ControlPanel from '@/components/ControlPanel.vue';
-    import Visualization from '@/components/Visualization.vue';
-    import BtnElement from '@/components/BtnElement.vue';
+    import ControlPanelShop from '@/componentsShop/ControlPanelShop.vue';
+    import Visualization from '@/commonViews/Visualization.vue';
+    import ButtonElement from '@/commonViews/ButtonElement.vue';
 </script>
 
 <template>
     <div id="main">
         <div id="left">
-            <ControlPanel />
+            <ControlPanelShop />
         </div>
 
         <div id="right">
             <Visualization />
-            <BtnElement />
+            <ButtonElement />
         </div>
     </div>        
 </template>

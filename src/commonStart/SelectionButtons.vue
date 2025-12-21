@@ -3,20 +3,20 @@ import { useRouter } from 'vue-router';
 
 const route = useRouter()
 
-function goNext(){
-    route.push('/configure');
+function goNext(routePath){
+    route.push(routePath);
 }
 </script>
 
 <template>
     <div class="button">
-        <button @click="goNext">
+        <button @click="goNext('/shop')">
             Shop Manager
         </button>
     </div>
 
     <div class="button">
-        <button @click="goNext">
+        <button @click="goNext('/restaurant')">
             Menu Generator
         </button>
     </div>

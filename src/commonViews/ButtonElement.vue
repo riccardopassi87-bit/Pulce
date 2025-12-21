@@ -1,7 +1,8 @@
 <template>
     <div id="buttons">
         <button>Save</button>
-        <button>Exit</button>
+        <button>Remove</button>
+        <button>Modify</button>
     </div>
 </template>
 
@@ -21,7 +22,7 @@
         background-color: #333;
         text-align: center;
         font-size: 1.2rem;
-        color: antiquewhite;
+        color: white;
     }
     button:hover{
         cursor: pointer;

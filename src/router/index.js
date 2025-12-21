@@ -1,10 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import StartingView from '@/views/StartingView.vue';
 import ShopView from '@/views/ShopView.vue';
+import RestaurantView from '@/views/RestaurantView.vue';
 
 const routes = [
-    { path: '/', component: StartingView },
-    { path: '/configure', component: ShopView }
+    { path: '/shop', component: ShopView },
+    { path: '/restaurant', component: RestaurantView }
+
 ]
 
 const router = createRouter({
