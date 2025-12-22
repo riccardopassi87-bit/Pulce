@@ -1,11 +1,11 @@
 <script setup>
-    import ControlPanelShop from '@/componentsShop/ControlPanelShop.vue';
-    import Visualization from '@/commonViews/Visualization.vue';
-    import ButtonElement from '@/commonViews/ButtonElement.vue';
+    import ControlPanelShop from '../componentsShop/ControlPanelShop.vue';
+    import Visualization from '../commonViews/Visualization.vue';
+    import ButtonElement from '../commonViews/ButtonElement.vue';
 </script>
 
 <template>
-    <div id="main">
+    <div id="main-shop">
         <div id="left">
             <ControlPanelShop />
         </div>
@@ -18,7 +18,7 @@
 </template>
 
 <style scoped>
-    #main{
+    #main-shop{
         height: 100%;
         width: 100%;
         display: flex;

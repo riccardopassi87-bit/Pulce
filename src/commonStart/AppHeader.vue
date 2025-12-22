@@ -33,7 +33,7 @@
     }
 
     #logo img{
-        width: 95%;
+        height: 80%;
     }
 
     #buttons{
