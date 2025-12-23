@@ -8,7 +8,6 @@
         <ButtonControlPanel />
         <ButtonRestaurant />
     </div>
-
 </template>
 
 <style scoped>

@@ -16,7 +16,6 @@ import StartingView from './commonStart/StartingView.vue';
     height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
   }
 </style>
 

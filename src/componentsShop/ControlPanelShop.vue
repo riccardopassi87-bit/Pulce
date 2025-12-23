@@ -1,10 +1,12 @@
 <script setup>
     import ButtonControlPanel from '../commonViews/ButtonControlPanel.vue';
+    import ButtonShop from './ButtonShop.vue';
 </script>
 
 <template>
     <div id="main">
         <ButtonControlPanel />
+        <ButtonShop />
     </div>
 </template>
 
@@ -12,6 +14,9 @@
     #main{
         width: 100%;
         height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
         background-color: #333;
     }
 </style>

@@ -1,31 +1,11 @@
 <template>
-    <div id="buttons">
-        <button>Save</button>
-        <button>Remove</button>
-        <button>Modify</button>
-    </div>
+        <button id="save">Save</button>
+        <button id="remove">Remove</button>
+        <button id="modify">Modify</button>
 </template>
 
 <style scoped>
-    #buttons{
-        width: 100%;
-        height: 10%;
-        display: flex;
-        justify-content: space-evenly;
-    }
-    button{
-        all:unset;
-        flex: 1;
-        border-style: solid;
-        border-width: 1px;
-        border-color: #444;
-        background-color: #333;
-        text-align: center;
-        font-size: 1.2rem;
-        color: white;
-    }
-    button:hover{
-        cursor: pointer;
-        background-color: #444;
-    }
+        button{
+                height: 100%;
+        }
 </style>

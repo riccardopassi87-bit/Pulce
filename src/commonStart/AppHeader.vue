@@ -15,10 +15,9 @@
 
 <style scoped>
     header {
-        box-sizing: border-box;
         width: 100%;
         height: 15%;
-        background-color: #666;
+        background-color: #333;
         display: flex;
         align-items: center;
     }
@@ -33,7 +32,7 @@
     }
 
     #logo img{
-        height: 80%;
+        height: 70%;
     }
 
     #buttons{
