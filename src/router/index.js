@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import ShopView from '@/mainViews/ShopView.vue';
 import RestaurantView from '@/mainViews/RestaurantView.vue';
 
+import AddPizzaView from '@/mainViews/subViews/AddPizzaView.vue';
 import AddItemView from '@/mainViews/subViews/AddItemView.vue';
 import NotificationView from '@/mainViews/subViews/NotificationView.vue';
 import PrintView from '@/mainViews/subViews/PrintView.vue';
@@ -14,7 +15,7 @@ const routes = [
         { path: '/search', component: SearchView}
     ]},
     { path: '/restaurant', component: RestaurantView, children: [
-        { path: '/addItem', component: AddItemView},
+        { path: '/addItem', component: AddPizzaView},
         { path: '/search', component: SearchView},
         { path: '/print', component: PrintView}
     ]},   

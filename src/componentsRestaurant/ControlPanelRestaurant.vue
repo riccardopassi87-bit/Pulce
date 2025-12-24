@@ -17,6 +17,7 @@
         display: flex;
         flex-direction: column;
         justify-content: start;
+        align-items: center;
         background-color: #333;;
     }
 </style>

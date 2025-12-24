@@ -1,6 +1,6 @@
 <script setup>
-import { commonRouter } from '../router/composable/commonRouter';
-const { goNext } = commonRouter();
+    import { commonRouter } from '../router/composable/commonRouter';
+    const { goNext } = commonRouter();
 </script>
 
 <template>
@@ -12,12 +12,10 @@ const { goNext } = commonRouter();
 <style scoped>
     input{
         all: unset;
-        width: 100%;
-        height: 10%;
-        background-color: #333;
-        border-style: solid;
-        border-width: 1px;
-        border-color: #444;
+        width: 95%;
+        height: 5%;
+        background-color: #222;
+        border-radius: 5px;
         color: white;
     }
 

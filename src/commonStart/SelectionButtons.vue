@@ -13,6 +13,7 @@ const { goNext } = commonRouter();
 </template>
 
 <style scoped>
+
     button{
         height: 100%;
         flex: 1;
