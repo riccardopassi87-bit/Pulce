@@ -10,7 +10,6 @@
         padding: 0;
         box-sizing: border-box;
       }
-
       button{
         all: unset;
         width: 100%;
@@ -25,4 +24,8 @@
         cursor: pointer;
         background-color: #444;
         font-size: 1.25rem;
+    }
+    button.active{
+        background-color: #222;
+        color: goldenrod;
     }

@@ -4,8 +4,8 @@
 </script>
 
 <template>
-    <button id="add" @click="goNext('/addItem')">Add Product</button>
-    <button id="search" @click="goNext('/search')">Search Product</button>
+    <button id="add" @click="goNext('addItem')">Add Product</button>
+    <button id="search" @click="goNext('search')">Search Product</button>
     <input type="text" placeholder="type your product here" />
 </template>
 

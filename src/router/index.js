@@ -10,14 +10,14 @@ import SearchView from '@/mainViews/subViews/SearchView.vue';
 
 const routes = [
     { path: '/shop', component: ShopView, children: [
-        { path: '/addItem', component: AddItemView},
-        { path: '/notification', component: NotificationView},
-        { path: '/search', component: SearchView}
+        { path: 'addItem', name: 'shop-add', component: AddItemView},
+        { path: 'notification', component: NotificationView},
+        { path: 'search', name: 'shop-search', component: SearchView}
     ]},
     { path: '/restaurant', component: RestaurantView, children: [
-        { path: '/addItem', component: AddPizzaView},
-        { path: '/search', component: SearchView},
-        { path: '/print', component: PrintView}
+        { path: 'addItem', name: 'restaurant-add', component: AddPizzaView},
+        { path: 'search', name: 'restaurant-search', component: SearchView},
+        { path: 'print', component: PrintView}
     ]},   
 ]
 

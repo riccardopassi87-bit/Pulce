@@ -4,6 +4,6 @@ const { goNext } = commonRouter();
 </script>
 
 <template>
-        <button id="export-html">Export HTLM file</button>
-        <button id="print" @click="goNext('/print')">Print Selection</button>
+        <button type="button" id="export-html">Export HTLM file</button>
+        <button type="button" id="print" @click="goNext('print')">Print Selection</button>
 </template>
