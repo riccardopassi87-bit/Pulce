@@ -29,3 +29,16 @@
         background-color: #222;
         color: goldenrod;
     }
+    input{
+        all: unset;
+        width: 60%;
+        height: 60%;
+        background-color: #333;
+        border-radius: 5px;
+        color: rgb(255, 208, 0);
+        font-size: 1rem;
+        padding: 0 1%;
+    }
+    input::placeholder{
+        text-align: center;
+    }

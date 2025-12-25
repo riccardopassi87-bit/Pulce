@@ -1,5 +1,5 @@
 <script setup>
-    import SelectionButtons from './SelectionButtons.vue';
+    import NavButtons from './NavButtons.vue';
 </script>
 
 <template>
@@ -8,7 +8,7 @@
             <img src="C:\Users\Dell\Desktop\Abschluss projekt\shop-manager\src\assets\Logo.png">
         </div>
         <div id="buttons">
-            <SelectionButtons />
+            <NavButtons />
         </div>
     </header>
 </template>

@@ -1,5 +1,5 @@
 <script setup>
-import ButtonElement from './ButtonElement.vue';
+import ButtonsFooter from './ButtonsFooter.vue';
 </script>
 
 <template>
@@ -7,13 +7,14 @@ import ButtonElement from './ButtonElement.vue';
         <router-view />
     </div>
     <div id="bottomButtons">
-        <ButtonElement />
+        <ButtonsFooter />
     </div>
 </template>
 
 <style scoped>
 #panel{
     height: 90%;
+    padding: 3%;
     background-color: #222;
     border-color: #444;
 }

@@ -1,12 +1,12 @@
 <script setup>
-import AppHeader from './commonStart/AppHeader.vue';
-import StartingView from './commonStart/StartingView.vue';
+import Header from './commonStart/Header.vue';
+import StartingPage from './commonStart/StartingPage.vue';
 </script>
 
 <template>
   <div id="main">
-    <AppHeader />
-    <StartingView />
+    <Header />
+    <StartingPage />
   </div>
 </template>
 

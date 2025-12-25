@@ -1,11 +1,11 @@
 <script setup>
-    import ButtonControlPanel from '../commonViews/ButtonControlPanel.vue';
+    import LeftButtons from '../commonViews/LeftButtons.vue';
     import ButtonRestaurant from './ButtonRestaurant.vue';
 </script>
 
 <template>
     <div id="main">
-        <ButtonControlPanel />
+        <LeftButtons />
         <ButtonRestaurant />
     </div>
 </template>
