@@ -9,15 +9,16 @@ import PrintView from '@/mainViews/subViews/PrintView.vue';
 import SearchItemView from '@/mainViews/subViews/SearchItemView.vue';
 import SearchPizzaView from '@/mainViews/subViews/SearchPizzaView.vue';
 
+
 const routes = [
     { path: '/shop', component: ShopView, children: [
-        { path: 'addItem', name: 'shop-add', component: AddItemView},
+        { path: 'addItem', name: 'addProduct', component: AddItemView},
         { path: 'notification', component: NotificationView},
-        { path: 'search', name: 'shop-search', component: SearchItemView}
+        { path: 'search', name: 'searchProduct', component: SearchItemView}
     ]},
     { path: '/restaurant', component: RestaurantView, children: [
-        { path: 'addItem', name: 'restaurant-add', component: AddPizzaView},
-        { path: 'search', name: 'restaurant-search', component: SearchPizzaView},
+        { path: 'addItem', name: 'addPizza', component: AddPizzaView},
+        { path: 'search', name: 'searchPizza', component: SearchPizzaView},
         { path: 'print', component: PrintView}
     ]},   
 ]

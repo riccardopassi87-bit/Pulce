@@ -4,6 +4,8 @@ const { goNext } = commonRouter();
 </script>
 
 <template>
+        <button type="button" id="addIngredient">Add Ingredient</button>
+        <button type="button" id="searchIngredient">Search Ingredient</button>
         <button type="button" id="export-html">Export HTML file</button>
         <button type="button" id="print" @click="goNext('print')">Print Selection</button>
 </template>
