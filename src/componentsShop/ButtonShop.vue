@@ -1,8 +1,8 @@
 <script setup>
     import { commonRouter } from '../router/composable/commonRouter';
-    const { goNext } = commonRouter();
+    const { goNext, getButtonClass } = commonRouter();
 </script>
 
 <template>
-    <button type="button" id="notification" @click="goNext('notification')">Notification Settings</button>
+    <button type="button" id="notification" @click="goNext('notification')" :class="getButtonClass('notification')">Notification Settings</button>
 </template>

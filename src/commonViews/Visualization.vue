@@ -6,21 +6,19 @@ import ButtonsFooter from './ButtonsFooter.vue';
     <div id="panel">
         <router-view />
     </div>
-    <div id="bottomButtons">
+    <div class="fsf" id="bottomButtons">
         <ButtonsFooter />
     </div>
 </template>
 
 <style scoped>
+
 #panel{
     height: 90%;
     padding: 3%;
-    background-color: #222;
-    border-color: #444;
+    /*background-color: #222;*/
 }
 #bottomButtons{
     height: 10%;
-    width: 100%;
-    display: flex;
 }
 </style>

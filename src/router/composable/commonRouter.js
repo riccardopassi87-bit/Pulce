@@ -21,7 +21,7 @@ export function commonRouter(){
  // ROUTE CHECK - to select button text depending on parent route
 
     const isRestaurant = computed(() => {
-        return route.matched[0]?.path === '/restaurant' || ['addPizza, searcPizza'].includes(route.name)
+        return route.matched[0]?.path === '/restaurant' || ['addPizza, searchPizza'].includes(route.name)
     })
     const addButtonText = computed(() => {
         return isRestaurant.value ? 'Add Pizza' : 'Add Product';
@@ -30,5 +30,26 @@ export function commonRouter(){
         return isRestaurant.value ? 'Search Pizza' : 'Search Product';
     })
 
-    return { goNext, addButtonText, searchButtonText }
+// ACTIVE ROUTE CHECK - will change the button style of the actual position
+
+    const isRouteActive = (routeName) => {
+        return route.name?.includes(routeName) ||
+        route.path.includes(`/${routeName}`) ||
+        route.path.includes(`/${routeName}/`)
+    }
+    const getButtonClass = (routeName) => [
+        isRestaurant.value ? '/restaurant' : '/shop',
+        isRouteActive(routeName) ? 'button-active' : 'button'
+    ]
+    const isParentActive = (parentPath) => {
+        return route.matched[0]?.path === parentPath
+    }
+
+    return {
+        goNext,
+        addButtonText,
+        searchButtonText,
+        getButtonClass,
+        isParentActive
+    }
 }

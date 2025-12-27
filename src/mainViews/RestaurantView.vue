@@ -4,7 +4,7 @@
 </script>
 
 <template>
-    <div id="main-restaurant">
+    <div class="fsf" id="main-restaurant">
         <div id="left">
             <ControlPanelRestaurant />
         </div>
@@ -15,12 +15,6 @@
 </template>
 
 <style scoped>
-    #main-restaurant{
-        height: 100%;
-        width: 100%;
-        display: flex;
-        flex-direction: row;
-    }
     #left{
         flex: 1;
     }
