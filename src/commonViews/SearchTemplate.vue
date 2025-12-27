@@ -1,19 +1,23 @@
 <template>
     <div class="fsf" id="search">
-        <div id="search-prompt"></div>
-        <div id="search-result"></div>
+        <div id="search-prompt" class="common">
+            <slot name="prompt"></slot>
+        </div>
+        <div id="search-result" class="common">
+            <slot name="result"></slot>
+        </div>
     </div>
 </template>
 
 <style scoped>
-    #search-prompt{
-        height: 100%;
-        flex: 1;
-        background-color: aquamarine;
+    #search{
+        gap: 3%;
     }
-    #search-result{
+    .common{
         height: 100%;
+        background-color: #333;
+        border-radius: 5px;
         flex: 1;
-        background-color: wheat;
+        padding: 0.5%;
     }
 </style>

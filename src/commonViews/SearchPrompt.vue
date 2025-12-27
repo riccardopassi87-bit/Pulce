@@ -14,14 +14,12 @@
         <div id="result-display">
         
         </div>
-    
     </div>
 </template>
 
 <style scoped>
 
     #search-container{
-        height: 87%;
         border-radius: 5px;
         flex-direction: column;
         align-items: center;
