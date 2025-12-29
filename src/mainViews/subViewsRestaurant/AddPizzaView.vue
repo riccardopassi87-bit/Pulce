@@ -12,7 +12,14 @@
         </div>
         <div class="fsf" id="add-ingredients">
             <p>Add Ingredient</p>
-            <SearchPrompt />
+            <SearchPrompt>
+                <template #filter>
+                    <p>Veggies</p>
+                    <p>Cheese</p>
+                    <p>Meat</p>
+                    <p>Others</p>
+                </template>
+            </SearchPrompt>
         </div>
     </div>
     <div class="fsf" id="preview-pizza">

@@ -1,8 +1,9 @@
 <template>
     <div class="fsf" id="search">
         <div id="search-prompt" class="common">
-            <slot name="prompt"></slot>
+            <slot name="left-search"></slot>
         </div>
+
         <div id="search-result" class="common">
             <slot name="result"></slot>
         </div>
@@ -18,6 +19,5 @@
         background-color: #333;
         border-radius: 5px;
         flex: 1;
-        padding: 0.5%;
     }
 </style>

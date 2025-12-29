@@ -2,15 +2,12 @@
     <div class="fsf" id="search-container">
         <input placeholder="search by name"/>
 
-        <p>- Filter -</p>
+        <p>- Filter by -</p>
         
-        <div id="filter">
-            <button>Veggies</button>
-            <button>Cheese</button>
-            <button>Meat</button>
-            <button>Other</button>
+        <div id="own-filter">
+            <slot name="filter"></slot>
         </div>
-
+        
         <div id="result-display">
         
         </div>
@@ -28,25 +25,18 @@
         background-color: #333;
     }
     p{
-        flex: 1;
+        flex: 0.5;
+        margin-top: 2%;
         display: flex;
         align-items: end;
     }
-    #filter{
+    #own-filter{
         flex: 1;
         width: 98%;
+        font-size: 1rem;
         display: flex;
         justify-content: space-evenly;
-    }
-    #filter button{
-        all: unset;
-        height: 100%;
-        font-size: 1rem;
-    }
-    #filter button:hover{
-        all: unset;
-        font-size: 1rem;
-        cursor: pointer;
+        align-items: center;
     }
     #search-container input{
         width: 98%;
