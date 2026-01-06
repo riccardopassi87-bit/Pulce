@@ -52,3 +52,10 @@
         height: 100%;
         display: flex;
     }
+    .parent-view{
+        flex-direction: column;
+        gap: 3%;
+    }
+    .footer-buttons{
+        flex: 1;
+    }

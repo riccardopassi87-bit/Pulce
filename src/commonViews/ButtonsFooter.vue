@@ -1,8 +1,16 @@
+<script setup>
+        defineProps({
+                showSave: Boolean,
+                showModify: Boolean,
+                showRemove: Boolean
+        })
+</script>
+
 <template>
         <div class="fsf" id="footer">
-                <button id="save">Save</button>
-                <button id="remove">Remove</button>
-                <button id="modify">Modify</button>
+                <button v-if="showSave" id="save">Save</button>
+                <button v-if="showRemove" id="remove">Remove</button>
+                <button v-if="showModify" id="modify">Modify</button>
         </div>
 </template>
 
