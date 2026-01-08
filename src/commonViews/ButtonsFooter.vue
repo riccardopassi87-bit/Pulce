@@ -8,7 +8,7 @@
 
 <template>
         <div class="fsf" id="footer">
-                <button v-if="showSave" id="save">Save</button>
+                <button type="submit" v-if="showSave" id="save">Save</button>
                 <button v-if="showRemove" id="remove">Remove</button>
                 <button v-if="showModify" id="modify">Modify</button>
         </div>
