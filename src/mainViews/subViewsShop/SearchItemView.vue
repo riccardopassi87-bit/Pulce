@@ -14,7 +14,7 @@
                             <p>Alpe</p>
                             <p>Alpenzu</p>
                             <p>Bisquits</p>
-                            <p>Ragus</p>
+                            <p>Pesto</p>
                             <p>Snacks</p>
                             <p>Pasta</p>
                             <p>Drinks</p>
