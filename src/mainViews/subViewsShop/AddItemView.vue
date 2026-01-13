@@ -2,7 +2,7 @@
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
     import { useFormValidation, validators } from '@/router/composable/useFormValidation';
 
-    const TYPE = ['Alpe', 'Alpenzu', 'Bisquits', 'Pesto', 'Snacks', 'Pasta', 'Drinks']
+    const TYPE = ['Alpe', 'Alpenzu', 'Bisquits', 'Snacks', 'Drinks', 'Pesto', 'Pasta', 'Antipasti', 'Olives', 'Wine', 'Others' ]
     
     const { form, errors, submitted, validateField, submit } = useFormValidation({
         name: '',
@@ -39,47 +39,59 @@
 
 <template>
     <form class="parent-view fsf" @submit.prevent="submit">
-        <div class="parent-view fsf">
             <div class="fsf" id="addItem">
-                <div>
-                    <p>Name: </p>
-                    <input v-model="form.name" @blur="validateField('name')"
-                    :class="{invalid: submitted && errors.name}"
-                    :placeholder="errors.name"/>
+                <div class="field">
+                    <div class="pee"><p>Name: </p></div>
+                    <div class="pee-input"><input v-model="form.name" @blur="validateField('name')"
+                    :class="{invalid: submitted && errors.name}"/></div>
+                    <div class="pee"><p v-if="submitted && errors.name" class="error">
+                        {{ errors.name }}
+                    </p></div>
                 </div>
-                <div>
-                    <p>Original Price: </p>
-                    <input type="number" min="0" step="0.01" v-model.number="form.originalPrice" @blur="validateField('originalPrice'); validateField('sellingPrice');"
-                    :class="{invalid: submitted && errors.originalPrice}"
-                    :placeholder="errors.originalPrice"/>
+                <div class="field">
+                    <div class="pee"><p>Original Price: </p></div>
+                    <div class="pee-input"><input type="number" min="0" step="0.01" v-model.number="form.originalPrice" @blur="validateField('originalPrice'); validateField('sellingPrice');"
+                    :class="{invalid: submitted && errors.originalPrice}"/></div>
+                    <div class="pee"><p v-if="submitted && errors.sellingPrice" class="error">
+                        {{ errors.sellingPrice }}
+                    </p></div>
                 </div>
-                <div>
-                    <p>Selling Price: </p>
-                    <input type="number" min="0" step="0.01" v-model.number="form.sellingPrice" @blur="validateField('sellingPrice')"
-                    :class="{invalid: submitted && errors.sellingPrice}"
-                    :placeholder="errors.sellingPrice"/>
+                <div class="field">
+                    <div class="pee"><p>Selling Price: </p></div>
+                    <div class="pee-input"><input type="number" min="0" step="0.01" v-model.number="form.sellingPrice" @blur="validateField('sellingPrice')"
+                    :class="{invalid: submitted && errors.sellingPrice}"/></div>
+                    <div class="pee"><p v-if="submitted && errors.sellingPrice" class="error">
+                        {{ errors.sellingPrice }}
+                    </p></div>
                 </div>
-                <div>
-                    <p>Type: </p>
-                    <select v-model="form.type" @blur="validateField('type')"
+                <div class="field">
+                    <div class="pee"><p>Type: </p></div>
+                    <div class="pee-input"><select v-model="form.type" @blur="validateField('type')"
                     :class="{invalid: submitted && errors.type}">
                         <option disabled value=""></option>
                         <option v-for="t in TYPE" :key="t" :value="t">
                             {{ t }}
                         </option>
-                    </select>
+                    </select></div>
+                    <div class="pee"><p v-if="submitted && errors.type" class="error">
+                        {{ errors.type }}
+                    </p></div>
                 </div>
-                <div>
-                    <p>Expiration Date: </p>
-                    <input type="date" v-model="form.expirationDate" @blur="validateField('expirationDate')"
-                    :class="{invalid: submitted && errors.expirationDate}"
-                    :placeholder="errors.expirationDate"/>
+                <div class="field">
+                    <div class="pee"><p>Expiration Date: </p></div>
+                    <div class="pee-input"><input type="date" v-model="form.expirationDate" @blur="validateField('expirationDate')"
+                    :class="{invalid: submitted && errors.expirationDate}"/></div>
+                    <div class="pee"><p v-if="submitted && errors.expirationDate" class="error">
+                        {{ errors.expirationDate }}
+                    </p></div>
                 </div>
-                <div>
-                    <p>Amount: </p>
-                    <input type="number" min="0" step="1" v-model.number="form.amount" @blur="validateField('amount')"
-                    :class="{invalid: submitted && errors.amount}"
-                    :placeholder="errors.amount"/>
+                <div class="field">
+                    <div class="pee"><p>Amount: </p></div>
+                    <div class="pee-input"><input type="number" min="0" step="1" v-model.number="form.amount" @blur="validateField('amount')"
+                    :class="{invalid: submitted && errors.amount}"/></div>
+                    <div class="pee"><p v-if="submitted && errors.amount" class="error">
+                        {{ errors.amount }}
+                    </p></div>
                 </div>
             </div>
             <div class="footer-buttons">
@@ -88,18 +100,12 @@
                 :show-modify="false"
                 :show-remove="false"/>
             </div>
-        </div>
     </form>
 </template>
 
 <style scoped>
     #addItem{
         flex-direction: column;
-        gap: 5%;
-        font-size: 1.2rem;
         flex: 9;
-    }
-    p{
-        margin-bottom: 1%;
     }
 </style>

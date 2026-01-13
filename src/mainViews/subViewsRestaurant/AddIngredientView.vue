@@ -22,7 +22,8 @@
             { validator: validators.number, message: 'Must be a number' }],
         kgPrice: [
             { validator: validators.required, message: 'Required' },
-            { validator: validators.number, message: 'Must be a number' }],
+            { validator: validators.number, message: 'Must be a number' },
+            { validator: validators.priceIsValid('portionPrice'), message: 'Kg price lower than portion price??'}],
         type: [
             { validator: validators.required, message: 'Type required' },
             { validator: validators.oneOf(TYPE), message: 'Invalid type' }],
@@ -39,35 +40,55 @@
 <template>
     <form class="parent-view fsf" @submit.prevent="submit">
         <div class="fsf" id="addItem">
-            <div><p>Name: </p> <input v-model="form.name" @blur="validateField('name')" 
-                :class="{invalid: submitted && errors.name}"
-                :placeholder="errors.name"/>
+            <div class="field">
+                <div class="pee"><p>Name: </p></div>
+                <div class="pee-input"><input v-model="form.name" @blur="validateField('name')" 
+                :class="{invalid: submitted && errors.name}"/></div>
+                <div class="pee"><p v-if="submitted && errors.name" class="error">
+                    {{ errors.name }}
+                </p></div>
             </div>
-            <div><p>Portion Price: </p> <input type="number" min="0" step="0.01" v-model.number="form.portionPrice" @blur="validateField('portionPrice')" 
-                :class="{invalid: submitted && errors.portionPrice}"
-                :placeholder="errors.portionPrice"/>
+            <div class="field">
+                <div class="pee"><p>Portion Price: </p></div>
+                <div class="pee-input"><input type="number" min="0" step="0.01" v-model.number="form.portionPrice" @blur="validateField('portionPrice'); validateField('kgPrice');" 
+                :class="{invalid: submitted && errors.portionPrice}"/></div>
+                <div class="pee"><p v-if="submitted && errors.portionPrice" class="error">
+                    {{ errors.portionPrice }}
+                </p></div>
             </div>
-            <div><p>Kg Price: </p> <input type="number" min="0" step="0.01" v-model.number="form.kgPrice" @blur="validateField('kgPrice')" 
-                :class="{invalid: submitted && errors.kgPrice}"
-                :placeholder="errors.kgPrice"/>
+            <div class="field">
+                <div class="pee"><p>Kg Price: </p></div>
+                <div class="pee-input"><input type="number" min="0" step="0.01" v-model.number="form.kgPrice" @blur="validateField('kgPrice')" 
+                :class="{invalid: submitted && errors.kgPrice}"/></div>
+                <div class="pee"><p v-if="submitted && errors.kgPrice" class="error">
+                    {{ errors.kgPrice }}
+                </p></div>
             </div>
-            <div><p>Type: </p>
-                <select v-model="form.type" @blur="validateField('type')" 
+            <div class="field">
+                <div class="pee"><p>Type: </p></div>
+                <div class="pee-input"><select v-model="form.type" @blur="validateField('type')" 
                 :class="{invalid: submitted && errors.type}">
                     <option disabled value=""></option>
                     <option v-for="t in TYPE" :key="t" :value="t">
                         {{ t }}
                     </option>
-                </select>
+                </select></div>
+                <div class="pee"><p v-if="submitted && errors.type" class="error">
+                    {{ errors.type }}
+                </p></div>
             </div>
-            <div><p>Allergene: </p>
-                <select v-model="form.allergene" @blur="validateField('allergene')" 
+            <div class="field">
+                <div class="pee"><p>Allergene: </p></div>
+                <div class="pee-input"><select v-model="form.allergene" @blur="validateField('allergene')" 
                 :class="{invalid: submitted && errors.allergene}">
                     <option disabled value=""></option>
                     <option v-for="a in ALLERGENE" :key="a" :value="a">
                         {{ a }}
                     </option>
-                </select>
+                </select></div>
+                <div class="pee"><p v-if="submitted && errors.allergene" class="error">
+                    {{ errors.allergene }}
+                </p></div>
             </div>
         </div>
         <div class="footer-buttons">
@@ -83,11 +104,6 @@
 <style scoped>
     #addItem{
         flex-direction: column;
-        gap: 5%;
-        font-size: 1.2rem;
         flex: 9;
-    }
-    p{
-        margin-bottom: 1%;
     }
 </style>

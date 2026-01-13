@@ -2,6 +2,8 @@
     import SearchTemplate from '@/commonViews/SearchTemplate.vue';
     import SearchPrompt from '@/commonViews/SearchPrompt.vue';
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
+
+    const TYPE = ['Alpe', 'Alpenzu', 'Bisquits', 'Snacks', 'Drinks', 'Pesto', 'Pasta', 'Antipasti', 'Olives', 'Wine', 'Others' ]
 </script>
 
 <template>
@@ -11,13 +13,12 @@
                 <template #left-search>
                     <SearchPrompt>
                         <template #filter>
-                            <p>Alpe</p>
-                            <p>Alpenzu</p>
-                            <p>Bisquits</p>
-                            <p>Pesto</p>
-                            <p>Snacks</p>
-                            <p>Pasta</p>
-                            <p>Drinks</p>
+                            <select>
+                                <option disabled.value=""></option>
+                                <option v-for="t in TYPE" :key="t" :value="t">
+                                    {{ t }}
+                                </option>
+                            </select>
                         </template>
                     </SearchPrompt>
                 </template>    
@@ -35,5 +36,9 @@
 <style scoped>
     #search-item{
         flex: 9;
+    }
+    select{
+        width: 70%;
+        background-color: #222;
     }
 </style>

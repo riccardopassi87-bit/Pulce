@@ -32,7 +32,7 @@
     }
     #own-filter{
         flex: 1;
-        width: 98%;
+        width: 100%;
         font-size: 1rem;
         display: flex;
         justify-content: space-evenly;
