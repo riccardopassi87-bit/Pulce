@@ -38,6 +38,7 @@
         flex: 9;
     }
     select{
+        height: 70%;
         width: 70%;
         background-color: #222;
     }

@@ -32,7 +32,24 @@
             { validator: validators.oneOf(ALLERGENE), message: 'Invalid allergene' }]
     },
     async (data) =>{
-        alert('hewvouvwowufv')
+        try{
+            const res = await fetch('http://localhost:8080/api/ingredient', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+
+            if(!res.ok) {
+                throw new Error(/*`Server error: ${res.status}`*/)
+            }
+
+            //const saved = await res.json()
+            alert('Ingredient saved successfully ✅')
+        } catch (err) {
+            alert('Failed to save ingredient ❌')
+        }
     }
     )
 </script>

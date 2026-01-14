@@ -18,10 +18,10 @@
         #footer{
                 display: flex;
                 justify-content: space-between;
-                padding: 1% 3%;
+                align-items: end;
         }
         button{
-                height: 100%;
+                height: 70%;
                 width: 30%;
                 border-radius: 5px;
         }

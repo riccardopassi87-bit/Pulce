@@ -12,7 +12,7 @@
 	<artifactId>pulce-backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Pulce Backend</name>
-	<description>Bakcend for Pulce App</description>
+	<description>Backend for Pulce App</description>
 	<url/>
 	<licenses>
 		<license/>

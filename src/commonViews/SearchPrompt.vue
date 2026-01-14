@@ -47,6 +47,6 @@
         width: 100%;
         flex: 5;
         border-radius: 5px;
-        background-color: #222;
+        background-color: #111;
     }
 </style>

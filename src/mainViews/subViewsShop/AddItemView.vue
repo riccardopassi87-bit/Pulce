@@ -52,8 +52,8 @@
                     <div class="pee"><p>Original Price: </p></div>
                     <div class="pee-input"><input type="number" min="0" step="0.01" v-model.number="form.originalPrice" @blur="validateField('originalPrice'); validateField('sellingPrice');"
                     :class="{invalid: submitted && errors.originalPrice}"/></div>
-                    <div class="pee"><p v-if="submitted && errors.sellingPrice" class="error">
-                        {{ errors.sellingPrice }}
+                    <div class="pee"><p v-if="submitted && errors.originalPrice" class="error">
+                        {{ errors.originalPrice }}
                     </p></div>
                 </div>
                 <div class="field">

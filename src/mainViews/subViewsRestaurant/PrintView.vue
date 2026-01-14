@@ -1,45 +1,60 @@
 <script setup>
     import SearchTemplate from '@/commonViews/SearchTemplate.vue';
+    import SearchPrompt from '@/commonViews/SearchPrompt.vue';
+    import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
+
+    const TYPE = ['All', 'Normal', 'Vegetarian', 'Vegan']
 </script>
 
 <template>
-    <SearchTemplate>
-        <template #left-search>
-            <div class="fsf" id="left-sort">
-                <p> - Filter by - </p>
-                <div id="sort-filter">
-                    <p>All</p>
-                    <p>Normal</p>
-                    <p>Vegetarian</p>
-                    <p>Vegan</p>
-                </div>
-                <div class="fsf" id="sort-select">
-
-                </div>
-            </div>
-        </template>
-    </SearchTemplate>
+    <div class="parent-view fsf">
+        <div id="search-item" class="fsf">
+            <SearchTemplate>
+                <template #left-search>
+                    <SearchPrompt>
+                        <template #filter>
+                            <select>
+                                <option disabled.value=""></option>
+                                <option v-for="t in TYPE" :key="t" :value="t">
+                                    {{ t }}
+                                </option>
+                            </select>
+                        </template>
+                    </SearchPrompt>
+                </template>    
+            </SearchTemplate>
+        </div>
+        <div class="footer-buttons">
+            <button>
+                <p>&#9888; PRINT</p>
+                <p>-</p>
+                <p>Keeping in mind that wasting paper is not good</p>
+                <p>-</p>
+                <p>PRINT &#9888;</p>
+            </button>
+        </div>
+    </div>
 </template>
 
 <style scoped>
-    #left-sort{
-        flex-direction: column;
-        padding: 1%;
+    #search-item{
+        flex: 9;
     }
-    #left-sort > p{
-        flex: 1;
-        font-size: 1.5rem;
-        text-align: center;
-        margin-top: 2%;
-    }
-    #sort-filter{
-        flex: 1;
-        display: flex;
-        justify-content: space-evenly;
-    }
-    #sort-select{
-        flex: 8;
-        border-radius: 5px;
+    select{
+        height: 70%;
+        width: 70%;
         background-color: #222;
     }
+    button{
+        height: 70%;
+        border-radius: 5px;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+    }
+    .footer-buttons{
+        display: flex;
+        align-items: end;
+    }
 </style>
+

@@ -4,6 +4,7 @@
     import { useFormValidation, validators } from '@/router/composable/useFormValidation';
 
     const TYPE = ['Normal', 'Vegetarian', 'Vegan']
+    const ingredientTYPE = ['Veggies', 'Cheese', 'Meat', 'Others']
 
     const { form, errors, submitted, validateField, submit } = useFormValidation({
         name: '',
@@ -78,20 +79,22 @@
                     <p>Add Ingredient</p>
                     <SearchPrompt>
                         <template #filter>
-                            <p>Veggies</p>
-                            <p>Cheese</p>
-                            <p>Meat</p>
-                            <p>Others</p>
+                            <select id="ingredient-select">
+                                <option disabled.value=""></option>
+                                <option v-for="t in ingredientTYPE" :key="t" :value="t">
+                                    {{ t }}
+                                </option>
+                            </select>
                         </template>
                     </SearchPrompt>
                 </div>
             </div>
             <div class="fsf" id="preview-pizza">
-                <div class="fsf" id="ingredient-list">
+                <div id="name-price" contenteditable="true" data-placeholder="Name, Vegetarian/Vegan/symbol, ........., Price">
 
                 </div>
-                <div id="suggested-price">
-
+                <div id="ingredient-list" contenteditable="true" data-placeholder="List of Ingredients">
+<p>oooooooooh noooooooooooooooo</p>
                 </div>
             </div>
             <div class="footer-buttons">
@@ -120,6 +123,11 @@
     select{
         width: 100%;
     }
+    #ingredient-select{
+        height: 80%;
+        margin-bottom: 1%;
+        background-color: #222;
+    }
     #add-ingredients{
         height: 94%;
         flex: 1;
@@ -134,15 +142,34 @@
         border-radius: 5px;
         background-color: #333;
         display: flex;
+        flex-direction: column;
         flex: 3;
     }
-    #ingredient-list{
+    #name-price{
         flex: 1;
-        background-color: aquamarine;
     }
-    #suggested-price{
-        flex: 1;
-        background-color: lightgreen;
+    #name-price:empty{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    #name-price:empty::before{
+        content: attr(data-placeholder);
+        color: #777;
+        pointer-events: none;
+    }
+    #ingredient-list{
+        flex: 2;;
+    }
+    #ingredient-list:empty{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    #ingredient-list:empty::before{
+        content: attr(data-placeholder);
+        color: #777;
+        font-size: 2rem;
     }
     #footer-buttons{
         flex: 1;

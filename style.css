@@ -45,6 +45,9 @@
         font-size: 1rem;
         padding: 0 1%;
     }
+    input::placeholder{
+        text-align: center;
+    }
     select{
         width: 49%;
         height: 100%;
