@@ -1,9 +1,8 @@
 package com.pulce.pulcebackend;
 
 import jakarta.validation.constraints.*;
-
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 
 public class ItemDTO {
 
@@ -17,10 +16,9 @@ public class ItemDTO {
     private BigDecimal sellingPrice;
     @NotBlank
     private String type;
-    @NotBlank
-    private Date expirationDate;
     @NotNull
-    @DecimalMin(value = "0", inclusive = false)
+    private LocalDate expirationDate;
+    @Min(0)
     private int amount;
 
     // GETTERS
@@ -40,7 +38,7 @@ public class ItemDTO {
         return type;
     }
 
-    public Date getExpirationDate() {
+    public LocalDate getExpirationDate() {
         return expirationDate;
     }
 
@@ -66,7 +64,7 @@ public class ItemDTO {
         this.type = type;
     }
 
-    public void setExpirationDate(Date expirationDate) {
+    public void setExpirationDate(LocalDate expirationDate) {
         this.expirationDate = expirationDate;
     }
 

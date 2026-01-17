@@ -1,5 +1,6 @@
 package com.pulce.pulcebackend;
 
+import com.pulce.pulcebackend.ItemDTO;
 import com.pulce.pulcebackend.entity.Item;
 import com.pulce.pulcebackend.service.ItemService;
 import org.springframework.http.HttpStatus;

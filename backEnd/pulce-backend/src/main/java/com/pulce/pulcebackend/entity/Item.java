@@ -1,8 +1,10 @@
 package com.pulce.pulcebackend.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "items")
@@ -16,24 +18,25 @@ public class Item {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(name = "original_price", nullable = false, precision = 10, scale = 2)
     private BigDecimal originalPrice;
 
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(name = "selling_price", nullable = false, precision = 10, scale = 2)
     private BigDecimal sellingPrice;
 
     @Column(nullable = false)
     private String type;
 
-    @Column(nullable = false)
-    private Date expirationDate;
+    @Column(name = "expiration_date", nullable = false)
+    private LocalDate expirationDate;
 
+    @Min(1)
     @Column(nullable = false)
     private int amount;
 
     protected Item() {}
 
-    public Item(String name, BigDecimal originalPrice, BigDecimal sellingPrice, String type, Date expirationDate, int amount) {
+    public Item(String name, BigDecimal originalPrice, BigDecimal sellingPrice, String type, LocalDate expirationDate, int amount) {
         this.name = name;
         this.originalPrice = originalPrice;
         this.sellingPrice = sellingPrice;
@@ -62,7 +65,7 @@ public class Item {
         return type;
     }
 
-    public Date getExpirationDate() {
+    public LocalDate getExpirationDate() {
         return expirationDate;
     }
 
