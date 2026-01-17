@@ -1,6 +1,9 @@
 <script setup>
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
     import { useFormValidation, validators } from '@/router/composable/useFormValidation';
+    import { createIngredient } from '@/api/ingredientApi';
+
+    const API_BASE = 'http://localhost:8080/api/item'
 
     const TYPE = ['Alpe', 'Alpenzu', 'Bisquits', 'Snacks', 'Drinks', 'Pesto', 'Pasta', 'Antipasti', 'Olives', 'Wine', 'Others' ]
     
@@ -32,7 +35,12 @@
         ]
     },
     async (data) => {
-        alert('hulla la luppa!')
+      try {
+        await createIngredient(API_BASE, data)
+        alert('Product saved successfully ✅')
+        } catch (e) {
+            alert('Failed to save product ❌')
+        }
     }
     )  
 </script>

@@ -90,11 +90,11 @@
                 </div>
             </div>
             <div class="fsf" id="preview-pizza">
-                <div id="name-price" contenteditable="true" data-placeholder="Name, Vegetarian/Vegan/symbol, ........., Price">
+                <div id="name-price">
 
                 </div>
-                <div id="ingredient-list" contenteditable="true" data-placeholder="List of Ingredients">
-<p>oooooooooh noooooooooooooooo</p>
+                <div id="ingredient-list">
+
                 </div>
             </div>
             <div class="footer-buttons">

@@ -1,8 +1,11 @@
 package com.pulce.pulcebackend;
 
+import com.pulce.pulcebackend.entity.Ingredient;
 import com.pulce.pulcebackend.service.IngredientService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/ingredient")
@@ -17,8 +20,8 @@ public class IngredientController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createIngredient(@RequestBody IngredientDTO ingredient) {
-        ingredientService.createIngredient(ingredient);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Ingredient> createIngredient(@Valid @RequestBody IngredientDTO dto) {
+        Ingredient created = ingredientService.create(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 }

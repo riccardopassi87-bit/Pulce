@@ -1,12 +1,21 @@
 package com.pulce.pulcebackend;
 
+import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 
 public class IngredientDTO {
+
+    @NotBlank
     private String name;
+    @NotNull
+    @DecimalMin(value = "0.0", inclusive = false)
     private BigDecimal portionPrice;
+    @NotNull
+    @DecimalMin(value = "0.0", inclusive = false)
     private BigDecimal kgPrice;
+    @NotBlank
     private String type;
+    @NotBlank
     private String allergene;
 
     // GETTERS
@@ -52,16 +61,4 @@ public class IngredientDTO {
     public void setAllergene(String allergene) {
         this.allergene = allergene;
     }
-
-    @Override
-    public String toString() {
-        return "IngredientDTO{" +
-                "name='" + name + '\'' +
-                ", portionPrice=" + portionPrice +
-                ", kgPrice=" + kgPrice +
-                ", type='" + type + '\'' +
-                ", allergene='" + allergene + '\'' +
-                '}';
-    }
-
 }

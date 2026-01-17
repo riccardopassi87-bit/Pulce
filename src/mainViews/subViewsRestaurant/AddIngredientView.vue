@@ -1,7 +1,9 @@
 <script setup>
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
     import { useFormValidation, validators } from '@/router/composable/useFormValidation';
+    import { createIngredient } from '@/api/ingredientApi';
 
+    const API_BASE = 'http://localhost:8080/api/ingredient'
     const TYPE = ['Veggie', 'Cheese', 'Meat', 'Others']
     const ALLERGENE = ['A - Glutenhaltig', 'B - Krebstiere', 'C - Eier', 'D - Fish', 'E - Erdnüsse',
                        'F - Sojabohnen', 'G - Milch/Laktose', 'H - Schalenfrüchte', 'L - Sellerie',
@@ -31,23 +33,11 @@
             { validator: validators.required, message: 'Allergene required' },
             { validator: validators.oneOf(ALLERGENE), message: 'Invalid allergene' }]
     },
-    async (data) =>{
-        try{
-            const res = await fetch('http://localhost:8080/api/ingredient', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-
-            if(!res.ok) {
-                throw new Error(/*`Server error: ${res.status}`*/)
-            }
-
-            //const saved = await res.json()
-            alert('Ingredient saved successfully ✅')
-        } catch (err) {
+    async (data) => {
+      try {
+        await createIngredient(API_BASE, data)
+        alert('Ingredient saved successfully ✅')
+        } catch (e) {
             alert('Failed to save ingredient ❌')
         }
     }
