@@ -4,7 +4,7 @@
     import { createIngredient } from '@/api/ingredientApi';
 
     const API_BASE = 'http://localhost:8080/api/ingredient'
-    const TYPE = ['Veggie', 'Cheese', 'Meat', 'Others']
+    const TYPE = ['Veggie', 'Cheese', 'Meat', 'Base', 'Others']
     const ALLERGENE = ['A - Glutenhaltig', 'B - Krebstiere', 'C - Eier', 'D - Fish', 'E - Erdnüsse',
                        'F - Sojabohnen', 'G - Milch/Laktose', 'H - Schalenfrüchte', 'L - Sellerie',
                        'M - Senf', 'N - Sesamsamen', 'O - Schwefeldioxid/Sulfite', 'P - Lupinen', 'R - Weichtiere',

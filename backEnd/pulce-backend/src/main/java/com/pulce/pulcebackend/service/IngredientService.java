@@ -5,8 +5,24 @@ import com.pulce.pulcebackend.IngredientDTO;
 import com.pulce.pulcebackend.repository.IngredientRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class IngredientService {
+
+    public List<Ingredient> search(String name, String type){
+
+        if(name != null && type != null){
+            return ingredientRepository.findByNameContainingIgnoreCaseAndType(name, type);
+        }
+        if(name != null){
+            return ingredientRepository.findByNameContainingIgnoreCase(name);
+        }
+        if(type != null){
+            return ingredientRepository.findByType(type);
+        }
+        return ingredientRepository.findAll();
+    }
 
     private final IngredientRepository ingredientRepository;
 

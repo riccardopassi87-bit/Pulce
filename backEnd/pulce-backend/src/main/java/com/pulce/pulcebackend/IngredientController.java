@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/ingredient")
 @CrossOrigin(origins = "http://localhost:5173")
@@ -23,5 +25,13 @@ public class IngredientController {
     public ResponseEntity<Ingredient> createIngredient(@Valid @RequestBody IngredientDTO dto) {
         Ingredient created = ingredientService.create(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Ingredient>> searchIngredients(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String type
+    ) {
+        return ResponseEntity.ok(ingredientService.search(name,type));
     }
 }

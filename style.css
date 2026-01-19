@@ -70,11 +70,13 @@
         width: 100%;
         height: 100%;
         display: flex;
+        min-height: 0;
     }
     .parent-view{
         flex-direction: column;
     }
     .footer-buttons{
+        display: flex;
         flex: 1;
     }
     .field{
@@ -92,4 +94,19 @@
         display: flex;
         flex: 2;
     }
-    
+
+    /* LIST AND CONTENT */
+    ul{
+        list-style: none;
+        min-height: 0;
+        overflow-y: auto;
+    }
+    li{
+        font-size: 1rem;
+    }
+    li > p{
+        color: pink;
+    }
+    li:hover{
+        cursor: pointer;
+    }

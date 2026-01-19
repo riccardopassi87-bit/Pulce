@@ -1,6 +1,10 @@
 <template>
     <div class="fsf" id="search-container">
-        <input placeholder="search by name"/>
+
+        <div id="input-filter">
+            <slot name="input"></slot>
+        </div>
+
 
         <p>- Filter by -</p>
         
@@ -9,7 +13,7 @@
         </div>
         
         <div id="result-display">
-        
+            <slot name="results"></slot>
         </div>
     </div>
 </template>
@@ -23,6 +27,8 @@
         padding: 1%;
         font-size: 1.2rem;
         background-color: #333;
+        flex: 1;
+        min-height: 0;
     }
     p{
         flex: 0.5;
@@ -38,15 +44,17 @@
         justify-content: space-evenly;
         align-items: center;
     }
-    #search-container input{
+    #input-filter{
         width: 98%;
         flex: 1;
-        background-color: #222;
     }
     #result-display{
         width: 100%;
         flex: 5;
+        min-height: 0;
         border-radius: 5px;
         background-color: #111;
+        padding: 1%;
+        overflow-y: auto;
     }
 </style>
