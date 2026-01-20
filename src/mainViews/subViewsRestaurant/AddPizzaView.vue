@@ -53,7 +53,7 @@
     )
 
     const TYPE = ['Normal', 'Vegetarian', 'Vegan']
-    const ingredientTYPE = ['Veggies', 'Cheese', 'Meat', 'Base', 'Others']
+    const ingredientTYPE = ['Veggie', 'Cheese', 'Meat', 'Base', 'Others']
 
     const buildPizzaPayload = () => {
         return {
