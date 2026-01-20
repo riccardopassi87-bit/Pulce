@@ -45,6 +45,7 @@ public class Item {
         this.amount = amount;
     }
 
+    // GETTERS
     public int getId() {
         return id;
     }
@@ -71,5 +72,32 @@ public class Item {
 
     public int getAmount() {
         return amount;
+    }
+
+    // SETTERS
+
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setOriginalPrice(BigDecimal originalPrice) {
+        this.originalPrice = originalPrice;
+    }
+
+    public void setSellingPrice(BigDecimal sellingPrice) {
+        this.sellingPrice = sellingPrice;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setExpirationDate(LocalDate expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 }

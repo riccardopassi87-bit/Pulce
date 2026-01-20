@@ -5,9 +5,24 @@ import com.pulce.pulcebackend.entity.Item;
 import com.pulce.pulcebackend.repository.ItemRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 
 public class ItemService {
+
+    public List<Item> search(String name, String type){
+        if( name != null && type != null){
+            return itemRepository.findByNameContainingIgnoreCaseAndType(name, type);
+        }
+        if (name != null){
+            return itemRepository.findByNameContainingIgnoreCase(name);
+        }
+        if (type != null){
+            return itemRepository.findByType(type);
+        }
+        return itemRepository.findAll();
+    }
 
     private final ItemRepository itemRepository;
 
@@ -24,6 +39,20 @@ public class ItemService {
                 dto.getExpirationDate(),
                 dto.getAmount()
         );
+        return itemRepository.save(item);
+    }
+
+    public Item update(int id, ItemDTO dto) {
+        Item item = itemRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Item not found"));
+
+        item.setName(dto.getName());
+        item.setOriginalPrice(dto.getOriginalPrice());
+        item.setSellingPrice(dto.getSellingPrice());
+        item.setType(dto.getType());
+        item.setExpirationDate(dto.getExpirationDate());
+        item.setAmount(dto.getAmount());
+
         return itemRepository.save(item);
     }
 }

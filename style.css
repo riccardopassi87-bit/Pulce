@@ -144,6 +144,7 @@
     }
     .selected{
         background-color: #222;
+        border-radius: 5px;
     }
     label{
         flex: 1;

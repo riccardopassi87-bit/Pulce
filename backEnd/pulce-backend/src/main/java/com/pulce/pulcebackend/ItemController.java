@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/item")
 @CrossOrigin(origins = "http://localhost:5173")
@@ -22,5 +24,19 @@ public class ItemController {
     public ResponseEntity<Item> createItem (@Valid @RequestBody ItemDTO dto){
         Item created = itemService.create(dto);
         return  ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Item>> searchItem (
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String type
+    ){
+        return ResponseEntity.ok(itemService.search(name,type));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Item> updateItem(@PathVariable int id, @Valid @RequestBody ItemDTO dto){
+        Item updated = itemService.update(id, dto);
+        return ResponseEntity.ok(updated);
     }
 }

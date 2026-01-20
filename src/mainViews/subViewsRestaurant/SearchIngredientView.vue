@@ -61,7 +61,6 @@
                        'No Allergene']
 
     const modifyIngredient = async () => {
-        console.log('modify clicked')
         if (!selectedIngredient.value) return
 
         try {
