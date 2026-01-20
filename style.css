@@ -94,6 +94,10 @@
         display: flex;
         flex: 2;
     }
+    .own-input{
+        width: 98%;
+        background-color: #222;
+    }
 
     /* LIST AND CONTENT */
     ul{

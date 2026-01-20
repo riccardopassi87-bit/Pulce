@@ -3,7 +3,9 @@
     import SearchTemplate from '@/commonViews/SearchTemplate.vue';
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
 
-    const TYPE = ['Veggie', 'Cheese', 'Meat', 'Others']
+    import { ref, watch } from 'vue'
+
+    const TYPE = ['Veggie', 'Cheese', 'Meat', 'Base', 'Others']
 </script>
 
 <template>
@@ -12,6 +14,9 @@
             <SearchTemplate>
                 <template #left-search>
                     <SearchPrompt>
+                        <template #input>
+                            <input class="own-input" v-model="search" placeholder="search by name"/>
+                        </template>
                         <template #filter>
                             <select>
                                 <option disabled.value=""></option>

@@ -12,6 +12,9 @@
             <SearchTemplate>
                 <template #left-search>
                     <SearchPrompt>
+                        <template #input>
+                            <input class="own-input" v-model="search" placeholder="search by name"/>
+                        </template>
                         <template #filter>
                             <select>
                                 <option disabled.value=""></option>

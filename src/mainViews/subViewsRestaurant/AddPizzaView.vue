@@ -221,10 +221,6 @@
         margin-bottom: 1%;
         background-color: #222;
     }
-    .own-input{
-        width: 98%;
-        background-color: #222;
-    }
     #add-ingredients{
         height: 94%;
         flex: 1;
