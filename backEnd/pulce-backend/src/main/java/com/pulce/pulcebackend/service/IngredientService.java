@@ -41,4 +41,17 @@ public class IngredientService {
 
         return ingredientRepository.save(ingredient);
     }
+
+    public Ingredient update(int id, IngredientDTO dto) {
+        Ingredient ingredient = ingredientRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ingredient not found"));
+
+        ingredient.setName(dto.getName());
+        ingredient.setType(dto.getType());
+        ingredient.setPortionPrice(dto.getPortionPrice());
+        ingredient.setKgPrice(dto.getKgPrice());
+        ingredient.setAllergene(dto.getAllergene());
+        
+        return ingredientRepository.save(ingredient);
+    }
 }

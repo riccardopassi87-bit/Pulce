@@ -34,4 +34,10 @@ public class IngredientController {
     ) {
         return ResponseEntity.ok(ingredientService.search(name,type));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Ingredient> updateIngredient(@PathVariable int id, @Valid @RequestBody IngredientDTO dto) {
+        Ingredient updated = ingredientService.update(id, dto);
+        return ResponseEntity.ok(updated);
+    }
 }

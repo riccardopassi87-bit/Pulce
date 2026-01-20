@@ -5,17 +5,35 @@
 
     import { ref, watch } from 'vue'
 
+    const form = ref({
+        name: '',
+        type: '',
+        portionPrice: null,
+        kgPrice: null,
+        allergene: ''
+    })
+
     const search = ref('')
     const selectedType = ref('')
     const ingredients = ref([])
     const selectedIngredient = ref(null)
+
     const selectIngredient = (ingredient) => {
         selectedIngredient.value = ingredient
+
+        form.value = {
+        name: ingredient.name,
+        type: ingredient.type,
+        portionPrice: ingredient.portionPrice.toFixed(2),
+        kgPrice: ingredient.kgPrice.toFixed(2),
+        allergene: ingredient.allergene
+        }
     }
 
     const fetchIngredients = async () => {
         if (!search.value && !selectedType.value) {
             ingredients.value = []
+            selectedIngredient.value = null
             return
         }
 
@@ -27,11 +45,46 @@
             `http://localhost:8080/api/ingredient/search?${params.toString()}`
         )
         ingredients.value = await res.json()
+
+        if(selectedIngredient.value && !ingredients.value.some(i => i.id === selectedIngredient.value.id)
+    ) {
+        selectedIngredient.value = null
+        }
     }
     
     watch([search, selectedType], fetchIngredients, {immediate: true})
 
     const TYPE = ['Veggie', 'Cheese', 'Meat', 'Base', 'Others']
+    const ALLERGENE = ['A - Glutenhaltig', 'B - Krebstiere', 'C - Eier', 'D - Fish', 'E - Erdnüsse',
+                       'F - Sojabohnen', 'G - Milch/Laktose', 'H - Schalenfrüchte', 'L - Sellerie',
+                       'M - Senf', 'N - Sesamsamen', 'O - Schwefeldioxid/Sulfite', 'P - Lupinen', 'R - Weichtiere',
+                       'No Allergene']
+
+    const modifyIngredient = async () => {
+        console.log('modify clicked')
+        if (!selectedIngredient.value) return
+
+        try {
+            const res = await fetch(
+                `http://localhost:8080/api/ingredient/${selectedIngredient.value.id}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(form.value)
+                }
+            )
+            if (!res.ok) throw new Error()
+
+            await fetchIngredients()
+            ingredients.value = []
+            selectedIngredient.value = null
+            alert('Ingredient updated ✅')
+        } catch (e) {
+            alert('Update failed ❌')
+        }
+    }
 </script>
 
 <template>
@@ -66,25 +119,52 @@
 
                 <template #result>
                     <div class="fsf search-result" v-if="selectedIngredient">
-                        <h3>{{ selectedIngredient.name }}</h3>
+                        <div class="fsf title">
+                            <h3>{{ selectedIngredient.name }}</h3>
+                        </div>
+                         <label>
+                            <strong>Name</strong>
+                            <input v-model="form.name" />
+                         </label>
+                         <label>
+                            <strong>Type</strong>
+                            <select v-model="form.type">
+                                <option v-for="t in TYPE" :key="t" :value="t">
+                                    {{ t }}
+                                </option>
+                            </select>
+                         </label>
+                         <label>
+                            <strong>Portion Price</strong>
+                            <input type="number" step="0.01" v-model.number="form.portionPrice" />
+                        </label>
 
-                        <p><strong>Type:</strong> {{ selectedIngredient.type }}</p>
-                        <p><strong>Portion Price:</strong> {{ selectedIngredient.portionPrice.toFixed(2) }} €</p>
-                        <p><strong>Kg Price:</strong> {{ selectedIngredient.kgPrice.toFixed(2) }} €</p>
-                        <p><strong>Allergene:</strong> {{ selectedIngredient.allergene }}</p>
+                        <label>
+                            <strong>Kg Price</strong>
+                            <input type="number" step="0.01" v-model.number="form.kgPrice" />
+                        </label>
+
+                        <label>
+                            <strong>Allergene</strong>
+                            <select v-model="form.allergene">
+                                <option v-for="a in ALLERGENE" :key="a" :value="a">
+                                    {{ a }}
+                                </option>
+                            </select>
+                        </label>
                     </div>
 
-                    <div v-else class="fsf">
-                        <p>Select an ingredient</p>
+                    <div v-else class="fsf search-result">
                     </div>
                 </template>
             </SearchTemplate>
         </div>
         <div class="footer-buttons">
             <ButtonsFooter 
-            :show-save="true"
-            :show-modify="true"
-            :show-remove="true"/>
+            :show-save="false"
+            :show-modify="!!selectedIngredient"
+            :show-remove="!!selectedIngredient"
+            @modify="modifyIngredient"/>
         </div>
     </div>
 </template>

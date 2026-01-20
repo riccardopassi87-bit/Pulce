@@ -40,6 +40,7 @@ public class Ingredient {
         return id;
     }
 
+    //GETTERS
     public String getName() {
         return name;
     }
@@ -58,5 +59,27 @@ public class Ingredient {
 
     public String getAllergene() {
         return allergene;
+    }
+
+    //SETTERS
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPortionPrice(BigDecimal portionPrice) {
+        this.portionPrice = portionPrice;
+    }
+
+    public void setKgPrice(BigDecimal kgPrice) {
+        this.kgPrice = kgPrice;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setAllergene(String allergene) {
+        this.allergene = allergene;
     }
 }

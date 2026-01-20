@@ -1,4 +1,7 @@
 <script setup>
+
+const emit = defineEmits(['save', 'modify', 'remove'])
+
         defineProps({
                 showSave: Boolean,
                 showModify: Boolean,
@@ -10,7 +13,7 @@
         <div class="fsf" id="footer">
                 <button type="submit" v-if="showSave" id="save">Save</button>
                 <button v-if="showRemove" id="remove">Remove</button>
-                <button v-if="showModify" id="modify">Modify</button>
+                <button v-if="showModify" @click="emit('modify')">Modify</button>
         </div>
 </template>
 

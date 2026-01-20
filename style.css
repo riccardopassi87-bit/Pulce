@@ -103,8 +103,15 @@
         flex-direction: column;
         background-color: #111;
         padding: 2%;
-        padding-left: 5%;
         border-radius: 5px;
+    }
+    .title{
+        flex: 1;
+        width: 100%;
+        background-color: #333;
+        border-radius: 5px;
+        align-items: center;
+        padding-left: 1%;
     }
     h3{
         font-size: 3rem;
@@ -127,14 +134,24 @@
     }
     li{
         font-size: 1rem;
-        color: pink;
+        color: rebeccapurple;
     }
     li > p{
-        color: pink;
+        color: rebeccapurple;
     }
     li:hover{
         cursor: pointer;
     }
     .selected{
         background-color: #222;
+    }
+    label{
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        margin-top: 4%;
+    }
+    strong{
+        font-size: 1.3rem;
+        margin-bottom: 2%;
     }
