@@ -3,12 +3,19 @@
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
     import { useFormValidation, validators } from '@/router/composable/useFormValidation';
     import { ref, computed, watch} from 'vue';
+    import { createIngredient } from '@/api/ingredientApi';
 
+    const API_BASE = 'http://localhost:8080/api/pizza'
     const search = ref('')
     const selectedType = ref('')
     const ingredients = ref([])
     const selectedIngredients = ref([])
     const pizzaBase = 8;
+
+    watch(selectedIngredients, (list) => {
+        form.ingredientIds = list.map(i => i.id)
+        validateField('ingredientIds')
+        }, { deep: true})
 
     const fetchIngredients = async () => {
         if (!search.value && !selectedType.value) {
@@ -48,11 +55,22 @@
     const TYPE = ['Normal', 'Vegetarian', 'Vegan']
     const ingredientTYPE = ['Veggies', 'Cheese', 'Meat', 'Base', 'Others']
 
+    const buildPizzaPayload = () => {
+        return {
+            name: form.name,
+            sellingPrice: form.sellingPrice,
+            productionPrice: form. productionPrice,
+            type: form.type,
+            ingredientIds: selectedIngredients.value.map(i => i.id)
+        }
+    }
+
     const { form, errors, submitted, validateField, submit } = useFormValidation({
         name: '',
         sellingPrice: null,
         productionPrice: null,
-        type: ''
+        type: '',
+        ingredientIds: []
     },
     {
         name: [{ validator: validators.required, message: 'Name is required'}],
@@ -66,10 +84,25 @@
             ],
         type: [
             { validator: validators.required, message: 'Type is required'},
-            { validator: validators.oneOf(TYPE), message: 'Type is not valid'}]
+            { validator: validators.oneOf(TYPE), message: 'Type is not valid'}],
+        ingredientIds: [
+            { validator: validators.minLength(1), message: 'Select at least 1 ingredient'}
+        ]
     },
-    async (data) => {
-        alert('ooonoooooooefoqef')
+    async () => {
+        const payload = buildPizzaPayload()
+
+        try {
+        await createIngredient(API_BASE, payload)
+
+        selectedIngredients.value = []
+        search.value = ''
+        selectedType.value = ''
+        
+        alert('Pizza saved successfully ✅')
+        } catch (e) {
+            alert('Failed to save pizza ❌')
+        }
     }
     )
 </script>
@@ -148,8 +181,9 @@
                     <p>Pizza base price: {{ pizzaBase.toFixed(2) }} €</p>
                     <p>Total suggested price: <span id="total-suggested-price">{{ (totalPrice + pizzaBase).toFixed(2) }} €</span></p>
                 </div>
-                <div id="ingredient-list">
+                <div id="ingredient-list" :class="{ invalid: submitted && errors.ingredientIds}">
                     <ul id>
+                        <p v-if="submitted && errors.ingredientIds" class="error"></p>
                         <li v-for="i in selectedIngredients" :key="i.id">
                             <p @click="removeIngredient(i.id)">{{ i.name }}</p>
                         </li>
@@ -230,6 +264,8 @@
         max-height: 100%;
         overflow-y: auto;
         padding: 1%;
-        background-color: black;
+        background-color: #111;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
     }
 </style>

@@ -21,7 +21,11 @@ export const validators = {
     },
 
     priceIsValid: (otherField) => (val, form) =>
-    val != null && form[otherField] != null && val >= form[otherField]
+    val != null && form[otherField] != null && val >= form[otherField],
+
+    minLength: (min) => (val) =>
+    Array.isArray(val) && val.length >= min
+
 }
 
 export function useFormValidation(initialState, rules, onSubmit) {
