@@ -44,6 +44,7 @@ public class Pizza {
         this.type = type;
     }
 
+    // GETTERS
     public void addIngredient(Ingredient ingredient) {
         this.ingredients.add(ingredient);
     }
@@ -70,5 +71,27 @@ public class Pizza {
 
     public List<Ingredient> getIngredients() {
         return ingredients;
+    }
+
+    //SETTERS
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSellingPrice(BigDecimal sellingPrice) {
+        this.sellingPrice = sellingPrice;
+    }
+
+    public void setProductionPrice(BigDecimal productionPrice) {
+        this.productionPrice = productionPrice;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setIngredients(List<Ingredient> ingredients) {
+        this.ingredients = ingredients;
     }
 }

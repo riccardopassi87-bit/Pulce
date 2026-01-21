@@ -1,6 +1,8 @@
 package com.pulce.pulcebackend.service;
 
+import com.pulce.pulcebackend.IngredientSearchDTO;
 import com.pulce.pulcebackend.PizzaDTO;
+import com.pulce.pulcebackend.PizzaSearchDTO;
 import com.pulce.pulcebackend.entity.Ingredient;
 import com.pulce.pulcebackend.entity.Pizza;
 import com.pulce.pulcebackend.repository.IngredientRepository;
@@ -12,6 +14,37 @@ import java.util.List;
 
 @Service
 public class PizzaService {
+
+    public List<PizzaSearchDTO> search(String name, String type) {
+
+        List<Pizza> pizzas;
+
+        if (name != null && type != null) {
+            pizzas = pizzaRepository.findByNameContainingIgnoreCaseAndType(name, type);
+        } else if (name != null) {
+            pizzas = pizzaRepository.findByNameContainingIgnoreCase(name);
+        } else if (type != null) {
+            pizzas = pizzaRepository.findByType(type);
+        } else {
+            pizzas = pizzaRepository.findAll();
+        }
+
+        return pizzas.stream()
+                .map(p -> new PizzaSearchDTO(
+                        p.getId(),
+                        p.getName(),
+                        p.getSellingPrice(),
+                        p.getProductionPrice(),
+                        p.getType(),
+                        p.getIngredients()
+                                .stream()
+                                .map(i -> new IngredientSearchDTO(
+                                        i.getId(), i.getName()
+                                ))
+                                .toList()
+                ))
+                .toList();
+    }
 
     private final PizzaRepository pizzaRepository;
     private final IngredientRepository ingredientRepository;
@@ -34,6 +67,18 @@ public class PizzaService {
         List<Ingredient> ingredients = ingredientRepository.findAllById(dto.getIngredientIds());
 
         ingredients.forEach(pizza::addIngredient);
+
+        return pizzaRepository.save(pizza);
+    }
+
+    public Pizza update(int id, PizzaDTO dto) {
+        Pizza pizza = pizzaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pizza not found"));
+
+        pizza.setName(dto.getName());
+        pizza.setSellingPrice(dto.getSellingPrice());
+        pizza.setProductionPrice(dto.getProductionPrice());
+        pizza.setType(dto.getType());
 
         return pizzaRepository.save(pizza);
     }
