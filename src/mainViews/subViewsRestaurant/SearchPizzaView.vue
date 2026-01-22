@@ -141,48 +141,51 @@
           <template #result>
             
             <div class="fsf search-result" v-if="selectedPizza">
-              <div class="fsf title">
-                <h3>{{ selectedPizza.name }}</h3>
-              </div>
-              <label>
-                <strong>Name</strong>
-                <input v-model="form.name">
-              </label>
-              <label>
-                <strong>Selling Price</strong>
-                <input v-model="form.sellingPrice">
-              </label>
-              <!--<label>
-                <strong>Production Price</strong>
-                <input v-model="form.productionPrice">
-              </label>-->
-              <label>
-                <strong>Type</strong>
-                <select v-model="form.type">
-                  <option v-for="t in TYPE" :key="t" :value="t">
-                    {{ t }}
-                  </option>
-                </select>
-              </label>
-              <div id="modify-ingredients">
-
-                <div id="actual-content">
-                  <strong>Ingredients</strong>
-                  <ul>
-                    <li v-for="i in selectedIngredients" :key="i.id" @click="removeIngredient(i.id)">
-                      {{ i.name }}
-                    </li>
-                  </ul>
+              <div class="title">
+                  <h3>{{ selectedPizza.name }}</h3>
                 </div>
-                <div id="new-content">
-                  <strong>Add Ingredient</strong>
-                  <select @change="addIngredient(availableIngredients[$event.target.selectedIndex])">
-                    <option v-for="i in availableIngredients" :key="i.id">
-                      {{ i.name }}
-                    </option>
-                  </select>
+              <div id="mid-layer">
+                <div id="left-mod-panel">
+                  <label>
+                    <strong>Name</strong>
+                    <input v-model="form.name">
+                  </label>
+                  <label>
+                    <strong>Selling Price</strong>
+                    <input v-model="form.sellingPrice">
+                  </label>
+                  <label>
+                    <strong>Production Price</strong>
+                    <input v-model="form.productionPrice">
+                  </label>
+                  <label>
+                    <strong>Type</strong>
+                    <select v-model="form.type">
+                      <option v-for="t in TYPE" :key="t" :value="t">
+                        {{ t }}
+                      </option>
+                    </select>
+                  </label>
                 </div>
 
+                <div id="modify-ingredients">
+                  <div id="actual-content">
+                    <strong>Ingredients</strong>
+                    <ul>
+                      <li v-for="i in selectedIngredients" :key="i.id" @click="removeIngredient(i.id)">
+                        {{ i.name }}
+                      </li>
+                    </ul>
+                  </div>
+                  <div id="new-content">
+                    <strong>Add Ingredient</strong>
+                    <select @change="addIngredient(availableIngredients[$event.target.selectedIndex])">
+                      <option v-for="i in availableIngredients" :key="i.id">
+                        {{ i.name }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
               </div>
             </div>
             <div v-else class="fsf search-result"></div>
@@ -208,32 +211,58 @@
     width: 70%;
     background-color: #222;
   }
+  #mid-layer{
+    display: flex;
+    flex-direction: row;
+    flex: 9.2;
+  }
   li{
     font-size: 1.3rem;
   }
-  #modify-ingredients{
-    flex: 2;
-    margin-top: 3%;
-    border-radius: 5px;
-    background-color: #333;
+  #left-mod-panel{
+    flex: 1;
     display: flex;
+    flex-direction: column;
+  }
+  #left-mod-panel select{
+    width: 97%;
+  }
+  #modify-ingredients{
+    flex: 1;
+    border-left: 1px solid #777;
+    display: flex;
+    flex-direction: column;
   }
   #actual-content{
-    flex: 1;
+    flex: 3;
+    padding: 3%;
+    padding-right: 0;
+  }
+  #actual-content > ul{
+    margin-top: 3%;
+    background-color: #333;
+    border-radius: 5px;
   }
   #actual-content > ul > li{
     font-size: 1rem;
     color: rgb(187, 150, 80);
   }
-  #actual-content > strong{
-    margin-left: 2%;
-    border-bottom: 1px solid #777;
-  }
   #new-content{
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
     flex: 1;
-    background-color: lightgreen;
+    padding: 3%;
+    padding-right: 0;
+  }
+  #new-content select{
+    flex: 0.7;
+    width: 100%;
   }
   #search-result input{
-    width: 68%;
+    width: 95%;
+  }
+  label{
+    margin-bottom: 4%;
   }
 </style>

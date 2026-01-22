@@ -115,7 +115,7 @@
                 
                 <template #result>
                     <div class="fsf search-result" v-if="selectedProduct">
-                        <div class="fsf title">
+                        <div class="title">
                             <h3>{{ selectedProduct.name }}</h3>
                         </div>
                         <label>
