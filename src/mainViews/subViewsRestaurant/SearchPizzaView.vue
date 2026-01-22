@@ -3,12 +3,12 @@
   import SearchPrompt from '@/commonViews/SearchPrompt.vue';
   import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
 
-  import { ref, watch } from 'vue'
+  import { ref, watch, computed } from 'vue'
 
   const form = ref({
     name: '',
     sellingPrice: null,
-    originalPrice: null,
+    productionPrice: null,
     type: '',
     ingredientIds: []
   })
@@ -17,17 +17,43 @@
   const selectedType = ref('')
   const pizzas = ref([])
   const selectedPizza = ref(null)
+  const allIngredients = ref([])
+
+  const fetchAllIngredients = async () => {
+    const res = await fetch('http://localhost:8080/api/ingredient')
+    allIngredients.value = await res.json()
+  }
+  fetchAllIngredients()
+
+  const selectedIngredients = ref([])
 
   const selectPizza = (pizza) => {
     selectedPizza.value = pizza
 
+    selectedIngredients.value = [...pizza.ingredients]
+
     form.value = {
       name: pizza.name,
-      sellingPrice: pizza.sellingPrice,
-      originalPrice: pizza.originalPrice,
+      sellingPrice: pizza.sellingPrice.toFixed(2),
+      productionPrice: pizza.productionPrice.toFixed(2),
       type: pizza.type,
-      ingredientIds: []
+      ingredientIds: pizza.ingredients.map(i => i.id)
     }
+  }
+
+  const removeIngredient = (ingredientId) => {
+    selectedIngredients.value = selectedIngredients.value.filter(i => i.id !== ingredientId)
+
+    form.value.ingredientIds = form.value.ingredientIds.filter(id => id !== ingredientId)
+  }
+
+  const availableIngredients = computed(() => allIngredients.value.filter(
+    i => !form.value.ingredientIds.includes(i.id)
+  ))
+
+  const addIngredient = (ingredient) => {
+    selectedIngredients.value.push(ingredient)
+    form.value.ingredientIds.push(ingredient.id)
   }
 
   const fetchPizzas = async () => {
@@ -113,12 +139,51 @@
           </template>
 
           <template #result>
+            
             <div class="fsf search-result" v-if="selectedPizza">
-              <ul>
-                <li v-for="i in selectedPizza.ingredients" :key="i">
-                  {{ i.name }}
-                </li>
-              </ul>
+              <div class="fsf title">
+                <h3>{{ selectedPizza.name }}</h3>
+              </div>
+              <label>
+                <strong>Name</strong>
+                <input v-model="form.name">
+              </label>
+              <label>
+                <strong>Selling Price</strong>
+                <input v-model="form.sellingPrice">
+              </label>
+              <!--<label>
+                <strong>Production Price</strong>
+                <input v-model="form.productionPrice">
+              </label>-->
+              <label>
+                <strong>Type</strong>
+                <select v-model="form.type">
+                  <option v-for="t in TYPE" :key="t" :value="t">
+                    {{ t }}
+                  </option>
+                </select>
+              </label>
+              <div id="modify-ingredients">
+
+                <div id="actual-content">
+                  <strong>Ingredients</strong>
+                  <ul>
+                    <li v-for="i in selectedIngredients" :key="i.id" @click="removeIngredient(i.id)">
+                      {{ i.name }}
+                    </li>
+                  </ul>
+                </div>
+                <div id="new-content">
+                  <strong>Add Ingredient</strong>
+                  <select @change="addIngredient(availableIngredients[$event.target.selectedIndex])">
+                    <option v-for="i in availableIngredients" :key="i.id">
+                      {{ i.name }}
+                    </option>
+                  </select>
+                </div>
+
+              </div>
             </div>
             <div v-else class="fsf search-result"></div>
           </template>
@@ -145,5 +210,30 @@
   }
   li{
     font-size: 1.3rem;
+  }
+  #modify-ingredients{
+    flex: 2;
+    margin-top: 3%;
+    border-radius: 5px;
+    background-color: #333;
+    display: flex;
+  }
+  #actual-content{
+    flex: 1;
+  }
+  #actual-content > ul > li{
+    font-size: 1rem;
+    color: rgb(187, 150, 80);
+  }
+  #actual-content > strong{
+    margin-left: 2%;
+    border-bottom: 1px solid #777;
+  }
+  #new-content{
+    flex: 1;
+    background-color: lightgreen;
+  }
+  #search-result input{
+    width: 68%;
   }
 </style>

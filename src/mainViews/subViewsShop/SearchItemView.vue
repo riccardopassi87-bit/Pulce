@@ -175,4 +175,7 @@
     li{
         font-size: 1.3rem;
     }
+    #search-result input{
+        width: 68%;
+    }
 </style>

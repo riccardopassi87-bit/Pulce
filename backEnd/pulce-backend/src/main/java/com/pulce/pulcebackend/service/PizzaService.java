@@ -75,6 +75,10 @@ public class PizzaService {
         Pizza pizza = pizzaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pizza not found"));
 
+        pizza.getIngredients().clear();
+        List<Ingredient> ingredients = ingredientRepository.findAllById(dto.getIngredientIds());
+        ingredients.forEach(pizza::addIngredient);
+
         pizza.setName(dto.getName());
         pizza.setSellingPrice(dto.getSellingPrice());
         pizza.setProductionPrice(dto.getProductionPrice());
