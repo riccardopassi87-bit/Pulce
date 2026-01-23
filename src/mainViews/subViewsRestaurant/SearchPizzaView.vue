@@ -18,6 +18,7 @@
   const pizzas = ref([])
   const selectedPizza = ref(null)
   const allIngredients = ref([])
+  const selectedIngredients = ref([])
 
   const fetchAllIngredients = async () => {
     const res = await fetch('http://localhost:8080/api/ingredient')
@@ -25,11 +26,8 @@
   }
   fetchAllIngredients()
 
-  const selectedIngredients = ref([])
-
   const selectPizza = (pizza) => {
     selectedPizza.value = pizza
-
     selectedIngredients.value = [...pizza.ingredients]
 
     form.value = {
@@ -82,6 +80,7 @@
   const TYPE = ['Normal', 'Vegetarian', 'Vegan']
 
   const modifyPizza = async () => {
+      console.log('MODIFY CLICKED', form.value)
     if (!selectedPizza.value) return
 
     try{
@@ -152,11 +151,11 @@
                   </label>
                   <label>
                     <strong>Selling Price</strong>
-                    <input v-model="form.sellingPrice">
+                    <input type="number" v-model="form.sellingPrice">
                   </label>
                   <label>
                     <strong>Production Price</strong>
-                    <input v-model="form.productionPrice">
+                    <input type="number" v-model="form.productionPrice">
                   </label>
                   <label>
                     <strong>Type</strong>

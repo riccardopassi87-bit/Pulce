@@ -10,10 +10,53 @@ import com.pulce.pulcebackend.repository.PizzaRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class PizzaService {
+
+    private final PizzaRepository pizzaRepository;
+    private final IngredientRepository ingredientRepository;
+
+    public PizzaService(PizzaRepository pizzaRepository, IngredientRepository ingredientRepository) {
+        this.pizzaRepository = pizzaRepository;
+        this.ingredientRepository = ingredientRepository;
+    }
+
+    @Transactional
+    public PizzaSearchDTO createPizza(PizzaDTO dto) {
+        Pizza pizza = new Pizza(
+                dto.getName(),
+                dto.getSellingPrice(),
+                dto.getProductionPrice(),
+                dto.getType()
+        );
+
+        List<Ingredient> ingredients = ingredientRepository.findAllById(dto.getIngredientIds());
+        ingredients.forEach(pizza::addIngredient);
+
+        Pizza savedPizza = pizzaRepository.save(pizza);
+        return mapToDTO(savedPizza);
+    };
+
+    @Transactional
+    public PizzaSearchDTO update(int id, PizzaDTO dto) {
+        Pizza pizza = pizzaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pizza with id: " + id + " not found"));
+
+        pizza.setName(dto.getName());
+        pizza.setSellingPrice(dto.getSellingPrice());
+        pizza.setProductionPrice(dto.getProductionPrice());
+        pizza.setType(dto.getType());
+
+        pizza.getIngredients().clear();
+        List<Ingredient> ingredients = ingredientRepository.findAllById(dto.getIngredientIds());
+        ingredients.forEach(pizza::addIngredient);
+
+        Pizza savedPizza = pizzaRepository.save(pizza);
+        return mapToDTO(savedPizza);
+    }
 
     public List<PizzaSearchDTO> search(String name, String type) {
 
@@ -30,60 +73,23 @@ public class PizzaService {
         }
 
         return pizzas.stream()
-                .map(p -> new PizzaSearchDTO(
-                        p.getId(),
-                        p.getName(),
-                        p.getSellingPrice(),
-                        p.getProductionPrice(),
-                        p.getType(),
-                        p.getIngredients()
-                                .stream()
-                                .map(i -> new IngredientSearchDTO(
-                                        i.getId(), i.getName()
-                                ))
-                                .toList()
-                ))
+                .map(this::mapToDTO)
                 .toList();
     }
 
-    private final PizzaRepository pizzaRepository;
-    private final IngredientRepository ingredientRepository;
+    private PizzaSearchDTO mapToDTO(Pizza pizza) {
+        List<IngredientSearchDTO> ingredientDTOs = pizza.getIngredients()
+                .stream()
+                .map(i -> new IngredientSearchDTO(i.getId(), i.getName()))
+                .toList();
 
-    public PizzaService(PizzaRepository pizzaRepository, IngredientRepository ingredientRepository) {
-        this.pizzaRepository = pizzaRepository;
-        this.ingredientRepository = ingredientRepository;
-    }
-
-    @Transactional
-    public Pizza createPizza(PizzaDTO dto) {
-
-        Pizza pizza = new Pizza(
-          dto.getName(),
-          dto.getSellingPrice(),
-          dto.getProductionPrice(),
-          dto.getType()
+        return new PizzaSearchDTO(
+                pizza.getId(),
+                pizza.getName(),
+                pizza.getSellingPrice(),
+                pizza.getProductionPrice(),
+                pizza.getType(),
+                ingredientDTOs
         );
-
-        List<Ingredient> ingredients = ingredientRepository.findAllById(dto.getIngredientIds());
-
-        ingredients.forEach(pizza::addIngredient);
-
-        return pizzaRepository.save(pizza);
-    }
-
-    public Pizza update(int id, PizzaDTO dto) {
-        Pizza pizza = pizzaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pizza not found"));
-
-        pizza.getIngredients().clear();
-        List<Ingredient> ingredients = ingredientRepository.findAllById(dto.getIngredientIds());
-        ingredients.forEach(pizza::addIngredient);
-
-        pizza.setName(dto.getName());
-        pizza.setSellingPrice(dto.getSellingPrice());
-        pizza.setProductionPrice(dto.getProductionPrice());
-        pizza.setType(dto.getType());
-
-        return pizzaRepository.save(pizza);
     }
 }

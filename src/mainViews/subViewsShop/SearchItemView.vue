@@ -178,4 +178,10 @@
     #search-result input{
         width: 68%;
     }
+    label{
+      margin-top: 2%;
+    }
+    strong{
+       margin: 0; 
+    }
 </style>

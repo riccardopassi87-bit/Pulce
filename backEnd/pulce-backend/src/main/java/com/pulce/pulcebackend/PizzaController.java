@@ -21,8 +21,8 @@ public class PizzaController {
     }
 
     @PostMapping
-    public ResponseEntity<Pizza> createPizza(@Valid @RequestBody PizzaDTO dto) {
-        Pizza createdPizza = pizzaService.createPizza(dto);
+    public ResponseEntity<PizzaSearchDTO> createPizza(@Valid @RequestBody PizzaDTO dto) {
+        PizzaSearchDTO createdPizza = pizzaService.createPizza(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPizza);
     }
 
@@ -35,8 +35,8 @@ public class PizzaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Pizza> updatePizza(@PathVariable int id, @Valid @RequestBody PizzaDTO dto) {
-        Pizza updated = pizzaService.update(id, dto);
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<PizzaSearchDTO> updatePizza(@PathVariable int id, @Valid @RequestBody PizzaDTO dto) {
+
+        return ResponseEntity.ok(pizzaService.update(id, dto));
     }
 }

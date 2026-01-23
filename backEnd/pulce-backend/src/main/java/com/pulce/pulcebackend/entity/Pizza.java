@@ -49,6 +49,7 @@ public class Pizza {
         this.ingredients.add(ingredient);
     }
 
+    // GETTERS
     public int getId() {
         return id;
     }
