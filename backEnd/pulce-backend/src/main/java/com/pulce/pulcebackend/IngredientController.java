@@ -1,7 +1,10 @@
 package com.pulce.pulcebackend;
 
 import com.pulce.pulcebackend.entity.Ingredient;
+import com.pulce.pulcebackend.entity.Pizza;
+import com.pulce.pulcebackend.repository.PizzaRepository;
 import com.pulce.pulcebackend.service.IngredientService;
+import com.pulce.pulcebackend.service.PizzaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +19,11 @@ import java.util.List;
 public class IngredientController {
 
     private final IngredientService ingredientService;
+    private final PizzaRepository pizzaRepository;
 
-    public IngredientController(IngredientService ingredientService) {
+    public IngredientController(IngredientService ingredientService, PizzaRepository pizzaRepository) {
         this.ingredientService = ingredientService;
+        this.pizzaRepository = pizzaRepository;
     }
 
     @PostMapping
@@ -50,5 +55,14 @@ public class IngredientController {
     public ResponseEntity<Void> deleteIngredient(@PathVariable int id) {
         ingredientService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/impact")
+    public ResponseEntity<List<String>> getUpdateImpact(@PathVariable int id) {
+        List<Pizza> linkedPizzas = pizzaRepository.findByIngredientsId(id);
+        List<String> pizzaNames = linkedPizzas.stream()
+                .map(Pizza::getName)
+                .toList();
+        return ResponseEntity.ok(pizzaNames);
     }
 }

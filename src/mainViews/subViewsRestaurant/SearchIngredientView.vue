@@ -63,9 +63,34 @@
     const modifyIngredient = async () => {
         if (!selectedIngredient.value) return
 
+        const isPriceChanged = form.value.portionPrice !== selectedIngredient.value.portionPrice
+
+        if(isPriceChanged) {
+            try {
+                const impactRes = await fetch(
+                    `http://localhost:8080/api/ingredient/${selectedIngredient.value.id}/impact`,
+                    )
+
+                    if(impactRes.ok){
+                        const pizzaNames = await impactRes.json()
+
+                        if (pizzaNames.length > 0) {
+                            const confirmMessage = `Changing the price will affect these pizzas:\n\n` + 
+                                        pizzaNames.join(", ") + 
+                                        `\n\nDo you want to continue?`
+
+                            if(!confirm(confirmMessage)) return
+                        }
+                    }
+            } catch (err) {
+                console.error("Could not check impact, err")
+            }
+        }
+        
         try {
             const res = await fetch(
                 `http://localhost:8080/api/ingredient/${selectedIngredient.value.id}`,
+            
                 {
                     method: 'PUT',
                     headers: {
@@ -96,17 +121,22 @@
         `http://localhost:8080/api/ingredient/${selectedIngredient.value.id}`,
         { method: 'DELETE'}
       )
-      if (!res.ok) throw new Error()
+      if (!res.ok) {
+        const errorData = await res.json()
+
+        alert(`Delete failed ❌\n\n${errorData.message || 'Unknown error occurred'}`);
+        return;
+      }
 
       await fetchIngredients()
-      ingredients.value = []
-      selectIngredient.value = null
+      selectedIngredient.value = null
 
-       alert('Ingredient deleted ✅')
-      } catch (e) {
-        alert('Delete failed ❌')
-      }
+      alert('Ingredient deleted ✅')
+  } catch (e) {
+    console.error(e);
+    alert('Could not connect to the server ❌')
   }
+}
 </script>
 
 <template>

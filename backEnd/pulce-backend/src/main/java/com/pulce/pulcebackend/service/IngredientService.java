@@ -2,7 +2,9 @@ package com.pulce.pulcebackend.service;
 
 import com.pulce.pulcebackend.entity.Ingredient;
 import com.pulce.pulcebackend.IngredientDTO;
+import com.pulce.pulcebackend.entity.Pizza;
 import com.pulce.pulcebackend.repository.IngredientRepository;
+import com.pulce.pulcebackend.repository.PizzaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,9 +27,11 @@ public class IngredientService {
     }
 
     private final IngredientRepository ingredientRepository;
+    private final PizzaRepository pizzaRepository;
 
-    public IngredientService(IngredientRepository ingredientRepository) {
+    public IngredientService(IngredientRepository ingredientRepository, PizzaRepository pizzaRepository) {
         this.ingredientRepository = ingredientRepository;
+        this.pizzaRepository = pizzaRepository;
     }
 
     public Ingredient create (IngredientDTO dto) {
@@ -58,6 +62,17 @@ public class IngredientService {
     public void delete(int id) {
         Ingredient ingredient = ingredientRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ingredient not found"));
+
+        List<Pizza> linkedPizzas = pizzaRepository.findByIngredientsId(id);
+
+        if(!linkedPizzas.isEmpty()){
+            List<String> pizzaNames = linkedPizzas.stream()
+                    .map(Pizza::getName)
+                    .toList();
+
+            throw new IllegalStateException("Cannot delete '" + ingredient.getName() +
+                    "'. It is used in the following pizzas: " + String.join(", ", pizzaNames));
+        }
         ingredientRepository.delete(ingredient);
     }
 

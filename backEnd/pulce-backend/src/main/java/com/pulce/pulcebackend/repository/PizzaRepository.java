@@ -19,5 +19,7 @@ public interface PizzaRepository extends JpaRepository<Pizza, Integer> {
 
     @EntityGraph(attributePaths = "ingredients")
     List<Pizza> findAll();
+
+    List<Pizza> findByIngredientsId(int ingredientId);
 }
 

@@ -2,8 +2,20 @@
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
     import { useFormValidation, validators } from '@/router/composable/useFormValidation';
     import { createIngredient } from '@/api/ingredientApi';
+    import { onMounted, ref } from 'vue';
 
     const API_BASE = 'http://localhost:8080/api/item'
+    const existingNames = ref([])
+
+    onMounted(async () => {
+        try {
+            const res = await fetch('http://localhost:8080/api/item')
+            const data = await res.json()
+            existingNames.value = data.map(item => item.name)
+        } catch (e) {
+            console.error("Could not load names for validation")
+        }
+    })
 
     const TYPE = ['Alpe', 'Alpenzu', 'Bisquits', 'Snacks', 'Drinks', 'Pesto', 'Pasta', 'Antipasti', 'Olives', 'Wine', 'Others' ]
     
@@ -15,7 +27,9 @@
         expirationDate: '',
         amount: null
     },{
-        name: [{ validator: validators.required, message: 'Name is required'}],
+        name: [{ validator: validators.required, message: 'Name is required'},
+               { validator: (val) => validators.unique(existingNames.value)(val),
+                message: 'Name already taken!'}],
         originalPrice: [
             { validator: validators.required, message: 'Required'},
             { validator: validators.number, message: 'Must be a number'}],

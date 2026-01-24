@@ -63,4 +63,8 @@ public class ItemService {
                 .orElseThrow(() -> new RuntimeException("Item not found"));
         itemRepository.delete(item);
     }
+
+    public List<Item> findAll(){
+        return itemRepository.findAll();
+    }
 }

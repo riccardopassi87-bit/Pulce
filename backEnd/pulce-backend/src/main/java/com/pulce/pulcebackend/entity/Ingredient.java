@@ -2,8 +2,6 @@ package com.pulce.pulcebackend.entity;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "ingredients")
@@ -28,13 +26,6 @@ public class Ingredient {
 
     @Column(nullable = false)
     private String allergene;
-
-    @ManyToMany(mappedBy = "ingredients")
-    private List<Pizza> pizzas =  new ArrayList<>();
-
-    public List<Pizza> getPizzas() {
-        return pizzas;
-    }
 
     protected Ingredient() {}
 

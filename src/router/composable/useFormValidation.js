@@ -24,7 +24,14 @@ export const validators = {
     val != null && form[otherField] != null && val >= form[otherField],
 
     minLength: (min) => (val) =>
-    Array.isArray(val) && val.length >= min
+    Array.isArray(val) && val.length >= min,
+
+    unique: (existingNames) => (val) => {
+        if (!val) return true;
+        console.log("Existing Names in Validator:", existingNames);
+    console.log("Current Input:", val);
+        return !existingNames.some(name => name.toLowerCase() === val.toLowerCase())
+    }
 
 }
 
@@ -82,7 +89,6 @@ export function useFormValidation(initialState, rules, onSubmit) {
         await onSubmit(form)
         resetForm()
     }
-
     return { form, errors, submitted,
         validateField, validateForm, resetErrors, resetForm, submit }
 }

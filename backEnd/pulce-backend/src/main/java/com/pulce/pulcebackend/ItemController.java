@@ -34,6 +34,11 @@ public class ItemController {
         return ResponseEntity.ok(itemService.search(name,type));
     }
 
+    @GetMapping
+    public List<Item> getAllItem(){
+        return itemService.findAll();
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Item> updateItem(@PathVariable int id, @Valid @RequestBody ItemDTO dto){
         Item updated = itemService.update(id, dto);
