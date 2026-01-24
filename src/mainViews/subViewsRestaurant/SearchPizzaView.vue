@@ -104,6 +104,29 @@
             alert('Update failed ❌')
         }
   }
+
+  const removePizza = async () => {
+    if(!selectedPizza.value) return
+
+    const confirmDelete = confirm(`Are you sure you want to remove Pizza "${selectedPizza.value.name}"?`)
+    if (!confirmDelete) return
+
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/pizza/${selectedPizza.value.id}`,
+        { method: 'DELETE'}
+      )
+      if (!res.ok) throw new Error()
+
+      await fetchPizzas()
+      pizzas.value = []
+      selectPizza.value = null
+
+       alert('Pizza deleted ✅')
+      } catch (e) {
+        alert('Delete failed ❌')
+      }
+  }
 </script>
 
 <template>
@@ -196,7 +219,8 @@
         :show-save="false"
         :show-modify="!!selectedPizza"
         :show-remove="!!selectedPizza"
-        @modify="modifyPizza"/>
+        @modify="modifyPizza"
+        @remove="removePizza"/>
       </div>
     </div>
 </template>

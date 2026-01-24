@@ -3,6 +3,7 @@ package com.pulce.pulcebackend.service;
 import com.pulce.pulcebackend.ItemDTO;
 import com.pulce.pulcebackend.entity.Item;
 import com.pulce.pulcebackend.repository.ItemRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -54,5 +55,12 @@ public class ItemService {
         item.setAmount(dto.getAmount());
 
         return itemRepository.save(item);
+    }
+
+    @Transactional
+    public void delete(int id) {
+        Item item = itemRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Item not found"));
+        itemRepository.delete(item);
     }
 }

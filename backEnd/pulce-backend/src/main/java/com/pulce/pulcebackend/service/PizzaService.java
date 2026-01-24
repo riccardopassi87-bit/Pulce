@@ -77,6 +77,15 @@ public class PizzaService {
                 .toList();
     }
 
+    @Transactional
+    public void delete(int id) {
+        Pizza pizza = pizzaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pizza with id: " + id + " not found"));
+
+        pizza.getIngredients().clear();
+        pizzaRepository.delete(pizza);
+    }
+
     private PizzaSearchDTO mapToDTO(Pizza pizza) {
         List<IngredientSearchDTO> ingredientDTOs = pizza.getIngredients()
                 .stream()

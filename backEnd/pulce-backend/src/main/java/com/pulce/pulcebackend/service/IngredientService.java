@@ -55,6 +55,12 @@ public class IngredientService {
         return ingredientRepository.save(ingredient);
     }
 
+    public void delete(int id) {
+        Ingredient ingredient = ingredientRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ingredient not found"));
+        ingredientRepository.delete(ingredient);
+    }
+
     public List<Ingredient> findAll(){
         return (List<Ingredient>) ingredientRepository.findAll();
     }

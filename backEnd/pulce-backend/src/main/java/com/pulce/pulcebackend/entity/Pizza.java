@@ -44,7 +44,6 @@ public class Pizza {
         this.type = type;
     }
 
-    // GETTERS
     public void addIngredient(Ingredient ingredient) {
         this.ingredients.add(ingredient);
     }

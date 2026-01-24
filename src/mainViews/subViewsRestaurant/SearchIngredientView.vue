@@ -84,6 +84,29 @@
             alert('Update failed ❌')
         }
     }
+
+    const removeIngredient = async () => {
+    if(!selectedIngredient.value) return
+
+    const confirmDelete = confirm(`Are you sure you want to remove "${selectedIngredient.value.name}"?`)
+    if (!confirmDelete) return
+
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/ingredient/${selectedIngredient.value.id}`,
+        { method: 'DELETE'}
+      )
+      if (!res.ok) throw new Error()
+
+      await fetchIngredients()
+      ingredients.value = []
+      selectIngredient.value = null
+
+       alert('Ingredient deleted ✅')
+      } catch (e) {
+        alert('Delete failed ❌')
+      }
+  }
 </script>
 
 <template>
@@ -163,7 +186,8 @@
             :show-save="false"
             :show-modify="!!selectedIngredient"
             :show-remove="!!selectedIngredient"
-            @modify="modifyIngredient"/>
+            @modify="modifyIngredient"
+            @remove="removeIngredient"/>
         </div>
     </div>
 </template>

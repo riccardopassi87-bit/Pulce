@@ -39,4 +39,10 @@ public class PizzaController {
 
         return ResponseEntity.ok(pizzaService.update(id, dto));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePizza(@PathVariable int id) {
+        pizzaService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }

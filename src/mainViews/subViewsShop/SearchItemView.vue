@@ -81,6 +81,29 @@
             alert('Update failed ❌')
         }
     }
+    
+    const removeProcduct = async () => {
+    if(!selectedProduct.value) return
+
+    const confirmDelete = confirm(`Are you sure you want to remove "${selectedProduct.value.name}"?`)
+    if (!confirmDelete) return
+
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/item/${selectedProduct.value.id}`,
+        { method: 'DELETE'}
+      )
+      if (!res.ok) throw new Error()
+
+      await fetchProducts()
+      products.value = []
+      selectProduct.value = null
+
+       alert('Product deleted ✅')
+      } catch (e) {
+        alert('Delete failed ❌')
+      }
+  }
 </script>
 
 <template>
@@ -158,7 +181,8 @@
             :show-save="false"
             :show-modify="!!selectedProduct"
             :show-remove="!!selectedProduct"
-            @modify="modifyProduct"/>
+            @modify="modifyProduct"
+            @remove="removeProcduct"/>
         </div>
     </div>
 </template>
