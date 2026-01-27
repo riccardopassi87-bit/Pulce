@@ -5,6 +5,7 @@ import com.pulce.pulcebackend.IngredientDTO;
 import com.pulce.pulcebackend.entity.Pizza;
 import com.pulce.pulcebackend.repository.IngredientRepository;
 import com.pulce.pulcebackend.repository.PizzaRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -1,9 +1,11 @@
 package com.pulce.pulcebackend.service;
 
 import com.pulce.pulcebackend.ItemDTO;
+import com.pulce.pulcebackend.entity.Ingredient;
 import com.pulce.pulcebackend.entity.Item;
 import com.pulce.pulcebackend.repository.ItemRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -66,5 +68,9 @@ public class ItemService {
 
     public List<Item> findAll(){
         return itemRepository.findAll();
+    }
+
+    public List<Item> findByExpirationInDays() {
+        return itemRepository.findByExpirationInDays();
     }
 }
