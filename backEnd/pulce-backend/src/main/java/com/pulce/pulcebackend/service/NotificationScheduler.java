@@ -39,8 +39,8 @@ public class NotificationScheduler {
             String expiration = item.getExpirationDate().toString();
 
             SimpleMailMessage message = new SimpleMailMessage();
-            message.setTo("riccardo.passi87@gmail.com");
-            message.setFrom("bonzos.og@gmail.com");
+            message.setTo();
+            message.setFrom();
             message.setSubject(product + ": is going to expire in " + days + " days");
             message.setText(product +"\nis going to expire in " + days + " days! \non: " + expiration);
 
