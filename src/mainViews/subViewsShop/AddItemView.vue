@@ -1,56 +1,34 @@
 <script setup>
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
-    import { useFormValidation, validators } from '@/router/composable/useFormValidation';
+    import { useFormValidation } from '@/router/composable/useFormValidation';
     import { apiService } from '@/api/apiService';
     import { onMounted, ref } from 'vue';
     import { PRODUCT_TYPE } from '@/constants/types';
+    import { productRules } from '@/constants/ruleSets';
 
     const API_BASE = 'http://localhost:8080/api/item'
     const existingNames = ref([])
 
     onMounted(async () => {
         try {
-            const res = await fetch('http://localhost:8080/api/item')
+            const res = await fetch(API_BASE)
             const data = await res.json()
             existingNames.value = data.map(item => item.name)
         } catch (e) {
             console.error("Could not load names for validation")
         }
     })
+
+    const schema = productRules(existingNames)
     
-    const { form, errors, submitted, validateField, submit } = useFormValidation({
-        name: '',
-        originalPrice: null,
-        sellingPrice: null,
-        type: '',
-        expirationDate: '',
-        amount: null
-    },{
-        name: [{ validator: validators.required, message: 'Name is required'},
-               { validator: (val) => validators.unique(existingNames.value)(val),
-                message: 'Name already taken!'}],
-        originalPrice: [
-            { validator: validators.required, message: 'Required'},
-            { validator: validators.number, message: 'Must be a number'}],
-        sellingPrice: [
-            { validator: validators.required, message: 'Required'},
-            { validator: validators.number, message: 'Must be a number'},
-            { validator: validators.priceIsValid('originalPrice'), message:'We are loosing money here...'}],
-        type: [
-            { validator: validators.required, message: 'Type required'},
-            { validator: validators.oneOf(TYPE), message: 'Invalid type'}],
-        expirationDate: [
-            { validator: validators.required, message: 'Expiration date required'},
-            { validator: validators.dateIsValid, message: 'What year are we in?'}],
-        amount: [
-            { validator: validators.required, message: 'Amount required'},
-            { validator: validators.number, message: 'Must be a number'}
-        ]
-    },
+    const { form, errors, submitted, validateField, submit } = useFormValidation(
+    schema.initialState,
+    schema.rules,
     async (data) => {
       try {
         await apiService(API_BASE, data)
         alert('Product saved successfully ✅')
+        existingNames.value.push(data.name);
         } catch (e) {
             alert('Failed to save product ❌')
         }

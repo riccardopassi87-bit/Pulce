@@ -1,4 +1,4 @@
-export const INGREDIENT_TYPES = ['Veggie', 'Cheese', 'Meat', 'Base', 'Others']
+export const INGREDIENT_TYPE = ['Veggie', 'Cheese', 'Meat', 'Base', 'Others']
 export const ALLERGENE = ['A - Glutenhaltig', 'B - Krebstiere', 'C - Eier', 'D - Fish', 'E - Erdnüsse',
                        'F - Sojabohnen', 'G - Milch/Laktose', 'H - Schalenfrüchte', 'L - Sellerie',
                        'M - Senf', 'N - Sesamsamen', 'O - Schwefeldioxid/Sulfite', 'P - Lupinen', 'R - Weichtiere',

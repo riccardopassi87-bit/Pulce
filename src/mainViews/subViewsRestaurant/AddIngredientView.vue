@@ -1,42 +1,34 @@
 <script setup>
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
-    import { useFormValidation, validators } from '@/router/composable/useFormValidation';
+    import { useFormValidation } from '@/router/composable/useFormValidation';
     import { apiService } from '@/api/apiService';
+    import { ingredientRules } from '@/constants/ruleSets';
+    import { onMounted, ref } from 'vue';
+    import { ALLERGENE, INGREDIENT_TYPE } from '@/constants/types';
 
     const API_BASE = 'http://localhost:8080/api/ingredient'
-    const TYPE = ['Veggie', 'Cheese', 'Meat', 'Base', 'Others']
-    const ALLERGENE = ['A - Glutenhaltig', 'B - Krebstiere', 'C - Eier', 'D - Fish', 'E - Erdnüsse',
-                       'F - Sojabohnen', 'G - Milch/Laktose', 'H - Schalenfrüchte', 'L - Sellerie',
-                       'M - Senf', 'N - Sesamsamen', 'O - Schwefeldioxid/Sulfite', 'P - Lupinen', 'R - Weichtiere',
-                       'No Allergene']
+    const existingIngredientNames = ref([])
+
+    onMounted(async () => {
+        try {
+            const res = await fetch(API_BASE)
+            const data = await res.json()
+            existingIngredientNames.value = data.map(ingredient => ingredient.name)
+        } catch (e) {
+            console.error("Could not load names for validation")
+        }
+    })
+
+    const schema = ingredientRules(existingIngredientNames)
                        
-    const {form, errors, submitted, validateField, submit } = useFormValidation({
-        name: '',
-        portionPrice: null,
-        kgPrice: null,
-        type: '',
-        allergene: ''
-    },
-    {
-        name: [{ validator: validators.required, message: 'Name is required' }],
-        portionPrice: [
-            { validator: validators.required, message: 'Required' },
-            { validator: validators.number, message: 'Must be a number' }],
-        kgPrice: [
-            { validator: validators.required, message: 'Required' },
-            { validator: validators.number, message: 'Must be a number' },
-            { validator: validators.priceIsValid('portionPrice'), message: 'Kg price lower than portion price??'}],
-        type: [
-            { validator: validators.required, message: 'Type required' },
-            { validator: validators.oneOf(TYPE), message: 'Invalid type' }],
-        allergene: [
-            { validator: validators.required, message: 'Allergene required' },
-            { validator: validators.oneOf(ALLERGENE), message: 'Invalid allergene' }]
-    },
+    const {form, errors, submitted, validateField, submit } = useFormValidation(
+    schema.initialState,
+    schema.rules,
     async (data) => {
       try {
         await apiService(API_BASE, data)
         alert('Ingredient saved successfully ✅')
+        existingIngredientNames.value.push(data.name);
         } catch (e) {
             alert('Failed to save ingredient ❌')
         }
@@ -76,7 +68,7 @@
                 <div class="pee-input"><select v-model="form.type" @blur="validateField('type')" 
                 :class="{invalid: submitted && errors.type}">
                     <option disabled selected hidden></option>
-                    <option v-for="t in TYPE" :key="t" :value="t">
+                    <option v-for="t in INGREDIENT_TYPE" :key="t" :value="t">
                         {{ t }}
                     </option>
                 </select></div>

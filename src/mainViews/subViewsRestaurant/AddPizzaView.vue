@@ -1,9 +1,11 @@
 <script setup>
     import SearchPrompt from '@/commonViews/SearchPrompt.vue';
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
-    import { useFormValidation, validators } from '@/router/composable/useFormValidation';
+    import { useFormValidation } from '@/router/composable/useFormValidation';
     import { ref, computed, watch} from 'vue';
     import { apiService } from '@/api/apiService';
+    import { pizzaRules } from '@/constants/ruleSets';
+    import { PIZZA_TYPE, INGREDIENT_TYPE } from '@/constants/types';
 
     const API_BASE = 'http://localhost:8080/api/pizza'
     const search = ref('')
@@ -52,9 +54,6 @@
         )
     )
 
-    const TYPE = ['Normal', 'Vegetarian', 'Vegan']
-    const ingredientTYPE = ['Veggie', 'Cheese', 'Meat', 'Base', 'Others']
-
     const buildPizzaPayload = () => {
         return {
             name: form.name,
@@ -65,30 +64,9 @@
         }
     }
 
-    const { form, errors, submitted, validateField, submit } = useFormValidation({
-        name: '',
-        sellingPrice: null,
-        productionPrice: null,
-        type: '',
-        ingredientIds: []
-    },
-    {
-        name: [{ validator: validators.required, message: 'Name is required'}],
-        sellingPrice: [
-            { validator: validators.required, message: 'Required'},
-            { validator: validators.number, message: 'Must be a number'},
-            { validator: validators.priceIsValid('productionPrice'), message: 'Impossible' }],
-        productionPrice: [
-            { validator: validators.required, message: 'Required'},
-            { validator: validators.number, message: 'Must be a number'}
-            ],
-        type: [
-            { validator: validators.required, message: 'Type is required'},
-            { validator: validators.oneOf(TYPE), message: 'Type is not valid'}],
-        ingredientIds: [
-            { validator: validators.minLength(1), message: 'Select at least 1 ingredient'}
-        ]
-    },
+    const { form, errors, submitted, validateField, submit } = useFormValidation(
+    pizzaRules.initialState,
+    pizzaRules.rules,
     async () => {
         const payload = buildPizzaPayload()
 
@@ -142,7 +120,7 @@
                         <div class="pee-input"><select v-model="form.type" @blur="validateField('type')"
                         :class="{invalid: submitted && errors.type}">
                             <option disabled selected hidden></option>
-                            <option v-for="t in TYPE" :key="t" :value="t">
+                            <option v-for="t in PIZZA_TYPE" :key="t" :value="t">
                                 {{ t }}
                             </option>
                         </select></div>
@@ -160,7 +138,7 @@
                         <template #filter>
                             <select v-model="selectedType" id="ingredient-select">
                                 <option disabled selected hidden></option>
-                                <option v-for="t in ingredientTYPE" :key="t" :value="t">
+                                <option v-for="t in INGREDIENT_TYPE" :key="t" :value="t">
                                     {{ t }}
                                 </option>
                             </select>

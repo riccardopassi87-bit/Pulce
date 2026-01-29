@@ -26,12 +26,14 @@ export const validators = {
     minLength: (min) => (val) =>
     Array.isArray(val) && val.length >= min,
 
-    unique: (existingNames) => (val) => {
-        if (!val) return true;
-        console.log("Existing Names in Validator:", existingNames);
-    console.log("Current Input:", val);
-        return !existingNames.some(name => name.toLowerCase() === val.toLowerCase())
-    }
+    unique: (listRef) => (val) => {
+        const values = (listRef && typeof listRef === 'object' && 'value' in listRef) 
+            ? listRef.value 
+            : listRef;
+
+        if (!val || !values) return true;
+        return !values.includes(val);
+    },
 
 }
 
