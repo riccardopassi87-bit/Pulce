@@ -75,7 +75,7 @@
                 <div class="pee"><p>Type: </p></div>
                 <div class="pee-input"><select v-model="form.type" @blur="validateField('type')" 
                 :class="{invalid: submitted && errors.type}">
-                    <option disabled value=""></option>
+                    <option disabled selected hidden></option>
                     <option v-for="t in TYPE" :key="t" :value="t">
                         {{ t }}
                     </option>
@@ -88,7 +88,7 @@
                 <div class="pee"><p>Allergene: </p></div>
                 <div class="pee-input"><select v-model="form.allergene" @blur="validateField('allergene')" 
                 :class="{invalid: submitted && errors.allergene}">
-                    <option disabled value=""></option>
+                    <option disabled selected hidden></option>
                     <option v-for="a in ALLERGENE" :key="a" :value="a">
                         {{ a }}
                     </option>

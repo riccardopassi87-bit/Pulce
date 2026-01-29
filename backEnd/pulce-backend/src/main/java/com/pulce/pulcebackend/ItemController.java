@@ -8,7 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/item")
@@ -38,6 +40,20 @@ public class ItemController {
     public List<Item> getAllItem(){
         return itemService.findAll();
     }
+
+    // WORK IN PROGRESS
+    @GetMapping("/expiring")
+    public ResponseEntity<Map<String, List<Item>>> getExpiringItem(){
+
+        Map<String,List<Item>> expiring = new HashMap<>();
+
+        expiring.put("urgent", itemService.getUrgentExpiration());
+        expiring.put("warning", itemService.getWarningExpiration());
+        expiring.put("upcoming", itemService.getUpcomingExpiration());
+
+        return ResponseEntity.ok(expiring);
+    }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<Item> updateItem(@PathVariable int id, @Valid @RequestBody ItemDTO dto){

@@ -15,8 +15,14 @@ public interface ItemRepository extends JpaRepository<Item, Integer>
     List<Item> findByType(String type);
     List<Item> findByNameContainingIgnoreCaseAndType(String name, String type);
 
-    @Query(value = "SELECT * FROM items WHERE expiration_date = DATE_ADD(CURRDATE(), INTERVAL :days DAY)",
+    @Query(value = "SELECT * FROM items WHERE expiration_date = DATE_ADD(CURDATE(), INTERVAL :days DAY)",
             nativeQuery = true)
     List<Item> findByExpirationInDays(@Param("days") int days);
+
+    @Query(value = "SELECT * FROM items WHERE expiration_date " +
+                    "BETWEEN DATE_ADD(CURDATE(), INTERVAL :lastDay DAY) " +
+                    "AND DATE_ADD(CURDATE(), INTERVAL :firstDay DAY)",
+                nativeQuery = true)
+    List<Item> findByExpirationDate(@Param("lastDay")int lastDay,@Param("firstDay") int firstDay);
 }
 

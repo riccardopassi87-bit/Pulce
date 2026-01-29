@@ -141,7 +141,7 @@
                         <div class="pee"><p>Type: </p></div>
                         <div class="pee-input"><select v-model="form.type" @blur="validateField('type')"
                         :class="{invalid: submitted && errors.type}">
-                            <option disabled.value=""></option>
+                            <option disabled selected hidden></option>
                             <option v-for="t in TYPE" :key="t" :value="t">
                                 {{ t }}
                             </option>
@@ -159,7 +159,7 @@
                         </template>
                         <template #filter>
                             <select v-model="selectedType" id="ingredient-select">
-                                <option disabled.value=""></option>
+                                <option disabled selected hidden></option>
                                 <option v-for="t in ingredientTYPE" :key="t" :value="t">
                                     {{ t }}
                                 </option>

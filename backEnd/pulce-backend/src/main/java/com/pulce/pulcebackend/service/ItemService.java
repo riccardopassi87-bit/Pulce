@@ -8,7 +8,10 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
+
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Service
 
@@ -70,7 +73,18 @@ public class ItemService {
         return itemRepository.findAll();
     }
 
-    public List<Item> findByExpirationInDays() {
-        return itemRepository.findByExpirationInDays();
+    public List<Item> findByExpirationInDays(int days) {
+        return itemRepository.findByExpirationInDays(days);
+    }
+
+    // EXPIRATION LOGIC FOR PERSISTING LIST
+    public List<Item> getUrgentExpiration(){
+        return itemRepository.findByExpirationDate(1,7);
+    }
+    public List<Item> getWarningExpiration(){
+        return itemRepository.findByExpirationDate(8,20);
+    }
+    public List<Item> getUpcomingExpiration(){
+        return itemRepository.findByExpirationDate(19,30);
     }
 }

@@ -76,13 +76,15 @@
             await fetchProducts()
             products.value = []
             selectedProduct.value = null
+            selectedType.value = ''
+            search.value = ''
             alert('Product updated ✅')
         } catch (e) {
             alert('Update failed ❌')
         }
     }
     
-    const removeProcduct = async () => {
+    const removeProduct = async () => {
     if(!selectedProduct.value) return
 
     const confirmDelete = confirm(`Are you sure you want to remove "${selectedProduct.value.name}"?`)
@@ -95,9 +97,11 @@
       )
       if (!res.ok) throw new Error()
 
-      await fetchProducts()
-      products.value = []
-      selectProduct.value = null
+       await fetchProducts()
+       products.value = []
+       selectProduct.value = null
+       selectedType.value = ''
+       search.value = ''
 
        alert('Product deleted ✅')
       } catch (e) {
@@ -117,7 +121,7 @@
                         </template>
                         <template #filter>
                             <select v-model="selectedType">
-                                <option disabled.value=""></option>
+                                <option disabled selected hidden></option>
                                 <option v-for="t in TYPE" :key="t" :value="t">
                                     {{ t }}
                                 </option>
@@ -156,6 +160,7 @@
                         <label>
                             <strong>Type</strong>
                             <select v-model="form.type">
+                                <option disabled selected hidden></option>
                                 <option v-for="t in TYPE" :key="t" :value="t">
                                     {{ t }}
                                 </option>
@@ -182,7 +187,7 @@
             :show-modify="!!selectedProduct"
             :show-remove="!!selectedProduct"
             @modify="modifyProduct"
-            @remove="removeProcduct"/>
+            @remove="removeProduct"/>
         </div>
     </div>
 </template>

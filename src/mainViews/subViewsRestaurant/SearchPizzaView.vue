@@ -140,7 +140,7 @@
                 </template>
                   <template #filter>
                       <select v-model="selectedType">
-                        <option disabled.value=""></option>
+                        <option disabled selected hidden></option>
                         <option v-for="t in TYPE" :key="t" :value="t">
                           {{ t }}
                         </option>
@@ -183,6 +183,7 @@
                   <label>
                     <strong>Type</strong>
                     <select v-model="form.type">
+                      <option disabled selected hidden></option>
                       <option v-for="t in TYPE" :key="t" :value="t">
                         {{ t }}
                       </option>
@@ -202,6 +203,7 @@
                   <div id="new-content">
                     <strong>Add Ingredient</strong>
                     <select @change="addIngredient(availableIngredients[$event.target.selectedIndex])">
+                      <option disabled selected hidden></option>
                       <option v-for="i in availableIngredients" :key="i.id">
                         {{ i.name }}
                       </option>

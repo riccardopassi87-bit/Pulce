@@ -150,7 +150,7 @@
                         </template>
                         <template #filter>
                             <select v-model="selectedType">
-                                <option disabled.value=""></option>
+                                <option disabled selected hidden></option>
                                 <option v-for="t in TYPE" :key="t" :value="t">
                                     {{ t }}
                                 </option>
@@ -181,6 +181,7 @@
                          <label>
                             <strong>Type</strong>
                             <select v-model="form.type">
+                                <option disabled selected hidden></option>
                                 <option v-for="t in TYPE" :key="t" :value="t">
                                     {{ t }}
                                 </option>
@@ -199,6 +200,7 @@
                         <label>
                             <strong>Allergene</strong>
                             <select v-model="form.allergene">
+                                <option disabled selected hidden></option>
                                 <option v-for="a in ALLERGENE" :key="a" :value="a">
                                     {{ a }}
                                 </option>

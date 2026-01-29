@@ -3,7 +3,6 @@ package com.pulce.pulcebackend.service;
 import com.pulce.pulcebackend.entity.Item;
 import com.pulce.pulcebackend.repository.ItemRepository;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;

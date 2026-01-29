@@ -4,5 +4,5 @@
 </script>
 
 <template>
-    <button type="button" id="notification" @click="goNext('notification')" :class="getButtonClass('notification')">Notification Settings</button>
+    <button type="button" id="notification" @click="goNext('notification')" :class="getButtonClass('notification')">Notification & Reminders</button>
 </template>
