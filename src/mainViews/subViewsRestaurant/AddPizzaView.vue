@@ -3,7 +3,7 @@
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
     import { useFormValidation, validators } from '@/router/composable/useFormValidation';
     import { ref, computed, watch} from 'vue';
-    import { createIngredient } from '@/api/ingredientApi';
+    import { apiService } from '@/api/apiService';
 
     const API_BASE = 'http://localhost:8080/api/pizza'
     const search = ref('')
@@ -93,7 +93,7 @@
         const payload = buildPizzaPayload()
 
         try {
-        await createIngredient(API_BASE, payload)
+        await apiService(API_BASE, payload)
 
         selectedIngredients.value = []
         search.value = ''

@@ -1,4 +1,4 @@
-export async function createIngredient(API_BASE,data) {
+export async function apiService(API_BASE,data) {
     const response = await fetch (API_BASE, {
         method: 'POST',
         headers: {

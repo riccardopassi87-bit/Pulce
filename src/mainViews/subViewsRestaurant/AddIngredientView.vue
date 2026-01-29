@@ -1,7 +1,7 @@
 <script setup>
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
     import { useFormValidation, validators } from '@/router/composable/useFormValidation';
-    import { createIngredient } from '@/api/ingredientApi';
+    import { apiService } from '@/api/apiService';
 
     const API_BASE = 'http://localhost:8080/api/ingredient'
     const TYPE = ['Veggie', 'Cheese', 'Meat', 'Base', 'Others']
@@ -35,7 +35,7 @@
     },
     async (data) => {
       try {
-        await createIngredient(API_BASE, data)
+        await apiService(API_BASE, data)
         alert('Ingredient saved successfully ✅')
         } catch (e) {
             alert('Failed to save ingredient ❌')

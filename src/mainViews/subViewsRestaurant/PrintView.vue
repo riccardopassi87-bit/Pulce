@@ -1,9 +1,9 @@
 <script setup>
     import SearchTemplate from '@/commonViews/SearchTemplate.vue';
     import SearchPrompt from '@/commonViews/SearchPrompt.vue';
-    import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
 
     const TYPE = ['All', 'Normal', 'Vegetarian', 'Vegan']
+
 </script>
 
 <template>
@@ -12,16 +12,29 @@
             <SearchTemplate>
                 <template #left-search>
                     <SearchPrompt>
+                        <template #input>
+                        <input class="own-input" v-model="search" placeholder="search by name"/>
+                        </template>
                         <template #filter>
                             <select>
-                                <option disabled.value=""></option>
+                                <option disabled selected hidden></option>
                                 <option v-for="t in TYPE" :key="t" :value="t">
                                     {{ t }}
                                 </option>
                             </select>
                         </template>
                     </SearchPrompt>
-                </template>    
+                </template>
+                <template #results>
+                    <div class="fsf">
+                      <ul>
+                        <li v-for="p in pizzas" :key="p.id" @click="selectPizza(p)"
+                        :class="{selected: selectedPizza?.id === p.id}">
+                          {{ p.name }}
+                        </li>
+                      </ul>
+                    </div>
+                  </template>
             </SearchTemplate>
         </div>
         <div class="footer-buttons">

@@ -1,8 +1,9 @@
 <script setup>
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
     import { useFormValidation, validators } from '@/router/composable/useFormValidation';
-    import { createIngredient } from '@/api/ingredientApi';
+    import { apiService } from '@/api/apiService';
     import { onMounted, ref } from 'vue';
+    import { PRODUCT_TYPE } from '@/constants/types';
 
     const API_BASE = 'http://localhost:8080/api/item'
     const existingNames = ref([])
@@ -16,8 +17,6 @@
             console.error("Could not load names for validation")
         }
     })
-
-    const TYPE = ['Alpe', 'Alpenzu', 'Bisquits', 'Snacks', 'Drinks', 'Pesto', 'Pasta', 'Antipasti', 'Olives', 'Wine', 'Others' ]
     
     const { form, errors, submitted, validateField, submit } = useFormValidation({
         name: '',
@@ -50,7 +49,7 @@
     },
     async (data) => {
       try {
-        await createIngredient(API_BASE, data)
+        await apiService(API_BASE, data)
         alert('Product saved successfully ✅')
         } catch (e) {
             alert('Failed to save product ❌')
@@ -91,7 +90,7 @@
                     <div class="pee-input"><select v-model="form.type" @blur="validateField('type')"
                     :class="{invalid: submitted && errors.type}">
                         <option disabled selected hidden></option>
-                        <option v-for="t in TYPE" :key="t" :value="t">
+                        <option v-for="t in PRODUCT_TYPE" :key="t" :value="t">
                             {{ t }}
                         </option>
                     </select></div>
