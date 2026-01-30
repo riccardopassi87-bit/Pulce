@@ -8,7 +8,7 @@ export const validators = {
     val !== '' &&
     !(typeof val === 'string' && val.trim() === ''),
     
-    number: (val) => typeof val === 'number' && !isNaN(val),
+    number: (val) => !isNaN(parseFloat(val)) && isFinite(val),
     
     oneOf: (list) => (val) => list.includes(val),
 
@@ -41,7 +41,7 @@ export function useFormValidation(initialState, rules, onSubmit) {
     // form state
     const form = reactive({...initialState})
     const submitted = ref(false)
-
+    
     // error state
     const errors = reactive(
         Object.keys(rules).reduce((acc, key) => {
@@ -71,15 +71,10 @@ export function useFormValidation(initialState, rules, onSubmit) {
         return valid
     }
 
-    // reset errors
-    const resetErrors = () => {
-            Object.keys(errors).forEach(k => (errors[k] = ''))
-        }
-
     // reset form
     const resetForm = () => {
         Object.assign(form, initialState)
-        resetErrors()
+        Object.keys(errors).forEach(k => (errors[k] = ''))
         submitted.value = false
     }
 
@@ -88,9 +83,11 @@ export function useFormValidation(initialState, rules, onSubmit) {
         submitted.value = true
         if (!validateForm()) return
 
-        await onSubmit(form)
-        resetForm()
+        if (onSubmit){
+            await onSubmit({...form})
+            resetForm()
+        }
     }
     return { form, errors, submitted,
-        validateField, validateForm, resetErrors, resetForm, submit }
+        validateField, validateForm, resetForm, submit }
 }

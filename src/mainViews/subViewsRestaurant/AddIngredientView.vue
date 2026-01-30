@@ -1,39 +1,32 @@
 <script setup>
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
     import { useFormValidation } from '@/router/composable/useFormValidation';
-    import { apiService } from '@/api/apiService';
+    import { api, nameLoader } from '@/api/apiService';
     import { ingredientRules } from '@/constants/ruleSets';
     import { onMounted, ref } from 'vue';
     import { ALLERGENE, INGREDIENT_TYPE } from '@/constants/types';
 
     const API_BASE = 'http://localhost:8080/api/ingredient'
-    const existingIngredient = ref([])
+    const existingName = ref([])
 
-    onMounted(async () => {
+    onMounted(() => nameLoader(existingName, API_BASE))
+
+    const schema = ingredientRules(existingName)
+
+    const handleSave = async (formData) => {
         try {
-            const res = await fetch(API_BASE)
-            const data = await res.json()
-            existingIngredient.value = data.map(ingredient => ingredient.name)
-        } catch (e) {
-            console.error("Could not load names for validation")
-        }
-    })
-
-    const schema = ingredientRules(existingIngredient)
-                       
-    const {form, errors, submitted, validateField, submit } = useFormValidation(
-    schema.initialState,
-    schema.rules,
-    async (data) => {
-      try {
-        await apiService(API_BASE, data)
+        await apiService(API_BASE, formData)
         alert('Ingredient saved successfully ✅')
-        existingIngredient.value.push(data.name);
+        existingName.value.push(formData.name);
         } catch (e) {
             alert('Failed to save ingredient ❌')
         }
     }
-    )
+                       
+    const {form, errors, submitted, validateField, submit } = useFormValidation(
+    schema.initialState,
+    schema.rules,
+    handleSave)
 </script>
 
 <template>

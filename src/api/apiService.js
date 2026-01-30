@@ -1,15 +1,41 @@
-export async function apiService(API_BASE,data) {
-    const response = await fetch (API_BASE, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    })
+const headers = { 'Content-Type': 'application/json' }
 
-    if (!response.ok) {
-        throw new Error(error || `Server error: ${response.status}`)
+export const api = {
+    async get(url) {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
+        return res.json();
+    },
+    async post(url, data) {
+        const res = await fetch(url, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(data)
+        });
+        if(!res.ok) throw new Error(`Save failed: ${res.status}`);
+        return res.json();
+    },
+    async put(url, data) {
+        const res = await fetch(url, {
+            method: 'PUT',
+            headers,
+            body: JSON.stringify(data)
+        });
+        if(!res.ok) throw new Error(`Update failed: ${res.status}`);
+        return res.json();
+    },
+    async delete(url) {
+        const res = await fetch(url, { method: 'DELETE'});
+        if(!res.ok) throw new Error(`Delete failed: ${res.status}`);
+        return true;
     }
+};
 
-    return true
+export async function nameLoader(refToUpdate, url) {
+    try {
+        const data = await api.get(url);
+        refToUpdate.value = data.map(item => item.name);
+    } catch (e) {
+        console.error("NameLoader Error:", e.message);
+    }
 }

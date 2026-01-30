@@ -2,130 +2,76 @@
   import SearchTemplate from '@/commonViews/SearchTemplate.vue';
   import SearchPrompt from '@/commonViews/SearchPrompt.vue';
   import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
+  import { computed, ref, onMounted } from 'vue';
+  import { useFormValidation } from '@/router/composable/useFormValidation';
+  import { useFormManagement } from '@/router/composable/useFormManagement';
+  import { pizzaRules } from '@/constants/ruleSets';
+  import { api } from '@/api/apiService';
+  import { PIZZA_TYPE } from '@/constants/types';
 
-  import { ref, watch, computed } from 'vue'
+  const API_BASE = 'http://localhost:8080/api/pizza';
+  
+  const allIngredients = ref([]);
+  onMounted(async () => {
+    allIngredients.value = await api.get('http://localhost:8080/api/ingredient');
+  });
 
-  const form = ref({
-    name: '',
-    sellingPrice: null,
-    productionPrice: null,
-    type: '',
-    ingredientIds: []
-  })
+  const schema = pizzaRules([]);
+  const { form, errors, submit, resetForm } = useFormValidation(
+    schema.initialState,
+    schema.rules,
+    async (data) => await handleUpdate(data)
+  );
+ 
+  const { search, selectedType, items: pizzas, selectedItem: selectedPizza, selectItem, resetSelection} = 
+    useFormManagement(API_BASE, (pizza) => {
+      Object.assign(form, {
+        ...pizza,
+        sellingPrice: Number(pizza.sellingPrice),
+        productionPrice: Number(pizza.productionPrice),
+        ingredientIds: pizza.ingredients.map(i => i.id)
+      });
+    });
+  
+  const addIngredient = (ingredientId) => {
+    const id = Number(ingredientId)
 
-  const search = ref('')
-  const selectedType = ref('')
-  const pizzas = ref([])
-  const selectedPizza = ref(null)
-  const allIngredients = ref([])
-  const selectedIngredients = ref([])
+    if(form.ingredientIds.length >= 7){
+      alert("NOOOOOOOOO!!!!!!")
+      return;}
 
-  const fetchAllIngredients = async () => {
-    const res = await fetch('http://localhost:8080/api/ingredient')
-    allIngredients.value = await res.json()
-  }
-  fetchAllIngredients()
-
-  const selectPizza = (pizza) => {
-    selectedPizza.value = pizza
-    selectedIngredients.value = [...pizza.ingredients]
-
-    form.value = {
-      name: pizza.name,
-      sellingPrice: pizza.sellingPrice.toFixed(2),
-      productionPrice: pizza.productionPrice.toFixed(2),
-      type: pizza.type,
-      ingredientIds: pizza.ingredients.map(i => i.id)
+    if(!form.ingredientIds.includes(id)){
+      form.ingredientIds.push(id);
+      event.target.value = "";
     }
-  }
+  };
 
-  const removeIngredient = (ingredientId) => {
-    selectedIngredients.value = selectedIngredients.value.filter(i => i.id !== ingredientId)
+  const removeIngredient = (id) => {
+    form.ingredientIds = form.ingredientIds.filter(itemId => itemId !== id);
+  };
 
-    form.value.ingredientIds = form.value.ingredientIds.filter(id => id !== ingredientId)
-  }
+  const currentIngredients = computed(() =>
+  allIngredients.value.filter(i => form.ingredientIds.includes(i.id))
+  );
 
-  const availableIngredients = computed(() => allIngredients.value.filter(
-    i => !form.value.ingredientIds.includes(i.id)
-  ))
-
-  const addIngredient = (ingredient) => {
-    selectedIngredients.value.push(ingredient)
-    form.value.ingredientIds.push(ingredient.id)
-  }
-
-  const fetchPizzas = async () => {
-    if(!search.value && !selectedType.value) {
-      pizzas.value = []
-      selectedPizza.value = null
-      return
-    }
-
-    const params = new URLSearchParams()
-    if(search.value) params.append('name', search.value)
-    if(selectedType.value) params.append('type', selectedType.value)
-
-    const res = await fetch(
-      `http://localhost:8080/api/pizza/search?${params.toString()}`
-    )
-    pizzas.value = await res.json()
-    if (selectedPizza.value && !pizzas.value.some(i => i.id === selectedPizza.value.id))
-    {
-      selectedPizza.value = null
-    }
-  }
-
-  watch([search, selectedType], fetchPizzas, { immediate: true})
-
-  const TYPE = ['Normal', 'Vegetarian', 'Vegan']
-
-  const modifyPizza = async () => {
-      console.log('MODIFY CLICKED', form.value)
-    if (!selectedPizza.value) return
-
+  const handleUpdate = async (data) => {
     try{
-      const res = await fetch(
-        `http://localhost:8080/api/pizza/${selectedPizza.value.id}`,
-        {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(form.value)
-        }
-      )
-      if (!res.ok) throw new Error()
-
-      await fetchPizzas()
-      pizzas.value = []
-      selectedPizza.value = null
-            alert('Pizza updated ✅')
-        } catch (e) {
-            alert('Update failed ❌')
-        }
-  }
+      await api.put(`${API_BASE}/${selectedPizza.value.id}`, data);
+      alert('Pizza updated successfully! ✅');
+        resetSelection();
+        resetForm();
+    } catch (e) { alert(e.message); }
+  };
 
   const removePizza = async () => {
-    if(!selectedPizza.value) return
+    if (!selectedPizza.value || !confirm('Delete pizza?')) return;
 
-    const confirmDelete = confirm(`Are you sure you want to remove Pizza "${selectedPizza.value.name}"?`)
-    if (!confirmDelete) return
-
-    try {
-      const res = await fetch(
-        `http://localhost:8080/api/pizza/${selectedPizza.value.id}`,
-        { method: 'DELETE'}
-      )
-      if (!res.ok) throw new Error()
-
-      await fetchPizzas()
-      pizzas.value = []
-      selectPizza.value = null
-
-       alert('Pizza deleted ✅')
-      } catch (e) {
-        alert('Delete failed ❌')
-      }
+    try{
+      await api.delete(`${API_BASE}/${selectedPizza.value.id}`);
+        alert('Pizza deleted! ✅');
+        resetSelection();
+        resetForm();
+    } catch (e) { alert(e.message); }
   }
 </script>
 
@@ -141,7 +87,7 @@
                   <template #filter>
                       <select v-model="selectedType">
                         <option disabled selected hidden></option>
-                        <option v-for="t in TYPE" :key="t" :value="t">
+                        <option v-for="t in PIZZA_TYPE" :key="t" :value="t">
                           {{ t }}
                         </option>
                       </select>
@@ -150,7 +96,7 @@
                   <template #results>
                     <div class="fsf">
                       <ul>
-                        <li v-for="p in pizzas" :key="p.id" @click="selectPizza(p)"
+                        <li v-for="p in pizzas" :key="p.id" @click="selectItem(p)"
                         :class="{selected: selectedPizza?.id === p.id}">
                           {{ p.name }}
                         </li>
@@ -184,7 +130,7 @@
                     <strong>Type</strong>
                     <select v-model="form.type">
                       <option disabled selected hidden></option>
-                      <option v-for="t in TYPE" :key="t" :value="t">
+                      <option v-for="t in PIZZA_TYPE" :key="t" :value="t">
                         {{ t }}
                       </option>
                     </select>
@@ -195,16 +141,17 @@
                   <div id="actual-content">
                     <strong>Ingredients</strong>
                     <ul>
-                      <li v-for="i in selectedIngredients" :key="i.id" @click="removeIngredient(i.id)">
+                      <li v-for="i in currentIngredients" :key="i.id" @click="removeIngredient(i.id)">
                         {{ i.name }}
                       </li>
                     </ul>
                   </div>
                   <div id="new-content">
                     <strong>Add Ingredient</strong>
-                    <select @change="addIngredient(availableIngredients[$event.target.selectedIndex])">
+                    <select @change="addIngredient($event.target.value)">
                       <option disabled selected hidden></option>
-                      <option v-for="i in availableIngredients" :key="i.id">
+                      <option v-for="i in allIngredients" :key="i.id" :value="i.id"
+                      v-show="!form.ingredientIds.includes(i.id)">
                         {{ i.name }}
                       </option>
                     </select>
@@ -221,7 +168,7 @@
         :show-save="false"
         :show-modify="!!selectedPizza"
         :show-remove="!!selectedPizza"
-        @modify="modifyPizza"
+        @modify="submit"
         @remove="removePizza"/>
       </div>
     </div>

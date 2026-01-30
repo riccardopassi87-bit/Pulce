@@ -2,141 +2,60 @@
     import SearchPrompt from '@/commonViews/SearchPrompt.vue';
     import SearchTemplate from '@/commonViews/SearchTemplate.vue';
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
+    import { useFormValidation } from '@/router/composable/useFormValidation';
+    import { useFormManagement } from '@/router/composable/useFormManagement';
+    import { ingredientRules } from '@/constants/ruleSets';
+    import { INGREDIENT_TYPE, ALLERGENE } from '@/constants/types';
+    import { api } from '@/api/apiService';
 
-    import { ref, watch } from 'vue'
+    const API_BASE = 'http://localhost:8080/api/ingredient';
 
-    const form = ref({
-        name: '',
-        type: '',
-        portionPrice: null,
-        kgPrice: null,
-        allergene: ''
-    })
+    const schema = ingredientRules([]);
 
-    const search = ref('')
-    const selectedType = ref('')
-    const ingredients = ref([])
-    const selectedIngredient = ref(null)
-
-    const selectIngredient = (ingredient) => {
-        selectedIngredient.value = ingredient
-
-        form.value = {
-        name: ingredient.name,
-        type: ingredient.type,
-        portionPrice: ingredient.portionPrice.toFixed(2),
-        kgPrice: ingredient.kgPrice.toFixed(2),
-        allergene: ingredient.allergene
+    const { form, submit, resetForm} = useFormValidation(
+        schema.initialState,
+        schema.rules,
+        async (data) => {
+            await handleUpdate(data);
         }
-    }
+    );
 
-    const fetchIngredients = async () => {
-        if (!search.value && !selectedType.value) {
-            ingredients.value = []
-            selectedIngredient.value = null
-            return
-        }
+    const { search, selectedType, items: ingredients, selectedItem: selectedIngredient, selectItem, resetSelection} = useFormManagement(
+        API_BASE,
+        (item) => Object.assign(form, { ...item })
+    );
 
-        const params = new URLSearchParams()
-        if (search.value) params.append('name', search.value)
-        if (selectedType.value) params.append('type', selectedType.value)
-
-        const res = await fetch(
-            `http://localhost:8080/api/ingredient/search?${params.toString()}`
-        )
-        ingredients.value = await res.json()
-
-        if(selectedIngredient.value && !ingredients.value.some(i => i.id === selectedIngredient.value.id)
-    ) {
-        selectedIngredient.value = null
-        }
-    }
-    
-    watch([search, selectedType], fetchIngredients, {immediate: true})
-
-    const TYPE = ['Veggie', 'Cheese', 'Meat', 'Base', 'Others']
-    const ALLERGENE = ['A - Glutenhaltig', 'B - Krebstiere', 'C - Eier', 'D - Fish', 'E - Erdnüsse',
-                       'F - Sojabohnen', 'G - Milch/Laktose', 'H - Schalenfrüchte', 'L - Sellerie',
-                       'M - Senf', 'N - Sesamsamen', 'O - Schwefeldioxid/Sulfite', 'P - Lupinen', 'R - Weichtiere',
-                       'No Allergene']
-
-    const modifyIngredient = async () => {
-        if (!selectedIngredient.value) return
-
-        const isPriceChanged = form.value.portionPrice !== selectedIngredient.value.portionPrice
-
-        if(isPriceChanged) {
-            try {
-                const impactRes = await fetch(
-                    `http://localhost:8080/api/ingredient/${selectedIngredient.value.id}/impact`,
-                    )
-
-                    if(impactRes.ok){
-                        const pizzaNames = await impactRes.json()
-
-                        if (pizzaNames.length > 0) {
-                            const confirmMessage = `Changing the price will affect these pizzas:\n\n` + 
-                                        pizzaNames.join(", ") + 
-                                        `\n\nDo you want to continue?`
-
-                            if(!confirm(confirmMessage)) return
-                        }
-                    }
-            } catch (err) {
-                console.error("Could not check impact, err")
-            }
-        }
-        
+    const handleUpdate = async (data) => {
         try {
-            const res = await fetch(
-                `http://localhost:8080/api/ingredient/${selectedIngredient.value.id}`,
-            
-                {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(form.value)
-                }
-            )
-            if (!res.ok) throw new Error()
+            const isPriceChanged = data.portionPrice !== selectedIngredient.value.portionPrice;
+            if (isPriceChanged) {
+                const impactRes = await fetch(`${API_BASE}/${selectedIngredient.value.id}/impact`);
+                const pizzas = await impactRes.json();
+                if (pizzas.length > 0 && !confirm(`Affects: ${pizzas.join(', ')}. Continue?`)) return;  
+            }
 
-            await fetchIngredients()
-            ingredients.value = []
-            selectedIngredient.value = null
-            alert('Ingredient updated ✅')
+            await api.put(`${API_BASE}/${selectedIngredient.value.id}`, data);
+        alert('Updated! ✅');
+        resetSelection();
+        resetForm();
         } catch (e) {
-            alert('Update failed ❌')
+            alert('Update failed ❌');
         }
-    }
+    };
 
     const removeIngredient = async () => {
-    if(!selectedIngredient.value) return
+        if (!selectedIngredient.value || !confirm('Are you sure?')) return;
 
-    const confirmDelete = confirm(`Are you sure you want to remove "${selectedIngredient.value.name}"?`)
-    if (!confirmDelete) return
-
-    try {
-      const res = await fetch(
-        `http://localhost:8080/api/ingredient/${selectedIngredient.value.id}`,
-        { method: 'DELETE'}
-      )
-      if (!res.ok) {
-        const errorData = await res.json()
-
-        alert(`Delete failed ❌\n\n${errorData.message || 'Unknown error occurred'}`);
-        return;
-      }
-
-      await fetchIngredients()
-      selectedIngredient.value = null
-
-      alert('Ingredient deleted ✅')
-  } catch (e) {
-    console.error(e);
-    alert('Could not connect to the server ❌')
-  }
-}
+        try {
+            await api.delete(`${API_BASE}/${selectedIngredient.value.id}`);
+            alert('Deleted! ✅');
+            resetSelection();
+            resetForm();
+        } catch (e) {
+            alert('Connection error ❌');
+        }
+};
+    
 </script>
 
 <template>
@@ -151,7 +70,7 @@
                         <template #filter>
                             <select v-model="selectedType">
                                 <option disabled selected hidden></option>
-                                <option v-for="t in TYPE" :key="t" :value="t">
+                                <option v-for="t in INGREDIENT_TYPE" :key="t" :value="t">
                                     {{ t }}
                                 </option>
                             </select>
@@ -159,7 +78,7 @@
                         <template #results>
                             <div class="fsf">
                                 <ul>
-                                    <li v-for="i in ingredients" :key="i.id" @click="selectIngredient(i)"
+                                    <li v-for="i in ingredients" :key="i.id" @click="selectItem(i)"
                                     :class="{selected: selectedIngredient?.id === i.id }">
                                         {{ i.name }}
                                     </li>
@@ -182,7 +101,7 @@
                             <strong>Type</strong>
                             <select v-model="form.type">
                                 <option disabled selected hidden></option>
-                                <option v-for="t in TYPE" :key="t" :value="t">
+                                <option v-for="t in INGREDIENT_TYPE" :key="t" :value="t">
                                     {{ t }}
                                 </option>
                             </select>
@@ -218,7 +137,7 @@
             :show-save="false"
             :show-modify="!!selectedIngredient"
             :show-remove="!!selectedIngredient"
-            @modify="modifyIngredient"
+            @modify="submit"
             @remove="removeIngredient"/>
         </div>
     </div>

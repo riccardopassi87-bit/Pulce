@@ -2,8 +2,8 @@
     import SearchPrompt from '@/commonViews/SearchPrompt.vue';
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
     import { useFormValidation } from '@/router/composable/useFormValidation';
-    import { ref, computed, watch, onMounted} from 'vue';
-    import { apiService } from '@/api/apiService';
+    import { ref, watch, onMounted, computed} from 'vue';
+    import { api, nameLoader } from '@/api/apiService';
     import { pizzaRules } from '@/constants/ruleSets';
     import { PIZZA_TYPE, INGREDIENT_TYPE } from '@/constants/types';
 
@@ -13,90 +13,72 @@
     const ingredients = ref([])
     const selectedIngredients = ref([])
     const pizzaBase = 8;
-    const existingPizza = ref([])
+    const existingName = ref([])
 
-    onMounted(async () => {
-        try {
-            const res = await fetch(API_BASE)
-            const data = await res.json()
-            existingPizza.value = data.map(pizza => pizza.name)
-        } catch (e) {
-            console.error("Could not load names for validation")
-        }
-    })
-
-    watch(selectedIngredients, (list) => {
-        form.ingredientIds = list.map(i => i.id)
-        validateField('ingredientIds')
-        }, { deep: true})
+    onMounted(() => nameLoader(existingName, API_BASE))
 
     const fetchIngredients = async () => {
-        if (!search.value && !selectedType.value) {
-        ingredients.value = []
-        return
+        if(!search.value && !selectedType.value){
+            ingredients.value = [];
+            return;
         }
-
-        const params = new URLSearchParams()
-        if (search.value) params.append('name', search.value)
-        if (selectedType.value) params.append('type', selectedType.value)
-
-        const res = await fetch(
-            `http://localhost:8080/api/ingredient/search?${params.toString()}`
-        )
-        ingredients.value = await res.json()
-    }
-    watch([search, selectedType], fetchIngredients, { immediate: true})
-
-    const addIngredient = (ingredients) => {
-        if (selectedIngredients.value.find(i => i.id === ingredients.id)) return
-        if (selectedIngredients.value.length >= 7) return
-
-        selectedIngredients.value.push(ingredients)
-    }
-
-    const removeIngredient = (id) => {
-        selectedIngredients.value = selectedIngredients.value.filter(i => i.id !== id)
-    }
-
-    const totalPrice = computed(() =>
-        selectedIngredients.value.reduce(
-            (sum, i) => sum + Number(i.portionPrice),
-            0
-        )
-    )
-
-    const buildPizzaPayload = () => {
-        return {
-            name: form.name,
-            sellingPrice: form.sellingPrice,
-            productionPrice: form. productionPrice,
-            type: form.type,
-            ingredientIds: selectedIngredients.value.map(i => i.id)
-        }
-    }
-
-    const schema = pizzaRules(existingPizza)
-
-    const { form, errors, submitted, validateField, submit } = useFormValidation(
-    schema.initialState,
-    schema.rules,
-    async () => {
-        const payload = buildPizzaPayload()
+        const params = new URLSearchParams();
+        if (search.value) params.append('name', search.value);
+        if (selectedType.value) params.append('type', selectedType.value);
 
         try {
-        await apiService(API_BASE, payload)
+            ingredients.value = await api.get(`http://localhost:8080/api/ingredient/search?${params.toString()}`);
+        } catch (e) { console.error(e);}
+    };
 
-        selectedIngredients.value = []
-        search.value = ''
-        selectedType.value = ''
-        
-        alert('Pizza saved successfully ✅')
-        existingPizza.value.push(payload.name);
-        } catch (e) {
-            alert('Failed to save pizza ❌')
+    watch([search, selectedType], fetchIngredients, { immediate: true});
+
+    const schema = pizzaRules(existingName);
+    const { form, errors, submit, submitted, validateField, resetForm} = useFormValidation(
+        schema.initialState,
+        schema.rules,
+        async (data) => {
+            try {
+                await api.post(API_BASE, data);
+                alert('Pizza saved successfully ✅');
+                existingName.value.push(data.name);
+                resetView();
+            } catch (e) {
+                alert('Failed to save pizza ❌');
+            }
         }
-    }
-    )
+    );
+
+    const suggestedPrice = computed(() => {
+        const ingredientCost = selectedIngredients.value.reduce(
+            (sum, i) => sum + Number(i.portionPrice),
+            0
+        );
+        return Number((pizzaBase + ingredientCost).toFixed(2));
+    })
+
+    watch(selectedIngredients, (newList) => {
+        form.ingredientIds = newList.map(i => i.id);
+
+        validateField('ingredientIds');
+    }, { deep: true, immediate: true });
+
+    const addIngredient = (ing) => {
+        if (selectedIngredients.value.length >= 7) return;
+        if (selectedIngredients.value.find(i => i.id === ing.id)) return;
+        selectedIngredients.value.push(ing);
+    };
+
+    const removeIngredient = (id) => {
+        selectedIngredients.value = selectedIngredients.value.filter(i => i.id !== id);
+    };
+
+    const resetView = () => {
+        resetForm();
+        selectedIngredients.value = [];
+        search.value = '';
+        selectedType.value = '';
+    };
 </script>
 
 <template>
@@ -116,7 +98,7 @@
                         <div class="pee"><p>Selling Price: </p></div>
                         <div class="pee-input"><input type="number" min="0" step="0.01" v-model.number="form.sellingPrice" @blur="validateField('sellingPrice')"
                         :class="{invalid: submitted && errors.sellingPrice}"
-                        :placeholder="(totalPrice + pizzaBase).toFixed(2)"/></div>
+                        :placeholder="suggestedPrice.toFixed(2)"/></div>
                         <div class="pee"><p v-if="submitted && errors.sellingPrice" class="error">
                             {{ errors.sellingPrice }}
                         </p></div>
@@ -169,13 +151,13 @@
             </div>
             <div class="fsf" id="preview-pizza">
                 <div id="name-price">
-                    <p>Ingredient price: <span id="ingredient-price-preview">{{ totalPrice.toFixed(2) }} €</span></p>
+                    <p>Ingredient price: <span id="ingredient-price-preview">{{ (suggestedPrice - pizzaBase).toFixed(2) }} €</span></p>
                     <p>Pizza base price: {{ pizzaBase.toFixed(2) }} €</p>
-                    <p>Total suggested price: <span id="total-suggested-price">{{ (totalPrice + pizzaBase).toFixed(2) }} €</span></p>
+                    <p>Total suggested price: <span id="total-suggested-price">{{ suggestedPrice.toFixed(2) }} €</span></p>
                 </div>
                 <div id="ingredient-list" :class="{ invalid: submitted && errors.ingredientIds}">
                     <ul id>
-                        <p v-if="submitted && errors.ingredientIds" class="error"></p>
+                        <p v-if="submitted && errors.ingredientIds" class="error"> {{ errors.ingredientIds }}</p>
                         <li v-for="i in selectedIngredients" :key="i.id">
                             <p @click="removeIngredient(i.id)">{{ i.name }}</p>
                         </li>
@@ -237,10 +219,13 @@
         padding: 0 1%;
         font-size: 1.2rem;
     }
+    #name-price p{
+        flex: 1;
+    }
     #total-suggested-price{
-        font-size: 1.5rem;
+        font-size: 1.2rem;
         font-weight: bold;
-        color: red;
+        color: rgb(255, 170, 0);
     }
     #ingredient-price-preview{
         color: rgb(187, 150, 80);

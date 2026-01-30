@@ -11,9 +11,9 @@ const emit = defineEmits(['save', 'modify', 'remove'])
 
 <template>
         <div class="fsf" id="footer">
-                <button type="submit" v-if="showSave" id="save">Save</button>
-                <button v-if="showRemove" @click="emit('remove')">Remove</button>
-                <button v-if="showModify" @click="emit('modify')">Modify</button>
+                <button v-if="showSave" @click="emit('save')">Save</button>
+                <button type="button" v-if="showRemove" @click="emit('remove')">Remove</button>
+                <button type="button" v-if="showModify" @click="emit('modify')">Modify</button>
         </div>
 </template>
 

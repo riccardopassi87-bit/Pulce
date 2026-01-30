@@ -1,39 +1,32 @@
 <script setup>
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
     import { useFormValidation } from '@/router/composable/useFormValidation';
-    import { apiService } from '@/api/apiService';
+    import { api, nameLoader } from '@/api/apiService';
+    import { productRules } from '@/constants/ruleSets';
     import { onMounted, ref } from 'vue';
     import { PRODUCT_TYPE } from '@/constants/types';
-    import { productRules } from '@/constants/ruleSets';
-
-    const API_BASE = 'http://localhost:8080/api/item'
-    const existingProduct = ref([])
-
-    onMounted(async () => {
-        try {
-            const res = await fetch(API_BASE)
-            const data = await res.json()
-            existingProduct.value = data.map(item => item.name)
-        } catch (e) {
-            console.error("Could not load names for validation")
-        }
-    })
-
-    const schema = productRules(existingProduct)
     
-    const { form, errors, submitted, validateField, submit } = useFormValidation(
-    schema.initialState,
-    schema.rules,
-    async (data) => {
+    const API_BASE = 'http://localhost:8080/api/item'
+    const existingName = ref([])
+
+    onMounted(() => nameLoader(existingName, API_BASE))
+
+    const schema = productRules(existingName)
+
+    const handleSave = async (formData) => {
       try {
-        await apiService(API_BASE, data)
+        await apiService(API_BASE, formData)
         alert('Product saved successfully ✅')
-        existingProduct.value.push(data.name);
+        existingName.value.push(formData.name);
         } catch (e) {
             alert('Failed to save product ❌')
         }
     }
-    )  
+    
+    const { form, errors, submitted, validateField, submit } = useFormValidation(
+    schema.initialState,
+    schema.rules,
+    handleSave)
 </script>
 
 <template>
