@@ -7,19 +7,19 @@
     import { ALLERGENE, INGREDIENT_TYPE } from '@/constants/types';
 
     const API_BASE = 'http://localhost:8080/api/ingredient'
-    const existingIngredientNames = ref([])
+    const existingIngredient = ref([])
 
     onMounted(async () => {
         try {
             const res = await fetch(API_BASE)
             const data = await res.json()
-            existingIngredientNames.value = data.map(ingredient => ingredient.name)
+            existingIngredient.value = data.map(ingredient => ingredient.name)
         } catch (e) {
             console.error("Could not load names for validation")
         }
     })
 
-    const schema = ingredientRules(existingIngredientNames)
+    const schema = ingredientRules(existingIngredient)
                        
     const {form, errors, submitted, validateField, submit } = useFormValidation(
     schema.initialState,
@@ -28,7 +28,7 @@
       try {
         await apiService(API_BASE, data)
         alert('Ingredient saved successfully ✅')
-        existingIngredientNames.value.push(data.name);
+        existingIngredient.value.push(data.name);
         } catch (e) {
             alert('Failed to save ingredient ❌')
         }

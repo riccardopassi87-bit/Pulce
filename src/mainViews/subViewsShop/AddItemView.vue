@@ -7,19 +7,19 @@
     import { productRules } from '@/constants/ruleSets';
 
     const API_BASE = 'http://localhost:8080/api/item'
-    const existingNames = ref([])
+    const existingProduct = ref([])
 
     onMounted(async () => {
         try {
             const res = await fetch(API_BASE)
             const data = await res.json()
-            existingNames.value = data.map(item => item.name)
+            existingProduct.value = data.map(item => item.name)
         } catch (e) {
             console.error("Could not load names for validation")
         }
     })
 
-    const schema = productRules(existingNames)
+    const schema = productRules(existingProduct)
     
     const { form, errors, submitted, validateField, submit } = useFormValidation(
     schema.initialState,
@@ -28,7 +28,7 @@
       try {
         await apiService(API_BASE, data)
         alert('Product saved successfully ✅')
-        existingNames.value.push(data.name);
+        existingProduct.value.push(data.name);
         } catch (e) {
             alert('Failed to save product ❌')
         }

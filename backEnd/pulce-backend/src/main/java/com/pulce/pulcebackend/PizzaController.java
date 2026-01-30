@@ -34,6 +34,11 @@ public class PizzaController {
         return ResponseEntity.ok(pizzaService.search(name, type));
     }
 
+    @GetMapping
+    public List<Pizza> getAllPizza (){
+        return pizzaService.findAll();
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<PizzaSearchDTO> updatePizza(@PathVariable int id, @Valid @RequestBody PizzaDTO dto) {
 

@@ -86,6 +86,10 @@ public class PizzaService {
         pizzaRepository.delete(pizza);
     }
 
+    public List<Pizza> findAll() {
+        return pizzaRepository.findAll();
+    }
+
     private PizzaSearchDTO mapToDTO(Pizza pizza) {
         List<IngredientSearchDTO> ingredientDTOs = pizza.getIngredients()
                 .stream()

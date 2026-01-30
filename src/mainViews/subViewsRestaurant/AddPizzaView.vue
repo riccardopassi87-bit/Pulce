@@ -2,7 +2,7 @@
     import SearchPrompt from '@/commonViews/SearchPrompt.vue';
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
     import { useFormValidation } from '@/router/composable/useFormValidation';
-    import { ref, computed, watch} from 'vue';
+    import { ref, computed, watch, onMounted} from 'vue';
     import { apiService } from '@/api/apiService';
     import { pizzaRules } from '@/constants/ruleSets';
     import { PIZZA_TYPE, INGREDIENT_TYPE } from '@/constants/types';
@@ -13,6 +13,17 @@
     const ingredients = ref([])
     const selectedIngredients = ref([])
     const pizzaBase = 8;
+    const existingPizza = ref([])
+
+    onMounted(async () => {
+        try {
+            const res = await fetch(API_BASE)
+            const data = await res.json()
+            existingPizza.value = data.map(pizza => pizza.name)
+        } catch (e) {
+            console.error("Could not load names for validation")
+        }
+    })
 
     watch(selectedIngredients, (list) => {
         form.ingredientIds = list.map(i => i.id)
@@ -64,9 +75,11 @@
         }
     }
 
+    const schema = pizzaRules(existingPizza)
+
     const { form, errors, submitted, validateField, submit } = useFormValidation(
-    pizzaRules.initialState,
-    pizzaRules.rules,
+    schema.initialState,
+    schema.rules,
     async () => {
         const payload = buildPizzaPayload()
 
@@ -78,6 +91,7 @@
         selectedType.value = ''
         
         alert('Pizza saved successfully ✅')
+        existingPizza.value.push(payload.name);
         } catch (e) {
             alert('Failed to save pizza ❌')
         }

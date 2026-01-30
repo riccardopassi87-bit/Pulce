@@ -90,9 +90,11 @@ onMounted(() => {
     padding: 0.5%;
 }
 #date-placeholder{
-    font-size: 3rem;
     justify-content: center;
     align-items: center;
+}
+#date-placeholder p{
+    font-size: 3rem;
 }
 .expiration-parent{
     flex-direction: column;
