@@ -15,7 +15,7 @@
 
     const handleSave = async (formData) => {
       try {
-        await apiService(API_BASE, formData)
+        await api.post(API_BASE, formData)
         alert('Product saved successfully ✅')
         existingName.value.push(formData.name);
         } catch (e) {
