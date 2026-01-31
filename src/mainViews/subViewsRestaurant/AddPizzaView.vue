@@ -1,44 +1,32 @@
 <script setup>
-    import SearchPrompt from '@/commonViews/SearchPrompt.vue';
-    import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
-    import { useFormValidation } from '@/router/composable/useFormValidation';
-    import { ref, watch, onMounted, computed} from 'vue';
+    import { ref, watch, onMounted, computed } from 'vue';
     import { api, nameLoader } from '@/api/apiService';
     import { pizzaRules } from '@/constants/ruleSets';
     import { PIZZA_TYPE, INGREDIENT_TYPE } from '@/constants/types';
 
+    import SearchPrompt from '@/commonViews/SearchPrompt.vue';
+    import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
+    import FormField from '@/commonViews/FormField.vue';
+
+    import { useFormValidation } from '@/router/composable/useFormValidation';
+
     const API_BASE = 'http://localhost:8080/api/pizza'
-    const search = ref('')
-    const selectedType = ref('')
-    const ingredients = ref([])
-    const selectedIngredients = ref([])
     const pizzaBase = 8;
-    const existingName = ref([])
+    const search = ref('');
+    const selectedType = ref('');
+    const ingredients = ref([]);
+    const selectedIngredients = ref([]);
+    const existingName = ref([]);
 
     onMounted(() => nameLoader(existingName, API_BASE))
 
-    const fetchIngredients = async () => {
-        if(!search.value && !selectedType.value){
-            ingredients.value = [];
-            return;
-        }
-        const params = new URLSearchParams();
-        if (search.value) params.append('name', search.value);
-        if (selectedType.value) params.append('type', selectedType.value);
+    const schema = pizzaRules(existingName)
 
-        try {
-            ingredients.value = await api.get(`http://localhost:8080/api/ingredient/search?${params.toString()}`);
-        } catch (e) { console.error(e);}
-    };
-
-    watch([search, selectedType], fetchIngredients, { immediate: true});
-
-    const schema = pizzaRules(existingName);
     const { form, errors, submit, submitted, validateField, resetForm} = useFormValidation(
         schema.initialState,
         schema.rules,
         async (data) => {
-            try {
+            try{
                 await api.post(API_BASE, data);
                 alert('Pizza saved successfully ✅');
                 existingName.value.push(data.name);
@@ -49,22 +37,33 @@
         }
     );
 
-    const suggestedPrice = computed(() => {
-        const ingredientCost = selectedIngredients.value.reduce(
-            (sum, i) => sum + Number(i.portionPrice),
-            0
-        );
-        return Number((pizzaBase + ingredientCost).toFixed(2));
-    })
+    const fetchIngredients = async () => {
+        if (!search.value && !selectedType.value){
+            ingredients.value = [];
+            return;
+        }
+        const params = new URLSearchParams();
+        if (search.value) params.append ('name', search.value);
+        if (selectedType.value) params.append ('type', selectedType.value);
+
+        try {
+            ingredients.value = await api.get(`http://localhost:8080/api/ingredient/search?${params.toString()}`);
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    watch([search, selectedType], fetchIngredients, { immediate: true});
 
     watch(selectedIngredients, (newList) => {
-        form.ingredientIds = newList.map(i => i.id);
-
-        validateField('ingredientIds');
-    }, { deep: true, immediate: true });
+        form.ingredientIds = newList.map (i => i.id);
+        if (submitted.value) {
+            validateField('ingredientIds');
+        }
+    }, { deep: true });
 
     const addIngredient = (ing) => {
-        if (selectedIngredients.value.length >= 7) return;
+        if(selectedIngredients.value.length >= 7) return;
         if (selectedIngredients.value.find(i => i.id === ing.id)) return;
         selectedIngredients.value.push(ing);
     };
@@ -72,6 +71,14 @@
     const removeIngredient = (id) => {
         selectedIngredients.value = selectedIngredients.value.filter(i => i.id !== id);
     };
+
+    const suggestedPrice = computed(() => {
+        const ingredientCost = selectedIngredients.value.reduce(
+            (sum, i) => sum + Number(i.portionPrice),
+            0
+        );
+        return Number((pizzaBase + ingredientCost).toFixed(2));
+    });
 
     const resetView = () => {
         resetForm();
@@ -86,47 +93,28 @@
         <div class="fsf" id="general-pizza">
             <div class="fsf" id="main-pizza">
                 <div class="fsf" id="create-pizza">
-                    <div class="field">
-                        <div class="pee"><p>Name: </p></div>
-                        <div class="pee-input"><input v-model="form.name" @blur="validateField('name')"
-                        :class="{invalid: submitted && errors.name}"/></div>
-                        <div class="pee"><p v-if="submitted && errors.name" class="error">
-                            {{ errors.name }}
-                        </p></div>
-                    </div>
-                    <div class="field">
-                        <div class="pee"><p>Selling Price: </p></div>
-                        <div class="pee-input"><input type="number" min="0" step="0.01" v-model.number="form.sellingPrice" @blur="validateField('sellingPrice')"
-                        :class="{invalid: submitted && errors.sellingPrice}"
-                        :placeholder="suggestedPrice.toFixed(2)"/></div>
-                        <div class="pee"><p v-if="submitted && errors.sellingPrice" class="error">
-                            {{ errors.sellingPrice }}
-                        </p></div>
-                    </div>
-                    <div class="field">
-                        <div class="pee"><p>Production Price: </p></div>
-                        <div class="pee-input"><input type="number" min="0" step="0.01" v-model.number="form.productionPrice" @blur="validateField('productionPrice'); validateField('sellingPrice')"
-                        :class="{invalid: submitted && errors.productionPrice}"/></div>
-                        <div class="pee"><p v-if="submitted && errors.productionPrice" class="error">
-                            {{ errors.productionPrice }}
-                        </p></div>
-                    </div>
-                    <div class="field">
-                        <div class="pee"><p>Type: </p></div>
-                        <div class="pee-input"><select v-model="form.type" @blur="validateField('type')"
-                        :class="{invalid: submitted && errors.type}">
-                            <option disabled selected hidden></option>
-                            <option v-for="t in PIZZA_TYPE" :key="t" :value="t">
-                                {{ t }}
-                            </option>
-                        </select></div>
-                        <div class="pee"><p v-if="submitted && errors.type" class="error">
-                            {{ errors.type }}
-                        </p></div>
-                    </div>
+                    <FormField label="Name:" :error="errors.name" :submitted="submitted" v-slot="{ isInvalid }">
+                        <input v-model="form.name" @input="validateField('name')" :class="{ invalid: isInvalid}"/>
+                    </FormField>
+                    <FormField label="Selling Price:" :error="errors.sellingPrice" :submitted="submitted" v-slot="{ isInvalid }">
+                        <input type="number" min="0" step="0.01"
+                            v-model.number="form.sellingPrice" @input="validateField('sellingPrice')" :class="{ invalid: isInvalid}"
+                            :placeholder="suggestedPrice.toFixed(2)"/>
+                    </FormField>
+                    <FormField label="Production Price:" :error="errors.productionPrice" :submitted="submitted" v-slot="{ isInvalid }">
+                        <input type="number" min="0" step="0.01" v-model.number="form.productionPrice" @input="validateField('productionPrice'); validateField('sellingPrice')"
+                        :class="{ invalid: isInvalid }"/>
+
+                    </FormField>
+                    <FormField label="Type:" :error="errors.type" :submitted="submitted" v-slot="{ isInvalid }">
+                        <select v-model="form.type" @change="validateField('type')" :class="{ invalid: isInvalid }">
+                            <option value=""></option>
+                            <option v-for="p in PIZZA_TYPE" :key="p" :value="p">{{ p }}</option>
+                        </select>
+                    </FormField>
                 </div>
                 <div class="fsf" id="add-ingredients">
-                    <p>Add Ingredient</p>
+                    <p>Add Ingredient (Max 6)</p>
                     <SearchPrompt>
                         <template #input>
                             <input class="own-input" v-model="search" placeholder="search by name"/>
@@ -142,7 +130,7 @@
                         <template #results>
                             <ul>
                                 <li v-for="i in ingredients" :key="i.id">
-                                    <p @click="addIngredient(i)">{{ i.name }} - {{ i.portionPrice }} €</p>
+                                    <p @click="addIngredient(i)">{{ i.name }} - {{ i.portionPrice.toFixed(2) }} €</p>
                                 </li>
                             </ul>
                         </template>
@@ -157,9 +145,9 @@
                 </div>
                 <div id="ingredient-list" :class="{ invalid: submitted && errors.ingredientIds}">
                     <ul id>
-                        <p v-if="submitted && errors.ingredientIds" class="error"> {{ errors.ingredientIds }}</p>
-                        <li v-for="i in selectedIngredients" :key="i.id">
-                            <p @click="removeIngredient(i.id)">{{ i.name }}</p>
+                        <p v-if="submitted && errors.ingredientIds" class="error">{{ errors.ingredientIds }}</p>
+                        <li v-for="i in selectedIngredients" :key="i.id" @click="removeIngredient(i.id)">
+                            <p>{{ i.name }}</p>
                         </li>
                     </ul>
                 </div>

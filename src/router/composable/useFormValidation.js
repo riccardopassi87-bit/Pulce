@@ -80,8 +80,8 @@ export function useFormValidation(initialState, rules, onSubmit) {
 
     // handle submit
     const submit = async () => {
-        submitted.value = true
-        if (!validateForm()) return
+        submitted.value = true;
+        if (!validateForm()) return;
 
         if (onSubmit){
             await onSubmit({...form})
