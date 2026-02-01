@@ -29,8 +29,11 @@ export const api = {
     
     async delete(url) {
         const res = await fetch(url, { method: 'DELETE'});
-        if(!res.ok) throw new Error(`Delete failed: ${res.status}`);
-        return true;
+        if(!res.ok) {
+            const errorData = await res.json().catch(() => ({}));
+            throw new Error(errorData.message || `Delete failed: ${res.status}`);
+        }
+        return res.status === 204 ? true : res.json();
     }
 };
 

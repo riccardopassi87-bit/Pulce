@@ -14,7 +14,7 @@
     const existingNames = ref([]);
     const schema = ingredientRules();
 
-    const { form, errors, submit, reset, remove, search, selectedType,
+    const { form, errors, submit, reset, search, selectedType,
         searchResults: ingredients, fetchSearchResults, selectItem
      } = useForm({
         initialState: schema.initialState,
@@ -23,6 +23,28 @@
         API_BASE: API_BASE,
         SEARCH_URL: `${API_BASE}/search`,
         onSubmit: async (data) => {
+
+            const originalPrice = ingredients.value.find(i => i.id === data.id);
+            const changedPrice = originalPrice && (originalPrice.portionPrice !== data.portionPrice ||
+                originalPrice.kgPrice !== data.kgPrice
+            );
+
+            if (changedPrice) {
+                try {
+                    const affectedPizzas = await api.get(`${API_BASE}/${data.id}/impact`);
+
+                    if(affectedPizzas.length > 0) {
+                        const pizzaList = affectedPizzas.map(name => `• ${name}`).join('\n');
+                        const proceed = confirm(
+                            `Changing the price will affect the following pizzas:\n\n${pizzaList}\n\nDo you want to proceed?`
+                        );
+                        if (!proceed) return;
+                    }
+                } catch (e) {
+                    console.error("Impact check failed", e);
+                }
+            }
+
             try {
                 await api.put(`${API_BASE}/${data.id}`, data);
                 alert('Ingredient uploaded ✅');
@@ -32,6 +54,20 @@
     });
 
     watch([search, selectedType], fetchSearchResults);
+    
+    const handleRemove = async () => {
+    if (!form.id || !confirm("Are you sure?")) return;
+
+    try {
+        await api.delete(`${API_BASE}/${form.id}`);
+
+        alert('Ingredient deleted! ✅');
+        handleResetAll();
+        fetchSearchResults();
+    } catch (e) {
+        alert(e.message); 
+    }
+};
 
 </script>
 
@@ -115,7 +151,7 @@
             :show-modify="!!form.id"
             :show-remove="!!form.id"
             @modify="submit"
-            @remove="remove(form.id)"/>
+            @remove="handleRemove"/>
         </div>
     </div>
 </template>
