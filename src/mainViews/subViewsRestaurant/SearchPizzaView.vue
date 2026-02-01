@@ -3,8 +3,7 @@
   import SearchPrompt from '@/commonViews/SearchPrompt.vue';
   import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
   import { computed, ref, onMounted } from 'vue';
-  import { useFormValidation } from '@/router/composable/useFormValidation';
-  import { useFormManagement } from '@/router/composable/useFormManagement';
+
   import { pizzaRules } from '@/constants/ruleSets';
   import { api } from '@/api/apiService';
   import { PIZZA_TYPE } from '@/constants/types';

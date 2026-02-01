@@ -1,7 +1,6 @@
 <script setup>
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
-    import { useFormValidation } from '@/router/composable/useFormValidation';
-    import { api, nameLoader } from '@/api/apiService';
+
     import { ingredientRules } from '@/constants/ruleSets';
     import { onMounted, ref } from 'vue';
     import { ALLERGENE, INGREDIENT_TYPE } from '@/constants/types';

@@ -1,75 +1,54 @@
 <script setup>
-    import { ref, watch, onMounted, computed } from 'vue';
-    import { api, nameLoader } from '@/api/apiService';
+    import { ref, watch, computed } from 'vue';
+    import { api } from '@/api/apiService';
     import { pizzaRules } from '@/constants/ruleSets';
     import { PIZZA_TYPE, INGREDIENT_TYPE } from '@/constants/types';
+    import { useForm } from '@/router/composable/useForm';
 
     import SearchPrompt from '@/commonViews/SearchPrompt.vue';
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
     import FormField from '@/commonViews/FormField.vue';
 
-    import { useFormValidation } from '@/router/composable/useFormValidation';
-
     const API_BASE = 'http://localhost:8080/api/pizza'
+    const ING_SEARCH_URL = 'http://localhost:8080/api/ingredient/search';
     const pizzaBase = 8;
-    const search = ref('');
-    const selectedType = ref('');
-    const ingredients = ref([]);
+    const existingNames = ref([])
     const selectedIngredients = ref([]);
-    const existingName = ref([]);
 
-    onMounted(() => nameLoader(existingName, API_BASE))
+    const schema = pizzaRules(existingNames);
 
-    const schema = pizzaRules(existingName)
-
-    const { form, errors, submit, submitted, validateField, resetForm} = useFormValidation(
-        schema.initialState,
-        schema.rules,
-        async (data) => {
-            try{
+    const { form, errors, submit, submitted, search, selectedType,
+        searchResults, validateField, reset, fetchSearchResults
+    } = useForm({
+        initialState: schema.initialState,
+        rules: schema.rules,
+        existingNamesRef: existingNames,
+        API_BASE: API_BASE,
+        SEARCH_URL: ING_SEARCH_URL,
+        onSubmit: async (data) => {
+            try {
                 await api.post(API_BASE, data);
-                alert('Pizza saved successfully ✅');
-                existingName.value.push(data.name);
-                resetView();
-            } catch (e) {
-                alert('Failed to save pizza ❌');
-            }
+                alert('Pizza saved succesfully ✅');
+                existingNames.value.push(data.name);
+                handleReset();
+            } catch (e) { alert('Error saving'); }
         }
-    );
+    });
 
-    const fetchIngredients = async () => {
-        if (!search.value && !selectedType.value){
-            ingredients.value = [];
-            return;
-        }
-        const params = new URLSearchParams();
-        if (search.value) params.append ('name', search.value);
-        if (selectedType.value) params.append ('type', selectedType.value);
-
-        try {
-            ingredients.value = await api.get(`http://localhost:8080/api/ingredient/search?${params.toString()}`);
-        } catch (e) {
-            console.error(e);
-        }
-    };
-
-    watch([search, selectedType], fetchIngredients, { immediate: true});
-
-    watch(selectedIngredients, (newList) => {
-        form.ingredientIds = newList.map (i => i.id);
-        if (submitted.value) {
-            validateField('ingredientIds');
-        }
-    }, { deep: true });
+    watch([search, selectedType], fetchSearchResults);
 
     const addIngredient = (ing) => {
         if(selectedIngredients.value.length >= 7) return;
         if (selectedIngredients.value.find(i => i.id === ing.id)) return;
         selectedIngredients.value.push(ing);
+        form.ingredientIds.push(ing.id);
+        if (submitted.value) validateField('ingredientIds');
     };
 
     const removeIngredient = (id) => {
         selectedIngredients.value = selectedIngredients.value.filter(i => i.id !== id);
+        form.ingredientIds = form.ingredientIds.filter(itemId => itemId !== id);
+        if (submitted.value) validateField('ingredientIds');
     };
 
     const suggestedPrice = computed(() => {
@@ -80,11 +59,9 @@
         return Number((pizzaBase + ingredientCost).toFixed(2));
     });
 
-    const resetView = () => {
-        resetForm();
+    const handleReset = () => {
+        reset();
         selectedIngredients.value = [];
-        search.value = '';
-        selectedType.value = '';
     };
 </script>
 
@@ -129,7 +106,7 @@
                         </template>
                         <template #results>
                             <ul>
-                                <li v-for="i in ingredients" :key="i.id">
+                                <li v-for="i in searchResults" :key="i.id">
                                     <p @click="addIngredient(i)">{{ i.name }} - {{ i.portionPrice.toFixed(2) }} €</p>
                                 </li>
                             </ul>

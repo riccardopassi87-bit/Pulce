@@ -1,10 +1,12 @@
 <script setup>
-    import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
-    import { useFormValidation } from '@/router/composable/useFormValidation';
+    import { onMounted, ref } from 'vue';
     import { api, nameLoader } from '@/api/apiService';
     import { productRules } from '@/constants/ruleSets';
-    import { onMounted, ref } from 'vue';
     import { PRODUCT_TYPE } from '@/constants/types';
+
+    import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
+
+
     
     const API_BASE = 'http://localhost:8080/api/item'
     const existingName = ref([])

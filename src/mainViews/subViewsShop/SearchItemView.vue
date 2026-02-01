@@ -3,8 +3,7 @@
     import SearchPrompt from '@/commonViews/SearchPrompt.vue';
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
     import { PRODUCT_TYPE } from '@/constants/types';
-    import { useFormValidation } from '@/router/composable/useFormValidation';
-    import { useFormManagement } from '@/router/composable/useFormManagement';
+
     import { productRules } from '@/constants/ruleSets';
     import { api } from '@/api/apiService';
 

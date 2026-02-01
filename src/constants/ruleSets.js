@@ -1,11 +1,11 @@
-import { validators } from "@/router/composable/useFormValidation";
+import { validators } from "./validators";
 import { PRODUCT_TYPE, PIZZA_TYPE, INGREDIENT_TYPE, ALLERGENE } from "./types";
 
-export const ingredientRules = (existingNameArray) => ({
+export const ingredientRules = (existingNamesArray) => ({
     initialState: {name: '', portionPrice: null, kgPrice: null, type: '', allergene: ''},
     rules: {
         name: [{ validator: validators.required, message: 'Name is required' },
-               { validator: (val) => validators.unique(existingNameArray)(val),
+               { validator: (val) => validators.unique(existingNamesArray)(val),
                 message: 'Name already taken!'}],
         portionPrice: [
             { validator: validators.required, message: 'Required' },
@@ -23,11 +23,11 @@ export const ingredientRules = (existingNameArray) => ({
     }
 });
 
-export const productRules = (existingNameArray) => ({
+export const productRules = (existingNamesArray) => ({
     initialState: {name: '', originalPrice: null, sellingPrice: null, type: '', expirationDate: '', amount: null},
     rules: {
         name: [{ validator: validators.required, message: 'Name is required'},
-               { validator: (val) => validators.unique(existingNameArray)(val),
+               { validator: (val) => validators.unique(existingNamesArray)(val),
                 message: 'Name already taken!'}],
         originalPrice: [
             { validator: validators.required, message: 'Required'},
@@ -49,11 +49,11 @@ export const productRules = (existingNameArray) => ({
     }
 });
 
-export const pizzaRules = (existingNameArray) => ({
+export const pizzaRules = (existingNamesArray) => ({
     initialState: {name: '', sellingPrice: null, productionPrice: null, type: '', ingredientIds: []},
     rules: {
         name: [{ validator: validators.required, message: 'Name is required'},
-               { validator: (val) => validators.unique(existingNameArray)(val),
+               { validator: (val) => validators.unique(existingNamesArray)(val),
                 message: 'Name already taken!'}],
         sellingPrice: [
             { validator: validators.required, message: 'Required'},

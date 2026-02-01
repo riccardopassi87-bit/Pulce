@@ -2,8 +2,7 @@
     import SearchPrompt from '@/commonViews/SearchPrompt.vue';
     import SearchTemplate from '@/commonViews/SearchTemplate.vue';
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
-    import { useFormValidation } from '@/router/composable/useFormValidation';
-    import { useFormManagement } from '@/router/composable/useFormManagement';
+
     import { ingredientRules } from '@/constants/ruleSets';
     import { INGREDIENT_TYPE, ALLERGENE } from '@/constants/types';
     import { api } from '@/api/apiService';
