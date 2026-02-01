@@ -1,34 +1,33 @@
 <script setup>
-    import { onMounted, ref } from 'vue';
-    import { api, nameLoader } from '@/api/apiService';
     import { productRules } from '@/constants/ruleSets';
+    import { ref } from 'vue';
+    import { api } from '@/api/apiService';
     import { PRODUCT_TYPE } from '@/constants/types';
+    import { useForm } from '@/router/composable/useForm';
 
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
+    import FormField from '@/commonViews/FormField.vue';
 
-
-    
     const API_BASE = 'http://localhost:8080/api/item'
-    const existingName = ref([])
+    const existingNames = ref([])
 
-    onMounted(() => nameLoader(existingName, API_BASE))
-
-    const schema = productRules(existingName)
-
-    const handleSave = async (formData) => {
-      try {
-        await api.post(API_BASE, formData)
-        alert('Product saved successfully ✅')
-        existingName.value.push(formData.name);
-        } catch (e) {
-            alert('Failed to save product ❌')
-        }
-    }
+    const schema = productRules(existingNames)
     
-    const { form, errors, submitted, validateField, submit } = useFormValidation(
-    schema.initialState,
-    schema.rules,
-    handleSave)
+    const { form, errors, submit, submitted, validateField, reset 
+    } = useForm({
+    initialState: schema.initialState,
+    rules: schema.rules,
+    existingNamesRef: existingNames,
+    API_BASE: API_BASE,
+    onSubmit: async (data) => {
+        try{
+            await api.post(API_BASE, data);
+            alert('Product saved succesfully ✅');
+            existingNames.value.push(data.name);
+            reset();
+        }catch (e) { alert('Error saving');}
+    }
+});
 </script>
 
 <template>

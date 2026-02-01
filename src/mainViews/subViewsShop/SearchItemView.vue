@@ -1,51 +1,37 @@
 <script setup>
+    import { ref, watch } from 'vue';
+    import { api } from '@/api/apiService';
+    import { productRules } from '@/constants/ruleSets';
+    import { PRODUCT_TYPE } from '@/constants/types';
+    import { useForm } from '@/router/composable/useForm';
+
     import SearchTemplate from '@/commonViews/SearchTemplate.vue';
     import SearchPrompt from '@/commonViews/SearchPrompt.vue';
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
-    import { PRODUCT_TYPE } from '@/constants/types';
+    import FormField from '@/commonViews/FormField.vue';
 
-    import { productRules } from '@/constants/ruleSets';
-    import { api } from '@/api/apiService';
-
-    const API_BASE = 'http://localhost:8080/api/item'
+    const API_BASE = 'http://localhost:8080/api/item';
+    const existingNames = ref([]);
     const schema = productRules([]);
 
-    const { form, submit, resetForm } = useFormValidation(
-        schema.initialState,
-        schema.rules,
-        async (data) => {
-            await handleUpdate(data);
+    const { form, errors, submit, reset, remove, search, selectedType,
+        searchResults: products, fetchSearchResults, selectItem
+    } = useForm ({
+        initialState: schema.initialState,
+        rules: schema.rules,
+        existingNamesRef: existingNames,
+        API_BASE: API_BASE,
+        SEARCH_URL: `${API_BASE}/search`,
+        onSubmit: async (data) => {
+            try {
+                await api.put(`${API_BASE}/${data.id}`, data);
+                alert('Product uploaded ✅');
+                reset();
+            } catch (e) {alert(e.message);}
         }
-    );
+    });
 
-    const { search, selectedType, items: products, selectedItem: selectedProduct, selectItem, resetSelection } = useFormManagement(
-        API_BASE,
-        (item) => Object.assign(form, {...item})
-    );
-
-    const handleUpdate = async (data) => {
-        try {
-            await api.put(`${API_BASE}/${selectedProduct.value.id}`, data);
-            alert('Updated! ✅');
-            resetSelection();
-            resetForm();
-        } catch (e) {
-            alert('Update failed ❌');
-        }
-    };
-
-    const removeProduct = async () => {
-        if(!selectedProduct.value || !confirm('Are you sure?')) return;
-
-        try {
-            await api.delete(`${API_BASE}/${selectedProduct.value.id}`);
-        alert('Deleted! ✅');
-            resetSelection();
-            resetForm();
-        } catch (e) {
-            alert('Connection error ❌');
-        }
-    }
+    watch([search, selectedType], fetchSearchResults);
 
 </script>
 
@@ -70,7 +56,7 @@
                             <div class="fsf">
                                 <ul>
                                     <li v-for="p in products" :key="p.id" @click="selectItem(p)"
-                                    :class="{selected: selectedProduct?.id === p.id}">
+                                    :class="{selected: form.id === p.id}">
                                         {{ p.name }}
                                     </li>
                                 </ul>
@@ -80,9 +66,9 @@
                 </template>
                 
                 <template #result>
-                    <div class="fsf search-result" v-if="selectedProduct">
+                    <div class="fsf search-result" v-if="form.id">
                         <div class="title">
-                            <h3>{{ selectedProduct.name }}</h3>
+                            <h3>{{ form.name }}</h3>
                         </div>
                         <label>
                             <strong>Name</strong>
@@ -123,10 +109,10 @@
         <div class="footer-buttons">
             <ButtonsFooter
             :show-save="false"
-            :show-modify="!!selectedProduct"
-            :show-remove="!!selectedProduct"
+            :show-modify="!!form.id"
+            :show-remove="!!form.id"
             @modify="submit"
-            @remove="removeProduct"/>
+            @remove="remove(form.id)"/>
         </div>
     </div>
 </template>

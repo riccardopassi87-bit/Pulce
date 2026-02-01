@@ -1,77 +1,73 @@
 <script setup>
+  import { computed, ref, onMounted,watch } from 'vue';
+  import { api } from '@/api/apiService';
+  import { pizzaRules } from '@/constants/ruleSets';
+  import { PIZZA_TYPE } from '@/constants/types';
+  import { useForm } from '@/router/composable/useForm';
+
   import SearchTemplate from '@/commonViews/SearchTemplate.vue';
   import SearchPrompt from '@/commonViews/SearchPrompt.vue';
   import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
-  import { computed, ref, onMounted } from 'vue';
-
-  import { pizzaRules } from '@/constants/ruleSets';
-  import { api } from '@/api/apiService';
-  import { PIZZA_TYPE } from '@/constants/types';
-
-  const API_BASE = 'http://localhost:8080/api/pizza';
+  import FormField from '@/commonViews/FormField.vue';
   
+  const API_BASE = 'http://localhost:8080/api/pizza';
   const allIngredients = ref([]);
+
   onMounted(async () => {
     allIngredients.value = await api.get('http://localhost:8080/api/ingredient');
   });
 
+  const existingNames = ref([]);
   const schema = pizzaRules([]);
-  const { form, errors, submit, resetForm } = useFormValidation(
-    schema.initialState,
-    schema.rules,
-    async (data) => await handleUpdate(data)
-  );
- 
-  const { search, selectedType, items: pizzas, selectedItem: selectedPizza, selectItem, resetSelection} = 
-    useFormManagement(API_BASE, (pizza) => {
-      Object.assign(form, {
-        ...pizza,
-        sellingPrice: Number(pizza.sellingPrice),
-        productionPrice: Number(pizza.productionPrice),
-        ingredientIds: pizza.ingredients.map(i => i.id)
-      });
-    });
-  
-  const addIngredient = (ingredientId) => {
-    const id = Number(ingredientId)
 
-    if(form.ingredientIds.length >= 7){
-      alert("NOOOOOOOOO!!!!!!")
-      return;}
-
-    if(!form.ingredientIds.includes(id)){
-      form.ingredientIds.push(id);
-      event.target.value = "";
+  const { form, errors, submit, submitted, reset, remove,
+        search, selectedType, searchResults: pizzas, fetchSearchResults,
+        selectItem, validateField
+   } = useForm({
+    initialState: schema.initialState,
+    rules: schema.rules,
+    existingNamesRef: existingNames,
+    API_BASE: API_BASE,
+    SEARCH_URL: `${API_BASE}/search`,
+    onSubmit: async (data) => {
+      try {
+        await api.put(`${API_BASE}/${data.id}`, data);
+        alert('Pizza updated succesfully ✅');
+        reset();
+      } catch (e) { alert(e.message); }
     }
+  });
+
+  watch([search, selectedType], fetchSearchResults);
+
+  const handleSelect = (pizza) => {
+    selectItem(pizza, (p) => ({
+      ...p,
+      sellingPrice: Number(p.sellingPrice),
+      productionPrice: Number(p.productionPrice),
+      ingredientIds: p.ingredients.map(i => i.id)
+    }));
+  };
+
+  const addIngredient = (event) => {
+    const id = Number(event.target.value);
+    if(!id || form.ingredientIds.length >= 6) return;
+
+    if (!form.ingredientIds.includes(id)){
+      form.ingredientIds.push(id);
+      if (submitted.value) validateField('ingredientIds');
+    }
+      event.target.value = "";
   };
 
   const removeIngredient = (id) => {
     form.ingredientIds = form.ingredientIds.filter(itemId => itemId !== id);
+    if (submitted.value) validateField('ingredientIds');
   };
 
   const currentIngredients = computed(() =>
-  allIngredients.value.filter(i => form.ingredientIds.includes(i.id))
-  );
-
-  const handleUpdate = async (data) => {
-    try{
-      await api.put(`${API_BASE}/${selectedPizza.value.id}`, data);
-      alert('Pizza updated successfully! ✅');
-        resetSelection();
-        resetForm();
-    } catch (e) { alert(e.message); }
-  };
-
-  const removePizza = async () => {
-    if (!selectedPizza.value || !confirm('Delete pizza?')) return;
-
-    try{
-      await api.delete(`${API_BASE}/${selectedPizza.value.id}`);
-        alert('Pizza deleted! ✅');
-        resetSelection();
-        resetForm();
-    } catch (e) { alert(e.message); }
-  }
+    allIngredients.value.filter(i => form.ingredientIds.includes(i.id))
+    );
 </script>
 
 <template>
@@ -95,8 +91,8 @@
                   <template #results>
                     <div class="fsf">
                       <ul>
-                        <li v-for="p in pizzas" :key="p.id" @click="selectItem(p)"
-                        :class="{selected: selectedPizza?.id === p.id}">
+                        <li v-for="p in pizzas" :key="p.id" @click="handleSelect(p)"
+                        :class="{selected: form.id === p.id}">
                           {{ p.name }}
                         </li>
                       </ul>
@@ -107,9 +103,9 @@
 
           <template #result>
             
-            <div class="fsf search-result" v-if="selectedPizza">
+            <div class="fsf search-result" v-if="form.id">
               <div class="title">
-                  <h3>{{ selectedPizza.name }}</h3>
+                  <h3>{{ form.name }}</h3>
                 </div>
               <div id="mid-layer">
                 <div id="left-mod-panel">
@@ -147,7 +143,7 @@
                   </div>
                   <div id="new-content">
                     <strong>Add Ingredient</strong>
-                    <select @change="addIngredient($event.target.value)">
+                    <select @change="addIngredient">
                       <option disabled selected hidden></option>
                       <option v-for="i in allIngredients" :key="i.id" :value="i.id"
                       v-show="!form.ingredientIds.includes(i.id)">
@@ -165,10 +161,10 @@
       <div class="footer-buttons">
         <ButtonsFooter
         :show-save="false"
-        :show-modify="!!selectedPizza"
-        :show-remove="!!selectedPizza"
+        :show-modify="!!form.id"
+        :show-remove="!!form.id"
         @modify="submit"
-        @remove="removePizza"/>
+        @remove="remove(form.id)"/>
       </div>
     </div>
 </template>

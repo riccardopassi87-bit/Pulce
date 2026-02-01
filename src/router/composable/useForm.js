@@ -48,6 +48,8 @@ export function useForm({ initialState, rules, API_BASE, SEARCH_URL, onSubmit, e
             searchResults.value = [];
             return;
         }
+        if(!SEARCH_URL) return;
+
         const params = new URLSearchParams();
         if(search.value) params.append('name', search.value);
         if(selectedType.value) params.append('type', selectedType.value);
@@ -75,7 +77,32 @@ export function useForm({ initialState, rules, API_BASE, SEARCH_URL, onSubmit, e
         searchResults.value = [];
     };
 
+    // Modify
+    const selectItem = (item, customMapping) => {
+        if (customMapping) {
+            Object.assign(form, customMapping(item));
+        } else {
+            Object.assign(form, toRaw(item));
+        }
+        submitted.value = false;
+        
+        Object.keys(errors).forEach(k => errors[k] = '');
+    };
+
+    // Delete
+    const remove = async (id) => {
+        if (!id || !confirm('Are you sure you want to remove this item?')) return;
+        try {
+            await api.delete(`${API_BASE}/${id}`);
+            alert('Deleted successfully ✅');
+            reset();
+            await fetchSearchResults();
+        } catch (e) {
+            alert(e.message);
+        }
+    };
+
     return{ form, errors, submitted, existingNames, search, selectedType, searchResults,
-            validateField, submit, reset, fetchSearchResults
+            validateField, submit, reset, fetchSearchResults, selectItem, remove
     };
 }

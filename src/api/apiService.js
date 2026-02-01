@@ -6,6 +6,7 @@ export const api = {
         if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
         return res.json();
     },
+
     async post(url, data) {
         const res = await fetch(url, {
             method: 'POST',
@@ -15,6 +16,7 @@ export const api = {
         if(!res.ok) throw new Error(`Save failed: ${res.status}`);
         return res.json();
     },
+
     async put(url, data) {
         const res = await fetch(url, {
             method: 'PUT',
@@ -24,6 +26,7 @@ export const api = {
         if(!res.ok) throw new Error(`Update failed: ${res.status}`);
         return res.json();
     },
+    
     async delete(url) {
         const res = await fetch(url, { method: 'DELETE'});
         if(!res.ok) throw new Error(`Delete failed: ${res.status}`);

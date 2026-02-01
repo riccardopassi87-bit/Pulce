@@ -1,31 +1,34 @@
 <script setup>
-    import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
-
     import { ingredientRules } from '@/constants/ruleSets';
-    import { onMounted, ref } from 'vue';
+    import { ref } from 'vue';
+    import { api } from '@/api/apiService';
     import { ALLERGENE, INGREDIENT_TYPE } from '@/constants/types';
-
+    import { useForm } from '@/router/composable/useForm';
+    
+    import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
+    import FormField from '@/commonViews/FormField.vue';
+    
     const API_BASE = 'http://localhost:8080/api/ingredient'
-    const existingName = ref([])
+    const existingNames = ref([])
 
-    onMounted(() => nameLoader(existingName, API_BASE))
+    const schema = ingredientRules(existingNames)
 
-    const schema = ingredientRules(existingName)
-
-    const handleSave = async (formData) => {
+    const {form, errors, submit, submitted, validateField, reset
+    } = useForm({
+    initialState: schema.initialState,
+    rules: schema.rules,
+    existingNamesRef: existingNames,
+    API_BASE: API_BASE,
+    onSubmit: async (data) => {
         try {
-        await api.post(API_BASE, formData)
-        alert('Ingredient saved successfully ✅')
-        existingName.value.push(formData.name);
-        } catch (e) {
-            alert('Failed to save ingredient ❌')
-        }
+            await api.post(API_BASE, data);
+            alert('Ingredient saved succesfully ✅');
+            existingNames.value.push(data.name);
+            reset();
+        } catch (e) { alert('Error saving'); }
     }
-                       
-    const {form, errors, submitted, validateField, submit } = useFormValidation(
-    schema.initialState,
-    schema.rules,
-    handleSave)
+});
+                          
 </script>
 
 <template>

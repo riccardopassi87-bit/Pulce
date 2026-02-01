@@ -1,60 +1,38 @@
 <script setup>
+    import { ref, watch } from 'vue';
+    import { api } from '@/api/apiService';
+    import { ingredientRules } from '@/constants/ruleSets';
+    import { INGREDIENT_TYPE, ALLERGENE } from '@/constants/types';
+    import { useForm } from '@/router/composable/useForm';
+
     import SearchPrompt from '@/commonViews/SearchPrompt.vue';
     import SearchTemplate from '@/commonViews/SearchTemplate.vue';
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
-
-    import { ingredientRules } from '@/constants/ruleSets';
-    import { INGREDIENT_TYPE, ALLERGENE } from '@/constants/types';
-    import { api } from '@/api/apiService';
-
-    const API_BASE = 'http://localhost:8080/api/ingredient';
-
-    const schema = ingredientRules([]);
-
-    const { form, submit, resetForm} = useFormValidation(
-        schema.initialState,
-        schema.rules,
-        async (data) => {
-            await handleUpdate(data);
-        }
-    );
-
-    const { search, selectedType, items: ingredients, selectedItem: selectedIngredient, selectItem, resetSelection} = useFormManagement(
-        API_BASE,
-        (item) => Object.assign(form, { ...item })
-    );
-
-    const handleUpdate = async (data) => {
-        try {
-            const isPriceChanged = data.portionPrice !== selectedIngredient.value.portionPrice;
-            if (isPriceChanged) {
-                const impactRes = await fetch(`${API_BASE}/${selectedIngredient.value.id}/impact`);
-                const pizzas = await impactRes.json();
-                if (pizzas.length > 0 && !confirm(`Affects: ${pizzas.join(', ')}. Continue?`)) return;  
-            }
-
-            await api.put(`${API_BASE}/${selectedIngredient.value.id}`, data);
-        alert('Updated! ✅');
-        resetSelection();
-        resetForm();
-        } catch (e) {
-            alert('Update failed ❌');
-        }
-    };
-
-    const removeIngredient = async () => {
-        if (!selectedIngredient.value || !confirm('Are you sure?')) return;
-
-        try {
-            await api.delete(`${API_BASE}/${selectedIngredient.value.id}`);
-            alert('Deleted! ✅');
-            resetSelection();
-            resetForm();
-        } catch (e) {
-            alert('Connection error ❌');
-        }
-};
+    import FormField from '@/commonViews/FormField.vue';
     
+    const API_BASE = 'http://localhost:8080/api/ingredient';
+    const existingNames = ref([]);
+    const schema = ingredientRules();
+
+    const { form, errors, submit, reset, remove, search, selectedType,
+        searchResults: ingredients, fetchSearchResults, selectItem
+     } = useForm({
+        initialState: schema.initialState,
+        rules: schema.rules,
+        existingNamesRef: existingNames,
+        API_BASE: API_BASE,
+        SEARCH_URL: `${API_BASE}/search`,
+        onSubmit: async (data) => {
+            try {
+                await api.put(`${API_BASE}/${data.id}`, data);
+                alert('Ingredient uploaded ✅');
+                reset();
+            } catch (e) {alert(e.message);}
+        }
+    });
+
+    watch([search, selectedType], fetchSearchResults);
+
 </script>
 
 <template>
@@ -78,7 +56,7 @@
                             <div class="fsf">
                                 <ul>
                                     <li v-for="i in ingredients" :key="i.id" @click="selectItem(i)"
-                                    :class="{selected: selectedIngredient?.id === i.id }">
+                                    :class="{selected: form.id === i.id }">
                                         {{ i.name }}
                                     </li>
                                 </ul>
@@ -88,9 +66,9 @@
                 </template>
 
                 <template #result>
-                    <div class="fsf search-result" v-if="selectedIngredient">
+                    <div class="fsf search-result" v-if="form.id">
                         <div class="title">
-                            <h3>{{ selectedIngredient.name }}</h3>
+                            <h3>{{ form.name }}</h3>
                         </div>
                          <label>
                             <strong>Name</strong>
@@ -134,10 +112,10 @@
         <div class="footer-buttons">
             <ButtonsFooter 
             :show-save="false"
-            :show-modify="!!selectedIngredient"
-            :show-remove="!!selectedIngredient"
+            :show-modify="!!form.id"
+            :show-remove="!!form.id"
             @modify="submit"
-            @remove="removeIngredient"/>
+            @remove="remove(form.id)"/>
         </div>
     </div>
 </template>
