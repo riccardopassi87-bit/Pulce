@@ -38,7 +38,7 @@
     watch([search, selectedType], fetchSearchResults);
 
     const addIngredient = (ing) => {
-        if(selectedIngredients.value.length >= 7) return;
+        if(selectedIngredients.value.length >= 6) return;
         if (selectedIngredients.value.find(i => i.id === ing.id)) return;
         selectedIngredients.value.push(ing);
         form.ingredientIds.push(ing.id);
@@ -97,7 +97,7 @@
                         </template>
                         <template #filter>
                             <select v-model="selectedType" id="ingredient-select">
-                                <option disabled selected hidden></option>
+                                <option value=""></option>
                                 <option v-for="t in INGREDIENT_TYPE" :key="t" :value="t">
                                     {{ t }}
                                 </option>
@@ -120,9 +120,9 @@
                     <p>Total suggested price: <span id="total-suggested-price">{{ suggestedPrice.toFixed(2) }} €</span></p>
                 </div>
                 <div id="ingredient-list" :class="{ invalid: submitted && errors.ingredientIds}">
-                    <ul id>
+                    <ul class="fsf" id>
                         <p v-if="submitted && errors.ingredientIds" class="error">{{ errors.ingredientIds }}</p>
-                        <li v-for="i in selectedIngredients" :key="i.id" @click="removeIngredient(i.id)">
+                        <li id="pizza-ingredient" v-for="i in selectedIngredients" :key="i.id" @click="removeIngredient(i.id)">
                             <p>{{ i.name }}</p>
                         </li>
                     </ul>
@@ -204,5 +204,20 @@
         background-color: #111;
         border-bottom-left-radius: 5px;
         border-bottom-right-radius: 5px;
+    }
+    #ingredient-list ul{
+        justify-content: space-between;
+        align-content: space-between;
+        flex-wrap: wrap;
+    }
+    #pizza-ingredient{
+        width: 33%;
+        height: 47%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2rem;
+        font-weight: bolder;
+        background-color: #222;
     }
 </style>

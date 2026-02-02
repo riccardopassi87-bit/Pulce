@@ -82,9 +82,9 @@ public class ItemService {
         return itemRepository.findByExpirationDate(1,7);
     }
     public List<Item> getWarningExpiration(){
-        return itemRepository.findByExpirationDate(8,20);
+        return itemRepository.findByExpirationDate(8,19);
     }
     public List<Item> getUpcomingExpiration(){
-        return itemRepository.findByExpirationDate(19,30);
+        return itemRepository.findByExpirationDate(20,30);
     }
 }

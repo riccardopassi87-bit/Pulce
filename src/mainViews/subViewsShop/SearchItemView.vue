@@ -14,8 +14,8 @@
     const existingNames = ref([]);
     const schema = productRules([]);
 
-    const { form, errors, submit, reset, remove, search, selectedType,
-        searchResults: products, fetchSearchResults, selectItem
+    const { form, errors, submit, submitted, reset, remove, search, selectedType,
+        searchResults: products, fetchSearchResults, selectItem, validateField
     } = useForm ({
         initialState: schema.initialState,
         rules: schema.rules,
@@ -70,37 +70,32 @@
                         <div class="title">
                             <h3>{{ form.name }}</h3>
                         </div>
-                        <label>
-                            <strong>Name</strong>
-                            <input v-model="form.name"/>
-                        </label>
-                        <label>
-                            <strong>Original Price</strong>
-                            <input type="number" step="0.01" v-model="form.originalPrice"/>
-                        </label>
-                        <label>
-                            <strong>Selling Price</strong>
-                            <input type="number" step="0.01" v-model="form.sellingPrice"/>
-                        </label>
-                        <label>
-                            <strong>Type</strong>
-                            <select v-model="form.type">
-                                <option disabled selected hidden></option>
-                                <option v-for="t in PRODUCT_TYPE" :key="t" :value="t">
-                                    {{ t }}
-                                </option>
-                            </select>
-                        </label>
-                        <label>
-                            <strong>Expiration Date</strong>
-                            <input type="date" v-model="form.expirationDate">
-                        </label>
-                        <label>
-                            <strong>Amount</strong>
-                            <input type="number" step="1" v-model="form.amount">
-                        </label>
-                    </div>
-
+                        <div class="modify-container">
+                            <FormField label="Name:" :error="errors.name" :submitted="submitted" v-slot="{ isInvalid }">
+                                <input v-model="form.name" @input="validateField('name')" :class="{ invalid: isInvalid }"/>
+                            </FormField>
+                            <FormField label="Original Price:" :error="errors.originalPrice" :submitted="submitted" v-slot="{ isInvalid }">
+                                <input type="number" min="0" step="0.1" v-model.number="form.originalPrice"
+                                    @input="validateField('originalPrice'); validateField('sellingPrice')" :class="{ invalid: isInvalid }"/>
+                            </FormField>
+                            <FormField label="Selling Price:" :error="errors.sellingPrice" :submitted="submitted" v-slot="{ isInvalid }">
+                                <input type="number" min="0" step="0.1" v-model.number="form.sellingPrice"
+                                    @input="validateField('sellingPrice')" :class="{ invalid: isInvalid }"/>
+                            </FormField>
+                            <FormField label="Type:" :error="errors.type" :submitted="submitted" v-slot="{ isInvalid }">
+                                <select v-model="form.type" @change="validateField('type')" :class="{ invalid: isInvalid }">
+                                    <option value=""></option>
+                                    <option v-for="t in PRODUCT_TYPE" :key="t" :value="t">{{ t }}</option>
+                                </select>
+                            </FormField>
+                            <FormField label="Expiration Date:" :error="errors.expirationDate" :submitted="submitted" v-slot="{ isInvalid }">
+                                <input type="date" v-model="form.expirationDate" @input="validateField('expirationDate')" :class="{ invalid: isInvalid }"/>
+                            </FormField>
+                            <FormField label="Amount:" :error="errors.amount" :submitted="submitted" v-slot="{ isInvalid }">
+                                <input type="number" min="1" step="1" v-model.number="form.amount" @input="validateField('amount')" :class="{ invalid: isInvalid }"/>
+                            </FormField>
+                        </div>
+                    </div>    
                     <div v-else class="fsf search-result">
                     </div>
                 </template>
@@ -132,10 +127,7 @@
     #search-result input{
         width: 68%;
     }
-    label{
-      margin-top: 2%;
-    }
-    strong{
-       margin: 0; 
+    #search-result select{
+        height: 100%;
     }
 </style>

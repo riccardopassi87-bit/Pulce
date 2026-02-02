@@ -106,43 +106,32 @@
                         <div class="title">
                             <h3>{{ form.name }}</h3>
                         </div>
-                        <FormField label="Name:" :error="errors.name" :submitted="submitted" v-slot="{ isInvalid }">
-                        <input v-model="form.name" @input="validateField('name')" :class="{ invalid: isInvalid}"/>
-                    </FormField>
-                         <!-- <label>
-                            <strong>Name</strong>
-                            <input v-model="form.name"/>
-                         </label> -->
-                         <label>
-                            <strong>Type</strong>
-                            <select v-model="form.type">
-                                <option disabled selected hidden></option>
-                                <option v-for="t in INGREDIENT_TYPE" :key="t" :value="t">
-                                    {{ t }}
-                                </option>
-                            </select>
-                         </label>
-                         <label>
-                            <strong>Portion Price</strong>
-                            <input type="number" step="0.01" v-model.number="form.portionPrice" />
-                        </label>
-
-                        <label>
-                            <strong>Kg Price</strong>
-                            <input type="number" step="0.01" v-model.number="form.kgPrice" />
-                        </label>
-
-                        <label>
-                            <strong>Allergene</strong>
-                            <select v-model="form.allergene">
-                                <option disabled selected hidden></option>
-                                <option v-for="a in ALLERGENE" :key="a" :value="a">
-                                    {{ a }}
-                                </option>
-                            </select>
-                        </label>
+                        <div class="modify-container">
+                            <FormField label="Name:" :error="errors.name" :submitted="submitted" v-slot="{ isInvalid }">
+                                <input v-model="form.name" @input="validateField('name')" :class="{ invalid: isInvalid }"/>
+                            </FormField>
+                            <FormField label="Portion Price:" :error="errors.portionPrice" :submitted="submitted" v-slot="{ isInvalid }">
+                                <input type="number" min="0" step="0.1" v-model.number="form.portionPrice"
+                                    @input="validateField('portionPrice'); validateField('kgPrice')" :class="{ invalid: isInvalid }"/>
+                            </FormField>
+                            <FormField label="Kg Price:" :error="errors.kgPrice" :submitted="submitted" v-slot="{ isInvalid }">
+                                <input type="number" min="0" step="0.1" v-model.number="form.kgPrice"
+                                    @input="validateField('kgPrice')" :class="{ invalid: isInvalid }"/>
+                            </FormField>
+                            <FormField label="Type:" :error="errors.type" :submitted="submitted" v-slot="{ isInvalid }">
+                                <select v-model="form.type" @change="validateField('type')" :class="{ invalid: isInvalid }">
+                                    <option value=""></option>
+                                    <option v-for="t in INGREDIENT_TYPE" :key="t" :value="t">{{ t }}</option>
+                                </select>
+                            </FormField>
+                            <FormField label="Allergene:" :error="errors.allergene" :submitted="submitted" v-slot="{ isInvalid }">
+                                <select v-model="form.allergene" @change="validateField('allergene')" :class="{ invalid: isInvalid }">
+                                    <option value=""></option>
+                                    <option v-for="a in ALLERGENE" :key="a" :value="a">{{ a }}</option>
+                                </select>
+                            </FormField>
+                        </div>
                     </div>
-
                     <div v-else class="fsf search-result">
                     </div>
                 </template>
@@ -173,5 +162,8 @@
     }
     #search-result input{
         width: 68%;
+    }
+    #search-result select{
+        height: 100%;
     }
 </style>
