@@ -14,8 +14,8 @@
     const existingNames = ref([]);
     const schema = ingredientRules();
 
-    const { form, errors, submit, reset, search, selectedType,
-        searchResults: ingredients, fetchSearchResults, selectItem
+    const { form, errors, submit, submitted, reset, search, selectedType,
+        searchResults: ingredients, fetchSearchResults, selectItem, validateField
      } = useForm({
         initialState: schema.initialState,
         rules: schema.rules,
@@ -106,10 +106,13 @@
                         <div class="title">
                             <h3>{{ form.name }}</h3>
                         </div>
-                         <label>
+                        <FormField label="Name:" :error="errors.name" :submitted="submitted" v-slot="{ isInvalid }">
+                        <input v-model="form.name" @input="validateField('name')" :class="{ invalid: isInvalid}"/>
+                    </FormField>
+                         <!-- <label>
                             <strong>Name</strong>
-                            <input v-model="form.name" />
-                         </label>
+                            <input v-model="form.name"/>
+                         </label> -->
                          <label>
                             <strong>Type</strong>
                             <select v-model="form.type">

@@ -81,7 +81,6 @@
                     <FormField label="Production Price:" :error="errors.productionPrice" :submitted="submitted" v-slot="{ isInvalid }">
                         <input type="number" min="0" step="0.01" v-model.number="form.productionPrice" @input="validateField('productionPrice'); validateField('sellingPrice')"
                         :class="{ invalid: isInvalid }"/>
-
                     </FormField>
                     <FormField label="Type:" :error="errors.type" :submitted="submitted" v-slot="{ isInvalid }">
                         <select v-model="form.type" @change="validateField('type')" :class="{ invalid: isInvalid }">
