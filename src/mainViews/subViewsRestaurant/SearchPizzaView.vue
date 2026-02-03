@@ -106,43 +106,33 @@
             <div class="fsf search-result" v-if="form.id">
               <div class="title">
                   <h3>{{ form.name }}</h3>
-                </div>
+              </div>
               <div id="mid-layer">
-                <div id="left-mod-panel">
-                  <label>
-                    <strong>Name</strong>
-                    <input v-model="form.name">
-                  </label>
-                  <label>
-                    <strong>Selling Price</strong>
-                    <input type="number" v-model="form.sellingPrice">
-                  </label>
-                  <label>
-                    <strong>Production Price</strong>
-                    <input type="number" v-model="form.productionPrice">
-                  </label>
-                  <label>
-                    <strong>Type</strong>
-                    <select v-model="form.type">
-                      <option disabled selected hidden></option>
-                      <option v-for="t in PIZZA_TYPE" :key="t" :value="t">
-                        {{ t }}
-                      </option>
-                    </select>
-                  </label>
+                <div class="mod-panel">
+                  <FormField label="Name:" :error="errors.name" :submitted="submitted" v-slot="{ isInvalid }">
+                        <input v-model="form.name" @input="validateField('name')" :class="{ invalid: isInvalid}"/>
+                    </FormField>
+                    <FormField label="Type:" :error="errors.type" :submitted="submitted" v-slot="{ isInvalid }">
+                        <select v-model="form.type" @change="validateField('type')" :class="{ invalid: isInvalid }">
+                            <option value=""></option>
+                            <option v-for="p in PIZZA_TYPE" :key="p" :value="p">{{ p }}</option>
+                        </select>
+                    </FormField>
+                </div>
+                <div class="mod-panel">
+                    <FormField label="Production Price:" :error="errors.productionPrice" :submitted="submitted" v-slot="{ isInvalid }">
+                        <input type="number" min="0" step="0.01" v-model.number="form.productionPrice" @input="validateField('productionPrice'); validateField('sellingPrice')"
+                        :class="{ invalid: isInvalid }"/>
+                    </FormField>
+                    <FormField label="Selling Price:" :error="errors.sellingPrice" :submitted="submitted" v-slot="{ isInvalid }">
+                        <input type="number" min="0" step="0.01"
+                            v-model.number="form.sellingPrice" @input="validateField('sellingPrice')" :class="{ invalid: isInvalid}"/>
+                    </FormField>
                 </div>
 
-                <div id="modify-ingredients">
-                  <div id="actual-content">
-                    <strong>Ingredients</strong>
-                    <ul>
-                      <li v-for="i in currentIngredients" :key="i.id" @click="removeIngredient(i.id)">
-                        {{ i.name }}
-                      </li>
-                    </ul>
-                  </div>
+                <div id="low-layer" class="fsf">
                   <div id="new-content">
-                    <strong>Add Ingredient</strong>
+                    <p>Add Ingredient:</p>
                     <select @change="addIngredient">
                       <option disabled selected hidden></option>
                       <option v-for="i in allIngredients" :key="i.id" :value="i.id"
@@ -151,7 +141,17 @@
                       </option>
                     </select>
                   </div>
+                  <p>Ingredients:</p>
+                  <div id="actual-content" class="fsf">
+                    <ul class="fsf" :class="{ invalid: submitted && errors.ingredientIds}">
+                      <p v-if="submitted && errors.ingredientIds" class="error">{{ errors.ingredientIds }}</p>
+                      <li id="pizza-ingredient" v-for="i in currentIngredients" :key="i.id" @click="removeIngredient(i.id)">
+                        {{ i.name }}
+                      </li>
+                    </ul>
+                  </div>
                 </div>
+
               </div>
             </div>
             <div v-else class="fsf search-result"></div>
@@ -178,58 +178,60 @@
     width: 70%;
     background-color: #222;
   }
+  .title{
+    flex: 0.5;
+  }
   #mid-layer{
     display: flex;
-    flex-direction: row;
-    flex: 9.2;
+    flex-direction: column;
+    flex: 5;
+  }
+  #mid-layer select{
+    width: 100%;
+    height: 100%
+  }
+  #mid-layer input{
+    width: 100%;
+  }
+  .mod-panel{
+    display: flex;
+    flex: 1.5;
+    gap: 2%;
+  }
+  #low-layer{
+    flex: 5;
+    flex-direction: column;
   }
   li{
     font-size: 1.3rem;
   }
-  #left-mod-panel{
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-  #left-mod-panel select{
-    width: 97%;
-  }
-  #modify-ingredients{
-    flex: 1;
-    border-left: 1px solid #777;
-    display: flex;
-    flex-direction: column;
-  }
-  #actual-content{
-    flex: 3;
-    padding: 3%;
-    padding-right: 0;
-  }
-  #actual-content > ul{
-    margin-top: 3%;
-    background-color: #333;
-    border-radius: 5px;
-  }
-  #actual-content > ul > li{
-    font-size: 1rem;
-    color: rgb(187, 150, 80);
-  }
   #new-content{
-    display: flex;
-    flex-direction: column;
-    justify-content: end;
-    flex: 1;
-    padding: 3%;
-    padding-right: 0;
+    flex: 2;
   }
   #new-content select{
-    flex: 0.7;
-    width: 100%;
+    height: 50%;
   }
-  #search-result input{
-    width: 95%;
+  #actual-content{
+    flex: 5;
+    flex-direction: column;
+    background-color: #111;
   }
-  label{
-    margin-bottom: 4%;
+  #actual-content ul{
+    gap: 1%;
+    padding: 0;
+    height: auto;
+    margin-top: 1%;
+    flex-wrap: wrap;
   }
+  #pizza-ingredient{
+    height: 3.8rem;
+    width: 49.5%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    margin-bottom: 1%;
+    background-color: #222;
+  }
+
 </style>

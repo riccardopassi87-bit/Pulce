@@ -120,7 +120,7 @@
                     <p>Total suggested price: <span id="total-suggested-price">{{ suggestedPrice.toFixed(2) }} €</span></p>
                 </div>
                 <div id="ingredient-list" :class="{ invalid: submitted && errors.ingredientIds}">
-                    <ul class="fsf" id>
+                    <ul class="fsf">
                         <p v-if="submitted && errors.ingredientIds" class="error">{{ errors.ingredientIds }}</p>
                         <li id="pizza-ingredient" v-for="i in selectedIngredients" :key="i.id" @click="removeIngredient(i.id)">
                             <p>{{ i.name }}</p>
@@ -197,17 +197,13 @@
     }
     #ingredient-list{
         flex: 3;
-        min-height: 0;
-        max-height: 100%;
-        overflow-y: auto;
         padding: 1%;
         background-color: #111;
         border-bottom-left-radius: 5px;
         border-bottom-right-radius: 5px;
     }
     #ingredient-list ul{
-        justify-content: space-between;
-        align-content: space-between;
+        gap: 0.5%;
         flex-wrap: wrap;
     }
     #pizza-ingredient{
