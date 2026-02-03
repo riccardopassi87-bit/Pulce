@@ -20,7 +20,7 @@
   const existingNames = ref([]);
   const schema = pizzaRules([]);
 
-  const { form, errors, submit, submitted, reset, remove,
+  const { form, errors, submit, submitted, reset, remove, displayName, 
         search, selectedType, searchResults: pizzas, fetchSearchResults,
         selectItem, validateField
    } = useForm({
@@ -33,6 +33,7 @@
       try {
         await api.put(`${API_BASE}/${data.id}`, data);
         alert('Pizza updated succesfully ✅');
+        displayName.value = data.name;
         reset();
       } catch (e) { alert(e.message); }
     }
@@ -47,6 +48,7 @@
       productionPrice: Number(p.productionPrice),
       ingredientIds: p.ingredients.map(i => i.id)
     }));
+    displayName.value = pizza.name;
   };
 
   const addIngredient = (event) => {
@@ -105,7 +107,7 @@
             
             <div class="fsf search-result" v-if="form.id">
               <div class="title">
-                  <h3>{{ form.name }}</h3>
+                  <h3>{{ displayName }}</h3>
               </div>
               <div id="mid-layer">
                 <div class="mod-panel">

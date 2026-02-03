@@ -2,6 +2,9 @@
         font-family: myFont;
         src: url('src\assets\fonts\Garet-Book.woff2') format('woff2');
       }
+      :root{
+        --font-color: rebeccapurple;
+      }
       *{
         font-family: myFont;
         border: 0;
@@ -23,7 +26,7 @@
     .button-active{
         background-color: #121212;
         font-weight: bolder;
-        color: rgb(187, 150, 80);
+        color: #bb9650;
     }
     .button-active:hover{
         background-color: #121212;
@@ -126,7 +129,7 @@
     }
     h3{
         font-size: 2rem;
-        color: rebeccapurple;
+        color: var(--font-color);
     }
 
     /* LIST AND CONTENT */
@@ -139,10 +142,10 @@
     }
     li{
         font-size: 1rem;
-        color: rebeccapurple;
+        color: var(--font-color);
     }
     li > p{
-        color: rebeccapurple;
+        color: var(--font-color);
     }
     li:hover{
         cursor: pointer;

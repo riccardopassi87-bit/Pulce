@@ -14,8 +14,8 @@
     const existingNames = ref([]);
     const schema = ingredientRules();
 
-    const { form, errors, submit, submitted, reset, search, selectedType,
-        searchResults: ingredients, fetchSearchResults, selectItem, validateField
+    const { form, errors, submit, submitted, reset, search, selectedType, displayName,
+        searchResults: ingredients, fetchSearchResults, validateField, handleSelect
      } = useForm({
         initialState: schema.initialState,
         rules: schema.rules,
@@ -48,6 +48,7 @@
             try {
                 await api.put(`${API_BASE}/${data.id}`, data);
                 alert('Ingredient uploaded ✅');
+                displayName.value = data.name;
                 reset();
             } catch (e) {alert(e.message);}
         }
@@ -91,7 +92,7 @@
                         <template #results>
                             <div class="fsf">
                                 <ul>
-                                    <li v-for="i in ingredients" :key="i.id" @click="selectItem(i)"
+                                    <li v-for="i in ingredients" :key="i.id" @click="handleSelect(i)"
                                     :class="{selected: form.id === i.id }">
                                         {{ i.name }}
                                     </li>
@@ -104,7 +105,7 @@
                 <template #result>
                     <div class="fsf search-result" v-if="form.id">
                         <div class="title">
-                            <h3>{{ form.name }}</h3>
+                            <h3>{{ displayName }}</h3>
                         </div>
                         <div class="modify-container">
                             <FormField label="Name:" :error="errors.name" :submitted="submitted" v-slot="{ isInvalid }">

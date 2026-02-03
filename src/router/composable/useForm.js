@@ -75,6 +75,7 @@ export function useForm({ initialState, rules, API_BASE, SEARCH_URL, onSubmit, e
         search. value = '';
         selectedType.value = '';
         searchResults.value = [];
+        displayName.value = '';
     };
 
     // Modify
@@ -102,7 +103,15 @@ export function useForm({ initialState, rules, API_BASE, SEARCH_URL, onSubmit, e
         }
     };
 
-    return{ form, errors, submitted, existingNames, search, selectedType, searchResults,
-            validateField, submit, reset, fetchSearchResults, selectItem, remove
+    // Item Name
+    const displayName = ref('')
+
+    const handleSelect = (item, customMapping) => {
+        selectItem(item, customMapping);
+        displayName.value = item.name;
+    }
+
+    return{ form, errors, submitted, existingNames, search, selectedType, searchResults, displayName,
+            validateField, submit, reset, fetchSearchResults, selectItem, remove, handleSelect
     };
 }

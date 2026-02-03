@@ -1,13 +1,38 @@
+
+// EsterEgg, comment to disable!!!!
+import { reactive } from "vue";
+import sound from "@/assets/easterEgg.wav";
+
+export const apiSettings = reactive({
+    performanceMode: true
+})
+
+const EASTER_EGG_ACTIVE = true;
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+const playSound = () => {
+    const audio = new Audio(sound);
+    audio.volume = 0.5;
+    audio.play();
+}
+
+// END EasterEgg - Calls in APIs, Expands from -App.vue- via -ButtonShop-
+
 const headers = { 'Content-Type': 'application/json' }
 
 export const api = {
     async get(url) {
+
+        if(apiSettings.performanceMode) {playSound(); await sleep(3500);}
+
         const res = await fetch(url);
         if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
         return res.json();
     },
 
     async post(url, data) {
+        
+        if(apiSettings.performanceMode) await sleep(3500);
+
         const res = await fetch(url, {
             method: 'POST',
             headers,
@@ -18,6 +43,9 @@ export const api = {
     },
 
     async put(url, data) {
+        
+        if(apiSettings.performanceMode) await sleep(3500);
+
         const res = await fetch(url, {
             method: 'PUT',
             headers,
@@ -28,6 +56,9 @@ export const api = {
     },
     
     async delete(url) {
+        
+        if(apiSettings.performanceMode) await sleep(3500);
+
         const res = await fetch(url, { method: 'DELETE'});
         if(!res.ok) {
             const errorData = await res.json().catch(() => ({}));

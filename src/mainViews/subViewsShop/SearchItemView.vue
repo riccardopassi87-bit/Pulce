@@ -14,8 +14,8 @@
     const existingNames = ref([]);
     const schema = productRules([]);
 
-    const { form, errors, submit, submitted, reset, remove, search, selectedType,
-        searchResults: products, fetchSearchResults, selectItem, validateField
+    const { form, errors, submit, submitted, reset, remove, search, selectedType, displayName, handleSelect,
+        searchResults: products, fetchSearchResults, validateField
     } = useForm ({
         initialState: schema.initialState,
         rules: schema.rules,
@@ -26,6 +26,7 @@
             try {
                 await api.put(`${API_BASE}/${data.id}`, data);
                 alert('Product uploaded ✅');
+                displayName.value = data.name;
                 reset();
             } catch (e) {alert(e.message);}
         }
@@ -46,7 +47,7 @@
                         </template>
                         <template #filter>
                             <select v-model="selectedType">
-                                <option disabled selected hidden></option>
+                                <option value=""></option>
                                 <option v-for="t in PRODUCT_TYPE" :key="t" :value="t">
                                     {{ t }}
                                 </option>
@@ -55,7 +56,7 @@
                         <template #results>
                             <div class="fsf">
                                 <ul>
-                                    <li v-for="p in products" :key="p.id" @click="selectItem(p)"
+                                    <li v-for="p in products" :key="p.id" @click="handleSelect(p)"
                                     :class="{selected: form.id === p.id}">
                                         {{ p.name }}
                                     </li>
@@ -68,7 +69,7 @@
                 <template #result>
                     <div class="fsf search-result" v-if="form.id">
                         <div class="title">
-                            <h3>{{ form.name }}</h3>
+                            <h3>{{ displayName }}</h3>
                         </div>
                         <div class="modify-container">
                             <FormField label="Name:" :error="errors.name" :submitted="submitted" v-slot="{ isInvalid }">
