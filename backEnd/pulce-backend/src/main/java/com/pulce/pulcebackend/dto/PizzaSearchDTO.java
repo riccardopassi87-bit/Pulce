@@ -1,4 +1,4 @@
-package com.pulce.pulcebackend;
+package com.pulce.pulcebackend.dto;
 
 import java.math.BigDecimal;
 import java.util.List;

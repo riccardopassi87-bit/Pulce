@@ -1,8 +1,8 @@
 package com.pulce.pulcebackend.service;
 
-import com.pulce.pulcebackend.IngredientSearchDTO;
-import com.pulce.pulcebackend.PizzaDTO;
-import com.pulce.pulcebackend.PizzaSearchDTO;
+import com.pulce.pulcebackend.dto.IngredientSearchDTO;
+import com.pulce.pulcebackend.dto.PizzaDTO;
+import com.pulce.pulcebackend.dto.PizzaSearchDTO;
 import com.pulce.pulcebackend.entity.Ingredient;
 import com.pulce.pulcebackend.entity.Pizza;
 import com.pulce.pulcebackend.repository.IngredientRepository;
@@ -10,7 +10,6 @@ import com.pulce.pulcebackend.repository.PizzaRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

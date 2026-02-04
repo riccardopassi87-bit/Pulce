@@ -1,4 +1,4 @@
-package com.pulce.pulcebackend;
+package com.pulce.pulcebackend.dto;
 
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
@@ -18,10 +18,11 @@ public class ItemDTO {
     private String type;
     @NotNull
     private LocalDate expirationDate;
-    @Min(0)
+    @Min(1)
     private int amount;
 
     // GETTERS
+
     public String getName() {
         return name;
     }
@@ -45,6 +46,7 @@ public class ItemDTO {
     public int getAmount() {
         return amount;
     }
+
 
     //SETTERS
 

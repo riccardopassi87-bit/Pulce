@@ -12,7 +12,7 @@
 <template>
     <button type="button" id="notification" @click="goNext('notification')" :class="getButtonClass('notification')">Notification & Reminders</button>
     
-    <!--EasterEgg -->
+    <!--EasterEgg 
     <button type="button" @click="togglePerformance">Improve Performance</button>
-
+    -->
 </template>

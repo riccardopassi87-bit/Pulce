@@ -1,6 +1,6 @@
-package com.pulce.pulcebackend;
+package com.pulce.pulcebackend.controller;
 
-import com.pulce.pulcebackend.ItemDTO;
+import com.pulce.pulcebackend.dto.ItemDTO;
 import com.pulce.pulcebackend.entity.Item;
 import com.pulce.pulcebackend.service.ItemService;
 import org.springframework.http.HttpStatus;
@@ -41,7 +41,6 @@ public class ItemController {
         return itemService.findAll();
     }
 
-    // WORK IN PROGRESS
     @GetMapping("/expiring")
     public ResponseEntity<Map<String, List<Item>>> getExpiringItem(){
 

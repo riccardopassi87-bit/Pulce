@@ -4,7 +4,7 @@ import { reactive } from "vue";
 import sound from "@/assets/easterEgg.wav";
 
 export const apiSettings = reactive({
-    performanceMode: true
+    performanceMode: false
 })
 
 const EASTER_EGG_ACTIVE = true;

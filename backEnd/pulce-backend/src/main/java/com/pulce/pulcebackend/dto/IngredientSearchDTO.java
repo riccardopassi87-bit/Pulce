@@ -1,4 +1,4 @@
-package com.pulce.pulcebackend;
+package com.pulce.pulcebackend.dto;
 
 public class IngredientSearchDTO {
     private int id;

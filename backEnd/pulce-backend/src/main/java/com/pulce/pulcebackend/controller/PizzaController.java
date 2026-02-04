@@ -1,5 +1,7 @@
-package com.pulce.pulcebackend;
+package com.pulce.pulcebackend.controller;
 
+import com.pulce.pulcebackend.dto.PizzaDTO;
+import com.pulce.pulcebackend.dto.PizzaSearchDTO;
 import com.pulce.pulcebackend.entity.Pizza;
 import com.pulce.pulcebackend.service.PizzaService;
 import jakarta.validation.Valid;

@@ -18,16 +18,16 @@ public class Item {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @Column(name = "original_price", nullable = false, precision = 10, scale = 2)
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal originalPrice;
 
-    @Column(name = "selling_price", nullable = false, precision = 10, scale = 2)
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal sellingPrice;
 
     @Column(nullable = false)
     private String type;
 
-    @Column(name = "expiration_date", nullable = false)
+    @Column(nullable = false)
     private LocalDate expirationDate;
 
     @Min(1)

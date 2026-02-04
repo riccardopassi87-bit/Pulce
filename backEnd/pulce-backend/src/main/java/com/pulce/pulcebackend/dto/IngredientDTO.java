@@ -1,4 +1,4 @@
-package com.pulce.pulcebackend;
+package com.pulce.pulcebackend.dto;
 
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;

@@ -1,10 +1,10 @@
-package com.pulce.pulcebackend;
+package com.pulce.pulcebackend.controller;
 
+import com.pulce.pulcebackend.dto.IngredientDTO;
 import com.pulce.pulcebackend.entity.Ingredient;
 import com.pulce.pulcebackend.entity.Pizza;
 import com.pulce.pulcebackend.repository.PizzaRepository;
 import com.pulce.pulcebackend.service.IngredientService;
-import com.pulce.pulcebackend.service.PizzaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
