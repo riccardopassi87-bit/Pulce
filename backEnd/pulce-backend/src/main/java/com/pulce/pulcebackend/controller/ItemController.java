@@ -22,23 +22,12 @@ public class ItemController {
 
     public ItemController(ItemService itemService) { this.itemService = itemService; }
 
-    @PostMapping
-    public ResponseEntity<Item> createItem (@Valid @RequestBody ItemDTO dto){
-        Item created = itemService.create(dto);
-        return  ResponseEntity.status(HttpStatus.CREATED).body(created);
-    }
-
-    @GetMapping("/search")
+    @GetMapping
     public ResponseEntity<List<Item>> searchItem (
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String type
     ){
         return ResponseEntity.ok(itemService.search(name,type));
-    }
-
-    @GetMapping
-    public List<Item> getAllItem(){
-        return itemService.findAll();
     }
 
     @GetMapping("/expiring")
@@ -53,11 +42,15 @@ public class ItemController {
         return ResponseEntity.ok(expiring);
     }
 
+    @PostMapping
+    public ResponseEntity<Item> createItem (@Valid @RequestBody ItemDTO dto){
+        Item created = itemService.create(dto);
+        return  ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<Item> updateItem(@PathVariable int id, @Valid @RequestBody ItemDTO dto){
-        Item updated = itemService.update(id, dto);
-        return ResponseEntity.ok(updated);
+        return ResponseEntity.ok(itemService.update(id,dto));
     }
 
     @DeleteMapping("/{id}")

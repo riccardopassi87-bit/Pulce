@@ -16,11 +16,9 @@ public class ItemService {
     public List<Item> search(String name, String type){
         if( name != null && type != null){
             return itemRepository.findByNameContainingIgnoreCaseAndType(name, type);
-        }
-        if (name != null){
+        } else if (name != null){
             return itemRepository.findByNameContainingIgnoreCase(name);
-        }
-        if (type != null){
+        } else if (type != null){
             return itemRepository.findByType(type);
         }
         return itemRepository.findAll();
@@ -52,14 +50,6 @@ public class ItemService {
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Item not found"));
         itemRepository.delete(item);
-    }
-
-    public List<Item> findAll(){
-        return itemRepository.findAll();
-    }
-
-    public List<Item> findByExpirationInDays(int days) {
-        return itemRepository.findByExpirationInDays(days);
     }
 
     // EXPIRATION LOGIC FOR PERSISTING LIST

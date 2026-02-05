@@ -21,7 +21,7 @@
         rules: schema.rules,
         existingNamesRef: existingNames,
         API_BASE: API_BASE,
-        SEARCH_URL: `${API_BASE}/search`,
+        SEARCH_URL: API_BASE,
         onSubmit: async (data) => {
 
             const originalPrice = ingredients.value.find(i => i.id === data.id);

@@ -28,17 +28,12 @@ public class PizzaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPizza);
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<List<PizzaSearchDTO>> searchPizza (
+    @GetMapping
+    public ResponseEntity<List<PizzaSearchDTO>> getPizza (
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String type
     ){
         return ResponseEntity.ok(pizzaService.search(name, type));
-    }
-
-    @GetMapping
-    public List<Pizza> getAllPizza (){
-        return pizzaService.findAll();
     }
 
     @PutMapping("/{id}")

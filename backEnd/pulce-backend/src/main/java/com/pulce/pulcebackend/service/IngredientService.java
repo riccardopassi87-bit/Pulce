@@ -18,11 +18,9 @@ public class IngredientService {
 
         if(name != null && type != null){
             return ingredientRepository.findByNameContainingIgnoreCaseAndType(name, type);
-        }
-        if(name != null){
+        } else if(name != null){
             return ingredientRepository.findByNameContainingIgnoreCase(name);
-        }
-        if(type != null){
+        } else if(type != null){
             return ingredientRepository.findByType(type);
         }
         return ingredientRepository.findAll();
@@ -71,7 +69,10 @@ public class IngredientService {
         ingredientRepository.delete(ingredient);
     }
 
-    public List<Ingredient> findAll(){
-        return (List<Ingredient>) ingredientRepository.findAll();
+    public List<String> getImpactNames(int id){
+        List<Pizza> linkedPizzas = pizzaRepository.findByIngredientsId(id);
+        return linkedPizzas.stream()
+                .map(Pizza::getName)
+                .toList();
     }
 }

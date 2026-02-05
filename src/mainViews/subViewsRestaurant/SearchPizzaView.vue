@@ -28,7 +28,7 @@
     rules: schema.rules,
     existingNamesRef: existingNames,
     API_BASE: API_BASE,
-    SEARCH_URL: `${API_BASE}/search`,
+    SEARCH_URL: API_BASE,
     onSubmit: async (data) => {
       try {
         await api.put(`${API_BASE}/${data.id}`, data);

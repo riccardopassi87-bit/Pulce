@@ -78,8 +78,4 @@ public class PizzaService {
         pizza.getIngredients().clear();
         pizzaRepository.delete(pizza);
     }
-
-    public List<Pizza> findAll() {
-        return pizzaRepository.findAll();
-    }
 }

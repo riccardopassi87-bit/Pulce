@@ -19,11 +19,22 @@ import java.util.List;
 public class IngredientController {
 
     private final IngredientService ingredientService;
-    private final PizzaRepository pizzaRepository;
 
-    public IngredientController(IngredientService ingredientService, PizzaRepository pizzaRepository) {
+    public IngredientController(IngredientService ingredientService) {
         this.ingredientService = ingredientService;
-        this.pizzaRepository = pizzaRepository;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Ingredient>> searchIngredients(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String type
+    ) {
+        return ResponseEntity.ok(ingredientService.search(name,type));
+    }
+
+    @GetMapping("/{id}/impact")
+    public ResponseEntity<List<String>> getUpdateImpact(@PathVariable int id) {
+        return ResponseEntity.ok(ingredientService.getImpactNames(id));
     }
 
     @PostMapping
@@ -32,37 +43,14 @@ public class IngredientController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<List<Ingredient>> searchIngredients(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String type
-    ) {
-        return ResponseEntity.ok(ingredientService.search(name,type));
-    }
-
-    @GetMapping
-    public ResponseEntity<List<Ingredient>> getAllIngredients() {
-        return ResponseEntity.ok(ingredientService.findAll());
-    }
-
     @PutMapping("/{id}")
     public ResponseEntity<Ingredient> updateIngredient(@PathVariable int id, @Valid @RequestBody IngredientDTO dto) {
-        Ingredient updated = ingredientService.update(id, dto);
-        return ResponseEntity.ok(updated);
+        return ResponseEntity.ok(ingredientService.update(id,dto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteIngredient(@PathVariable int id) {
         ingredientService.delete(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/{id}/impact")
-    public ResponseEntity<List<String>> getUpdateImpact(@PathVariable int id) {
-        List<Pizza> linkedPizzas = pizzaRepository.findByIngredientsId(id);
-        List<String> pizzaNames = linkedPizzas.stream()
-                .map(Pizza::getName)
-                .toList();
-        return ResponseEntity.ok(pizzaNames);
     }
 }
