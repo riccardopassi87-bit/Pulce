@@ -5,6 +5,7 @@ import com.pulce.pulcebackend.dto.PizzaDTO;
 import com.pulce.pulcebackend.dto.PizzaSearchDTO;
 import com.pulce.pulcebackend.entity.Ingredient;
 import com.pulce.pulcebackend.entity.Pizza;
+import com.pulce.pulcebackend.mapper.PizzaMapper;
 import com.pulce.pulcebackend.repository.IngredientRepository;
 import com.pulce.pulcebackend.repository.PizzaRepository;
 import jakarta.transaction.Transactional;
@@ -17,26 +18,22 @@ public class PizzaService {
 
     private final PizzaRepository pizzaRepository;
     private final IngredientRepository ingredientRepository;
+    private final PizzaMapper pizzaMapper;
 
-    public PizzaService(PizzaRepository pizzaRepository, IngredientRepository ingredientRepository) {
+    public PizzaService(PizzaRepository pizzaRepository, IngredientRepository ingredientRepository, PizzaMapper pizzaMapper) {
         this.pizzaRepository = pizzaRepository;
         this.ingredientRepository = ingredientRepository;
+        this.pizzaMapper = pizzaMapper;
     }
 
     @Transactional
     public PizzaSearchDTO createPizza(PizzaDTO dto) {
-        Pizza pizza = new Pizza(
-                dto.getName(),
-                dto.getSellingPrice(),
-                dto.getProductionPrice(),
-                dto.getType()
-        );
+        Pizza pizza = pizzaMapper.toEntity(dto);
 
-        List<Ingredient> ingredients = ingredientRepository.findAllById(dto.getIngredientIds());
+        List<Ingredient> ingredients = ingredientRepository.findAllById(dto.ingredientIds());
         ingredients.forEach(pizza::addIngredient);
 
-        Pizza savedPizza = pizzaRepository.save(pizza);
-        return mapToDTO(savedPizza);
+        return pizzaMapper.toSearchDTO(pizzaRepository.save(pizza));
     };
 
     @Transactional
@@ -44,17 +41,16 @@ public class PizzaService {
         Pizza pizza = pizzaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pizza with id: " + id + " not found"));
 
-        pizza.setName(dto.getName());
-        pizza.setSellingPrice(dto.getSellingPrice());
-        pizza.setProductionPrice(dto.getProductionPrice());
-        pizza.setType(dto.getType());
+        pizza.setName(dto.name());
+        pizza.setSellingPrice(dto.sellingPrice());
+        pizza.setProductionPrice(dto.productionPrice());
+        pizza.setType(dto.type());
 
         pizza.getIngredients().clear();
-        List<Ingredient> ingredients = ingredientRepository.findAllById(dto.getIngredientIds());
+        List<Ingredient> ingredients = ingredientRepository.findAllById(dto.ingredientIds());
         ingredients.forEach(pizza::addIngredient);
 
-        Pizza savedPizza = pizzaRepository.save(pizza);
-        return mapToDTO(savedPizza);
+        return pizzaMapper.toSearchDTO(pizzaRepository.save(pizza));
     }
 
     public List<PizzaSearchDTO> search(String name, String type) {
@@ -71,9 +67,7 @@ public class PizzaService {
             pizzas = pizzaRepository.findAll();
         }
 
-        return pizzas.stream()
-                .map(this::mapToDTO)
-                .toList();
+        return pizzaMapper.toSearchDTOlist(pizzas);
     }
 
     @Transactional
@@ -87,21 +81,5 @@ public class PizzaService {
 
     public List<Pizza> findAll() {
         return pizzaRepository.findAll();
-    }
-
-    private PizzaSearchDTO mapToDTO(Pizza pizza) {
-        List<IngredientSearchDTO> ingredientDTOs = pizza.getIngredients()
-                .stream()
-                .map(i -> new IngredientSearchDTO(i.getId(), i.getName()))
-                .toList();
-
-        return new PizzaSearchDTO(
-                pizza.getId(),
-                pizza.getName(),
-                pizza.getSellingPrice(),
-                pizza.getProductionPrice(),
-                pizza.getType(),
-                ingredientDTOs
-        );
     }
 }

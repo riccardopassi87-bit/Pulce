@@ -3,8 +3,10 @@ package com.pulce.pulcebackend.service;
 import com.pulce.pulcebackend.entity.Ingredient;
 import com.pulce.pulcebackend.dto.IngredientDTO;
 import com.pulce.pulcebackend.entity.Pizza;
+import com.pulce.pulcebackend.mapper.IngredientMapper;
 import com.pulce.pulcebackend.repository.IngredientRepository;
 import com.pulce.pulcebackend.repository.PizzaRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,38 +29,31 @@ public class IngredientService {
     }
 
     private final IngredientRepository ingredientRepository;
+    private final IngredientMapper ingredientMapper;
     private final PizzaRepository pizzaRepository;
 
-    public IngredientService(IngredientRepository ingredientRepository, PizzaRepository pizzaRepository) {
+    public IngredientService(IngredientRepository ingredientRepository, PizzaRepository pizzaRepository, IngredientMapper ingredientMapper) {
         this.ingredientRepository = ingredientRepository;
         this.pizzaRepository = pizzaRepository;
+        this.ingredientMapper = ingredientMapper;
     }
 
     public Ingredient create (IngredientDTO dto) {
-        Ingredient ingredient = new Ingredient(
-                dto.getName(),
-                dto.getType(),
-                dto.getPortionPrice(),
-                dto.getKgPrice(),
-                dto.getAllergene()
-        );
-
+        Ingredient ingredient = ingredientMapper.toEntity(dto);
         return ingredientRepository.save(ingredient);
     }
 
+    @Transactional
     public Ingredient update(int id, IngredientDTO dto) {
         Ingredient ingredient = ingredientRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ingredient not found"));
 
-        ingredient.setName(dto.getName());
-        ingredient.setType(dto.getType());
-        ingredient.setPortionPrice(dto.getPortionPrice());
-        ingredient.setKgPrice(dto.getKgPrice());
-        ingredient.setAllergene(dto.getAllergene());
+        ingredientMapper.updateEntityFromDTO(dto, ingredient);
         
         return ingredientRepository.save(ingredient);
     }
 
+    @Transactional
     public void delete(int id) {
         Ingredient ingredient = ingredientRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ingredient not found"));

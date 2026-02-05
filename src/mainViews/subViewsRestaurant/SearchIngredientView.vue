@@ -63,7 +63,7 @@
         await api.delete(`${API_BASE}/${form.id}`);
 
         alert('Ingredient deleted! ✅');
-        handleResetAll();
+        reset();
         fetchSearchResults();
     } catch (e) {
         alert(e.message); 

@@ -2,6 +2,7 @@ package com.pulce.pulcebackend.service;
 
 import com.pulce.pulcebackend.dto.ItemDTO;
 import com.pulce.pulcebackend.entity.Item;
+import com.pulce.pulcebackend.mapper.ItemMapper;
 import com.pulce.pulcebackend.repository.ItemRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -26,33 +27,22 @@ public class ItemService {
     }
 
     private final ItemRepository itemRepository;
+    private final ItemMapper itemMapper;
 
-    public ItemService(ItemRepository itemRepository) {
-        this.itemRepository = itemRepository;
+    public ItemService(ItemRepository itemRepository, ItemMapper itemMapper) {
+        this.itemRepository = itemRepository; this.itemMapper = itemMapper;
     }
 
     public Item create(ItemDTO dto) {
-        Item item = new Item(
-                dto.getName(),
-                dto.getOriginalPrice(),
-                dto.getSellingPrice(),
-                dto.getType(),
-                dto.getExpirationDate(),
-                dto.getAmount()
-        );
+        Item item = itemMapper.toEntity(dto);
         return itemRepository.save(item);
     }
-
+    @Transactional
     public Item update(int id, ItemDTO dto) {
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Item not found"));
 
-        item.setName(dto.getName());
-        item.setOriginalPrice(dto.getOriginalPrice());
-        item.setSellingPrice(dto.getSellingPrice());
-        item.setType(dto.getType());
-        item.setExpirationDate(dto.getExpirationDate());
-        item.setAmount(dto.getAmount());
+        itemMapper.updateEntityFromDTO(dto, item);
 
         return itemRepository.save(item);
     }
