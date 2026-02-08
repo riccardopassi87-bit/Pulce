@@ -14,6 +14,7 @@ export function useForm({ initialState, rules, API_BASE, SEARCH_URL, onSubmit, e
     // Search - List Management State
     const search = ref('');
     const selectedType = ref('');
+    const selectedIngredient = ref('');
     const searchResults = ref([]);
 
     // ExistingName Validation
@@ -44,7 +45,7 @@ export function useForm({ initialState, rules, API_BASE, SEARCH_URL, onSubmit, e
 
     // Search Logic
     const fetchSearchResults = async () => {
-        if(!search.value && !selectedType.value) {
+        if(!search.value && !selectedType.value && !selectedIngredient.value) {
             searchResults.value = [];
             return;
         }
@@ -74,6 +75,7 @@ export function useForm({ initialState, rules, API_BASE, SEARCH_URL, onSubmit, e
         submitted.value = false;
         search. value = '';
         selectedType.value = '';
+        selectedIngredient.value = '';
         searchResults.value = [];
         displayName.value = '';
     };
@@ -111,7 +113,7 @@ export function useForm({ initialState, rules, API_BASE, SEARCH_URL, onSubmit, e
         displayName.value = item.name;
     }
 
-    return{ form, errors, submitted, existingNames, search, selectedType, searchResults, displayName,
+    return{ form, errors, submitted, existingNames, search, selectedType, searchResults, displayName, selectedIngredient,
             validateField, submit, reset, fetchSearchResults, selectItem, remove, handleSelect
     };
 }

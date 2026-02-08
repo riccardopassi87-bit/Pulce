@@ -21,7 +21,7 @@
   const schema = pizzaRules([]);
 
   const { form, errors, submit, submitted, reset, remove, displayName, 
-        search, selectedType, searchResults: pizzas, fetchSearchResults,
+        search, selectedType, searchResults: pizzas, selectedIngredient, fetchSearchResults,
         selectItem, validateField
    } = useForm({
     initialState: schema.initialState,
@@ -39,7 +39,43 @@
     }
   });
 
-  watch([search, selectedType], fetchSearchResults);
+  const filteredPizzas = computed(() =>{
+    if(!selectedIngredient.value || selectedIngredient.value === "") return pizzas.value;
+
+    const targetId = Number(selectedIngredient.value);
+
+    return pizzas.value.filter(pizza => {
+
+    if (!pizza.ingredients || !Array.isArray(pizza.ingredients)) {
+      return false;
+    }
+    return pizza.ingredients.some(ing => Number(ing.id) === targetId);
+  });
+  });
+
+  watch(selectedType, async (newType) => {
+    if (newType) {
+      selectedIngredient.value = "";
+      await fetchSearchResults();
+    } else if (!search.value) {
+      pizzas.value = [];
+    } else {
+      await fetchSearchResults();
+    }
+  });
+
+  watch(selectedIngredient, async (newIng) => {
+    if(newIng) {
+      selectedType.value = "";
+      await fetchSearchResults();
+    } else if (!search.value) {
+      pizzas.value = [];
+    } else {
+      await fetchSearchResults();
+    }
+  });
+
+  watch(search, fetchSearchResults);
 
   const handleSelect = (pizza) => {
     selectItem(pizza, (p) => ({
@@ -83,17 +119,23 @@
                 </template>
                   <template #filter>
                       <select v-model="selectedType">
-                        <option disabled selected hidden></option>
+                        <option value="">By Type</option>
                         <option v-for="t in PIZZA_TYPE" :key="t" :value="t">
                           {{ t }}
                         </option>
+                      </select>
+                      <select v-model="selectedIngredient">
+                          <option value="">By Ingredient</option>
+                          <option v-for="ing in allIngredients" :key="ing.id" :value="ing.id">
+                              {{ ing.name }}
+                          </option>
                       </select>
                   </template>
 
                   <template #results>
                     <div class="fsf">
                       <ul>
-                        <li v-for="p in pizzas" :key="p.id" @click="handleSelect(p)"
+                        <li v-for="p in filteredPizzas" :key="p.id" @click="handleSelect(p)"
                         :class="{selected: form.id === p.id}">
                           {{ p.name }}
                         </li>
@@ -136,7 +178,7 @@
                   <div id="new-content">
                     <p>Add Ingredient:</p>
                     <select @change="addIngredient">
-                      <option disabled selected hidden></option>
+                      <option value=""></option>
                       <option v-for="i in allIngredients" :key="i.id" :value="i.id"
                       v-show="!form.ingredientIds.includes(i.id)">
                         {{ i.name }}
@@ -177,7 +219,7 @@
   }
   select{
     height: 70%;
-    width: 70%;
+    width: 48%;
     background-color: #222;
   }
   .title{

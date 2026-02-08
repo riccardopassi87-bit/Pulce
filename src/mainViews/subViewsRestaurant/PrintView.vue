@@ -35,7 +35,7 @@
     if(!exists) {
         printList.value.push({
             ...pizza,
-            sellingPrice: Number(pizza.sellingPrice)
+            sellingPrice: Number(pizza.sellingPrice).toFixed(2)
         });
 
         await nextTick();
@@ -182,6 +182,9 @@
         font-family: 'InkFree';
         margin-bottom: 3%;
         color: black;
+    }
+    li{
+        font-size: 1.3rem;
     }
 </style>
 
