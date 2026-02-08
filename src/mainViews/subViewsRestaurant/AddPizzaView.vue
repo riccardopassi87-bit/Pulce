@@ -10,7 +10,7 @@
     import FormField from '@/commonViews/FormField.vue';
 
     const API_BASE = 'http://localhost:8080/api/pizza'
-    const ING_SEARCH_URL = 'http://localhost:8080/api/ingredient/search';
+    const ING_SEARCH_URL = 'http://localhost:8080/api/ingredient';
     const pizzaBase = 8;
     const existingNames = ref([])
     const selectedIngredients = ref([]);

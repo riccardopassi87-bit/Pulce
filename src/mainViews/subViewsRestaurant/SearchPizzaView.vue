@@ -235,5 +235,4 @@
     margin-bottom: 1%;
     background-color: #222;
   }
-
 </style>
