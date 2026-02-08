@@ -2,7 +2,7 @@
     import { ingredientRules } from '@/constants/ruleSets';
     import { ref } from 'vue';
     import { api } from '@/api/apiService';
-    import { ALLERGENE, INGREDIENT_TYPE } from '@/constants/types';
+    import { ALLERGENE_MAP, INGREDIENT_TYPE } from '@/constants/types';
     import { useForm } from '@/router/composable/useForm';
     
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
@@ -54,7 +54,7 @@
             <FormField label="Allergene:" :error="errors.allergene" :submitted="submitted" v-slot="{ isInvalid }">
                 <select v-model="form.allergene" @change="validateField('allergene')" :class="{ invalid: isInvalid }">
                     <option value=""></option>
-                    <option v-for="a in ALLERGENE" :key="a" :value="a">{{ a }}</option>
+                    <option v-for="a in ALLERGENE_MAP" :key="a.code" :value="a.code">{{ a.label }}</option>
                 </select>
             </FormField>
         </div>

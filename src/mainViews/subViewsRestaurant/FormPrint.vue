@@ -17,6 +17,18 @@ const handleRemove = (id) => {
     emit('remove-pizza', id);
 };
 
+const getAllergeneCodes = (ingredients) => {
+    if (!ingredients || !Array.isArray(ingredients)) return '';
+
+    const uniqueCodes = [...new Set(
+        ingredients
+        .map(ing => ing.allergene)
+        .filter(code => code && code !== 'N/A')
+    )].sort();
+
+    return uniqueCodes.length > 0 ? uniqueCodes.join(', ') : '';
+}
+
 </script>
 
 <template>
@@ -28,9 +40,8 @@ const handleRemove = (id) => {
                     <div id="top-layer">
                         <p id="name">{{ p.name }}</p>
                         <p v-if="p.type !== 'Normal'" id="type">{{ p.type }}</p>
-                        
                         <div id="spacing"></div>
-                        
+                        <p id="allergene-codes">{{ getAllergeneCodes(p.ingredients) }}</p>
                         <p id="price">{{p.sellingPrice}} €</p>
                     </div>
 
@@ -95,7 +106,6 @@ const handleRemove = (id) => {
     gap: 5px;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 5px;
 }
 #low-layer{
     width: 85%;
@@ -110,12 +120,12 @@ const handleRemove = (id) => {
 }
 #name{
     font-family: 'OpenSansBold';
-    font-size: 1rem;
+    font-size: 0.7rem;
     color: black;
 }
 #type{
     font-family: 'OpenSansBold';
-    font-size: 0.6rem;
+    font-size: 0.5rem;
     color: #55d400ff;
 }
 #spacing{
@@ -123,36 +133,38 @@ const handleRemove = (id) => {
     border-bottom: 2px dotted black;
     height: 1px;
     position: relative;
-    top: -4px;
 }
-#allergene{
+#allergene-codes{
     font-family: 'OpenSansBold';
-    font-size: 0.8rem;
+    font-size: 0.5rem;
     color: black;
 }
 #price{
     font-family: 'OpenSansBold';
-    font-size: 1rem;
+    font-size: 0.7rem;
     color: #ffcc00ff;
 }
 .ingredient{
     font-family: 'OpenSansLightItalic';
-    font-size: 0.8rem;
+    font-size: 0.5rem;
     color: black;
 }
 .ingredient:not(:last-child)::after{
     content: ", ";
 }
-.ghost {
-  opacity: 0.5;
-  background: #c8ebfb;
+.ghost{
+    opacity: 0.5;
+    border: 1px solid red;
 }
-.pizza-row {
-  cursor: grab;
-  padding: 5px;
-  transition: transform 0.2s;
+.pizza-row{
+    cursor: grab;
+    padding: 5px;
 }
-.pizza-row:active {
-  cursor: grabbing;
+.pizza-row:active{
+    cursor: grabbing;
 }
+.pizza-row:hover{
+    background-color: rgb(153 153 153 / 0.2);
+}
+
 </style>

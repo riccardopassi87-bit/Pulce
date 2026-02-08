@@ -1,5 +1,5 @@
 import { validators } from "./validators";
-import { PRODUCT_TYPE, PIZZA_TYPE, INGREDIENT_TYPE, ALLERGENE } from "./types";
+import { PRODUCT_TYPE, PIZZA_TYPE, INGREDIENT_TYPE, ALLERGENE_CODES } from "./types";
 
 export const ingredientRules = (existingNamesArray) => ({
     initialState: {name: '', portionPrice: null, kgPrice: null, type: '', allergene: ''},
@@ -19,7 +19,7 @@ export const ingredientRules = (existingNamesArray) => ({
             { validator: validators.oneOf(INGREDIENT_TYPE), message: 'Invalid type' }],
         allergene: [
             { validator: validators.required, message: 'Allergene required' },
-            { validator: validators.oneOf(ALLERGENE), message: 'Invalid allergene' }]
+            { validator: validators.oneOf(ALLERGENE_CODES), message: 'Invalid allergene' }]
     }
 });
 

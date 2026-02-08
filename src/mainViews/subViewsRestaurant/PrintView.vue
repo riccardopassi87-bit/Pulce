@@ -1,5 +1,5 @@
 <script setup>
-  import { ref, onMounted, watch } from 'vue';
+  import { ref, watch, nextTick } from 'vue';
   import { pizzaRules } from '@/constants/ruleSets';
   import { PIZZA_TYPE } from '@/constants/types';
   import { useForm } from '@/router/composable/useForm';
@@ -13,10 +13,13 @@
   const schema = pizzaRules([]);
   const removeFromPrint = (id) => {
     printList.value = printList.value.filter(p => p.id !== id);
+    isFull.value = false;
   }
+  const paperContent = ref(null);
+  const isFull = ref(false);
 
   const { form, search, selectedType,
-        searchResults: pizzas, fetchSearchResults, selectItem
+        searchResults: pizzas, fetchSearchResults
    } = useForm({
     initialState: schema.initialState,
     rules: schema.rules,
@@ -26,7 +29,7 @@
 
   watch([search, selectedType], fetchSearchResults);
 
-  const handleSelect = (pizza) => {
+  const handleSelect = async (pizza) => {
     const exists = printList.value.some(p => p.id === pizza.id);
 
     if(!exists) {
@@ -34,6 +37,24 @@
             ...pizza,
             sellingPrice: Number(pizza.sellingPrice)
         });
+
+        await nextTick();
+
+        if (paperContent.value) {
+            isFull.value = paperContent.value.scrollHeight > paperContent.value.clientHeight;
+
+            if(isFull.value) {
+                printList.value.pop();
+
+                isFull.value = true;
+
+                setTimeout(() => {
+                    isFull.value = false;
+                }, 500);
+            } else {
+                isFull.value = false;
+            }
+        }
     }
   };
 </script>
@@ -45,7 +66,7 @@
           <template #left-search>
               <SearchPrompt>
                 <template #input>
-                        <input class="own-input" v-model="search" placeholder="search by name"/>
+                    <input class="own-input" v-model="search" placeholder="search by name"/>
                 </template>
                   <template #filter>
                       <select v-model="selectedType">
@@ -70,7 +91,7 @@
           </template>
                 <template #result>
                     <div class="fsf search-result">
-                        <div id="paper">
+                        <div id="paper" ref="paperContent" :class="{ overflowing: isFull }">
                             <p v-if="isMainTitle" id="main-title"></p>
                             <p id="title">Pizza</p>
 
@@ -102,7 +123,19 @@
     font-weight: normal;
     font-style: normal;
     }
-
+    @keyframes shake {
+    0% { transform: translateX(0); }
+    10% { transform: translateX(-4px); }
+    20% { transform: translateX(4px); }
+    30% { transform: translateX(-4px); }
+    40% { transform: translateX(4px); }
+    50% { transform: translateX(-4px); }
+    60% { transform: translateX(4px); }
+    70% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+    90% { transform: translateX(-4px); }
+    100% { transform: translateX(0); }
+    }
     #search-pizza{
         flex: 9;
     }
@@ -135,6 +168,14 @@
         height: 96%;
         aspect-ratio: 1 / 1.4142;
         padding: 3%;
+        transition: border 0.3s ease, box-shadow 0.3s ease;
+        border: 2px solid transparent;
+        overflow: hidden;
+    }
+    #paper.overflowing{
+        border: 2px solid red;
+        box-shadow: 0 0 15px rgba(255, 68, 68, 0.4);
+        animation: shake 0.4s ease-in-out;
     }
     #title{
         font-size: 1.5rem;
