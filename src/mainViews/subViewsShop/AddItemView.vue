@@ -4,10 +4,12 @@
     import { api } from '@/api/apiService';
     import { PRODUCT_TYPE } from '@/constants/types';
     import { useForm } from '@/router/composable/useForm';
+    import { useAlert } from '@/router/composable/useAlert';
 
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
     import FormField from '@/commonViews/FormField.vue';
 
+    const { showAlert } = useAlert();
     const API_BASE = 'http://localhost:8080/api/item'
     const existingNames = ref([])
 
@@ -22,10 +24,21 @@
     onSubmit: async (data) => {
         try{
             await api.post(API_BASE, data);
-            alert('Product saved succesfully ✅');
+            showAlert({
+                title: 'Success!',
+                message: 'Product saved succesfully ✅',
+                type: 'success'
+            });
             existingNames.value.push(data.name);
             reset();
-        }catch (e) { alert('Error saving');}
+        }catch (e) {
+            showAlert({
+                title: 'Error',
+                message: 'Upload failed!',
+                type: 'error',
+                options: ['Close']
+            });
+        }
     }
 });
 </script>

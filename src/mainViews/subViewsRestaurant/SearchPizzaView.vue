@@ -5,12 +5,14 @@
   import { PIZZA_TYPE } from '@/constants/types';
   import { useSearch } from '@/router/composable/useSearch';
   import { useForm } from '@/router/composable/useForm';
+  import { useAlert } from '@/router/composable/useAlert';
 
   import SearchTemplate from '@/commonViews/SearchTemplate.vue';
   import SearchPrompt from '@/commonViews/SearchPrompt.vue';
   import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
   import FormField from '@/commonViews/FormField.vue';
   
+  const { showAlert } = useAlert();
   const API_BASE = 'http://localhost:8080/api/pizza';
   const allIngredients = ref([]);
 
@@ -36,10 +38,21 @@
     onSubmit: async (data) => {
       try {
         await api.put(`${API_BASE}/${data.id}`, data);
-        alert('Pizza updated succesfully ✅');
+        showAlert({
+          title: 'Success!',
+          message: 'Pizza successfully modified ✅',
+          type: 'success'
+        })
         displayName.value = data.name;
         reset();
-      } catch (e) { alert(e.message); }
+      } catch (e) {
+        showAlert({
+          title: 'Error',
+          message: 'Upload Failed!',
+          type: 'error',
+          options: ['Close']
+        })
+       }
     }
   });
 

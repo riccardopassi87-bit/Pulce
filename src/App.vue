@@ -1,6 +1,7 @@
 <script setup>
 import Header from './commonStart/Header.vue';
 import StartingPage from './commonStart/StartingPage.vue';
+import GlobalAlert from './commonViews/GlobalAlert.vue';
 
 // EASTER EGG!!!!!
 import { watch } from 'vue';
@@ -22,6 +23,7 @@ watch(() => apiSettings.performanceMode, (isSlow) => {
   <div id="main">
     <Header />
     <StartingPage />
+    <GlobalAlert/>
   </div>
 </template>
 

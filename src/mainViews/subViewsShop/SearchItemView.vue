@@ -4,12 +4,14 @@
     import { productRules } from '@/constants/ruleSets';
     import { PRODUCT_TYPE } from '@/constants/types';
     import { useForm } from '@/router/composable/useForm';
+    import { useAlert } from '@/router/composable/useAlert';
 
     import SearchTemplate from '@/commonViews/SearchTemplate.vue';
     import SearchPrompt from '@/commonViews/SearchPrompt.vue';
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
     import FormField from '@/commonViews/FormField.vue';
 
+    const { showAlert } = useAlert();
     const API_BASE = 'http://localhost:8080/api/item';
     const existingNames = ref([]);
     const schema = productRules([]);
@@ -25,10 +27,21 @@
         onSubmit: async (data) => {
             try {
                 await api.put(`${API_BASE}/${data.id}`, data);
-                alert('Product uploaded ✅');
+                showAlert({
+                    title: 'Success!',
+                    message: 'Product successfully modified! ✅',
+                    type: 'success'
+                })
                 displayName.value = data.name;
                 reset();
-            } catch (e) {alert(e.message);}
+            } catch (e) {
+                showAlert({
+                    title: 'Error',
+                    message: 'Upload failed!',
+                    type: 'error',
+                    options: ['Close']
+                })
+            }
         }
     });
 

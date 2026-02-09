@@ -4,11 +4,13 @@
     import { pizzaRules } from '@/constants/ruleSets';
     import { PIZZA_TYPE, INGREDIENT_TYPE } from '@/constants/types';
     import { useForm } from '@/router/composable/useForm';
+    import { useAlert } from '@/router/composable/useAlert';
 
     import SearchPrompt from '@/commonViews/SearchPrompt.vue';
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
     import FormField from '@/commonViews/FormField.vue';
 
+    const { showAlert } = useAlert();
     const API_BASE = 'http://localhost:8080/api/pizza'
     const ING_SEARCH_URL = 'http://localhost:8080/api/ingredient';
     const pizzaBase = 8;
@@ -28,10 +30,21 @@
         onSubmit: async (data) => {
             try {
                 await api.post(API_BASE, data);
-                alert('Pizza saved succesfully ✅');
+                showAlert({
+                    title: 'Success!',
+                    message: 'Pizza saved succesfully ✅',
+                    type: 'success'
+                })
                 existingNames.value.push(data.name);
                 handleReset();
-            } catch (e) { alert('Error saving'); }
+            } catch (e) { 
+                showAlert({
+                    title: 'Error',
+                    message: 'Upload failed!',
+                    type: 'error',
+                    options: ['Close']
+                })
+             }
         }
     });
 
