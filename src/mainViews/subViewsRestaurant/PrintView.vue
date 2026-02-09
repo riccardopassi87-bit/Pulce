@@ -1,7 +1,9 @@
 <script setup>
-  import { ref, watch, nextTick } from 'vue';
+  import { ref, nextTick, onMounted, computed } from 'vue';
+  import { api } from '@/api/apiService';
   import { pizzaRules } from '@/constants/ruleSets';
   import { PIZZA_TYPE } from '@/constants/types';
+  import { useSearch } from '@/router/composable/useSearch';
   import { useForm } from '@/router/composable/useForm';
 
   import SearchTemplate from '@/commonViews/SearchTemplate.vue';
@@ -9,8 +11,15 @@
   import FormPrint from './FormPrint.vue';
   
   const API_BASE = 'http://localhost:8080/api/pizza';
+  const allIngredients = ref([]);
   const printList = ref([]);
+
+  onMounted(async () => {
+    allIngredients.value = await api.get('http://localhost:8080/api/ingredient');
+  });
+
   const schema = pizzaRules([]);
+
   const removeFromPrint = (id) => {
     printList.value = printList.value.filter(p => p.id !== id);
     isFull.value = false;
@@ -18,16 +27,26 @@
   const paperContent = ref(null);
   const isFull = ref(false);
 
-  const { form, search, selectedType,
-        searchResults: pizzas, fetchSearchResults
-   } = useForm({
+  const { search, selectedType, selectedIngredient, searchResults: pizzas,
+    applyFilter
+  } = useSearch(API_BASE);
+
+  const { form } = useForm({
     initialState: schema.initialState,
     rules: schema.rules,
     API_BASE: API_BASE,
     SEARCH_URL: API_BASE,
   });
 
-  watch([search, selectedType], fetchSearchResults);
+  const filteredPizzas = computed(() => {
+    if(!selectedIngredient.value || selectedIngredient.value === "") return pizzas.value;
+
+    const targetId = Number(selectedIngredient.value);
+
+    return pizzas.value.filter(p =>
+      p.ingredients?.some(ing => Number(ing.id) === targetId)
+    );
+  });
 
   const handleSelect = async (pizza) => {
     const exists = printList.value.some(p => p.id === pizza.id);
@@ -69,18 +88,26 @@
                     <input class="own-input" v-model="search" placeholder="search by name"/>
                 </template>
                   <template #filter>
-                      <select v-model="selectedType">
-                        <option value=""></option>
+                      <select v-model="selectedType" 
+                      @change="e => applyFilter('selectedType', e.target.value, ['selectedIngredient'])">
+                        <option value="">By Type</option>
                         <option v-for="t in PIZZA_TYPE" :key="t" :value="t">
                           {{ t }}
                         </option>
+                      </select>
+                      <select v-model="selectedIngredient"
+                      @change="e => applyFilter('selectedIngredient', e.target.value, ['selectedType'])">
+                          <option value="">By Ingredient</option>
+                          <option v-for="ing in allIngredients" :key="ing.id" :value="ing.id">
+                              {{ ing.name }}
+                          </option>
                       </select>
                   </template>
 
                   <template #results>
                     <div class="fsf">
                       <ul>
-                        <li v-for="p in pizzas" :key="p.id" @click="handleSelect(p)"
+                        <li v-for="p in filteredPizzas" :key="p.id" @click="handleSelect(p)"
                         :class="{selected: form.id === p.id}">
                           {{ p.name }}
                         </li>
@@ -141,7 +168,7 @@
     }
     select{
         height: 70%;
-        width: 70%;
+        width: 48%;
         background-color: #222;
     }
     button{

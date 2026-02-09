@@ -1,8 +1,9 @@
 <script setup>
-  import { computed, ref, onMounted,watch } from 'vue';
+  import { computed, ref, onMounted } from 'vue';
   import { api } from '@/api/apiService';
   import { pizzaRules } from '@/constants/ruleSets';
   import { PIZZA_TYPE } from '@/constants/types';
+  import { useSearch } from '@/router/composable/useSearch';
   import { useForm } from '@/router/composable/useForm';
 
   import SearchTemplate from '@/commonViews/SearchTemplate.vue';
@@ -20,8 +21,11 @@
   const existingNames = ref([]);
   const schema = pizzaRules([]);
 
-  const { form, errors, submit, submitted, reset, remove, displayName, 
-        search, selectedType, searchResults: pizzas, selectedIngredient, fetchSearchResults,
+  const { search, selectedType, selectedIngredient, searchResults: pizzas,
+     applyFilter
+   } = useSearch(API_BASE);
+
+  const { form, errors, submit, submitted, reset, remove, displayName,
         selectItem, validateField
    } = useForm({
     initialState: schema.initialState,
@@ -44,38 +48,11 @@
 
     const targetId = Number(selectedIngredient.value);
 
-    return pizzas.value.filter(pizza => {
-
-    if (!pizza.ingredients || !Array.isArray(pizza.ingredients)) {
-      return false;
-    }
-    return pizza.ingredients.some(ing => Number(ing.id) === targetId);
-  });
+    return pizzas.value.filter(p =>
+      p.ingredients?.some(ing => Number(ing.id) === targetId)
+    );
   });
 
-  watch(selectedType, async (newType) => {
-    if (newType) {
-      selectedIngredient.value = "";
-      await fetchSearchResults();
-    } else if (!search.value) {
-      pizzas.value = [];
-    } else {
-      await fetchSearchResults();
-    }
-  });
-
-  watch(selectedIngredient, async (newIng) => {
-    if(newIng) {
-      selectedType.value = "";
-      await fetchSearchResults();
-    } else if (!search.value) {
-      pizzas.value = [];
-    } else {
-      await fetchSearchResults();
-    }
-  });
-
-  watch(search, fetchSearchResults);
 
   const handleSelect = (pizza) => {
     selectItem(pizza, (p) => ({
@@ -118,13 +95,15 @@
                         <input class="own-input" v-model="search" placeholder="search by name"/>
                 </template>
                   <template #filter>
-                      <select v-model="selectedType">
+                      <select v-model="selectedType" 
+                      @change="e => applyFilter('selectedType', e.target.value, ['selectedIngredient'])">
                         <option value="">By Type</option>
                         <option v-for="t in PIZZA_TYPE" :key="t" :value="t">
                           {{ t }}
                         </option>
                       </select>
-                      <select v-model="selectedIngredient">
+                      <select v-model="selectedIngredient"
+                      @change="e => applyFilter('selectedIngredient', e.target.value, ['selectedType'])">
                           <option value="">By Ingredient</option>
                           <option v-for="ing in allIngredients" :key="ing.id" :value="ing.id">
                               {{ ing.name }}
