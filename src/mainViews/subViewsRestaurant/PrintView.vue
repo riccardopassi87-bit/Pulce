@@ -108,7 +108,9 @@
                     <div class="fsf">
                       <ul>
                         <li v-for="p in filteredPizzas" :key="p.id" @click="handleSelect(p)"
-                        :class="{selected: form.id === p.id}">
+                        :class="{'selected': form.id === p.id,
+                                'already-in-print': printList.some(item => item.id === p.id)
+                        }">
                           {{ p.name }}
                         </li>
                       </ul>
@@ -212,6 +214,9 @@
     }
     li{
         font-size: 1.3rem;
+    }
+    .already-in-print{
+        color: #444;
     }
 </style>
 
