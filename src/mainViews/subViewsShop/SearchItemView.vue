@@ -37,7 +37,7 @@
             } catch (e) {
                 showAlert({
                     title: 'Error',
-                    message: 'Upload failed!',
+                    message: 'Upload failed! ❌',
                     type: 'error',
                     options: ['Close']
                 })

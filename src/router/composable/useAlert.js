@@ -21,7 +21,7 @@ export function useAlert() {
             if (config.type === 'success' && (!config.options || config.options.length === 0)) {
                 setTimeout(() => {
                     closeAlert(null);
-                }, 3000);
+                }, 1200);
             }
         });
     };
