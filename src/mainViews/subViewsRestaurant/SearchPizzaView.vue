@@ -6,11 +6,15 @@
   import { useSearch } from '@/router/composable/useSearch';
   import { useForm } from '@/router/composable/useForm';
   import { useAlert } from '@/router/composable/useAlert';
+  import { useRoute } from 'vue-router';
 
   import SearchTemplate from '@/commonViews/SearchTemplate.vue';
   import SearchPrompt from '@/commonViews/SearchPrompt.vue';
   import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
   import FormField from '@/commonViews/FormField.vue';
+
+  const route = useRoute();
+
   
   const { showAlert } = useAlert();
   const API_BASE = 'http://localhost:8080/api/pizza';
@@ -18,6 +22,10 @@
 
   onMounted(async () => {
     allIngredients.value = await api.get('http://localhost:8080/api/ingredient');
+
+    if (route.query.ingredient){
+      selectedIngredient.value = route.query.ingredient;
+    }
   });
 
   const existingNames = ref([]);

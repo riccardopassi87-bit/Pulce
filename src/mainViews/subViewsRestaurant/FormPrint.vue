@@ -166,5 +166,4 @@ const getAllergeneCodes = (ingredients) => {
 .pizza-row:hover{
     background-color: rgb(153 153 153 / 0.2);
 }
-
 </style>

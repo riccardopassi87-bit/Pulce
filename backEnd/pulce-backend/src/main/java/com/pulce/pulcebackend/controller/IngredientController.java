@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/ingredient")
@@ -49,8 +50,21 @@ public class IngredientController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteIngredient(@PathVariable int id) {
-        ingredientService.delete(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteIngredient(@PathVariable int id) {
+        try {
+            ingredientService.delete(id);
+            return ResponseEntity.noContent().build(); // Return 204 on success
+        } catch (IllegalStateException e) {
+            // We catch the error here and send it back as a 409 Conflict
+            // with the specific pizza list message
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Map.of("message", e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/{id}/cascade")
+    public ResponseEntity<?> deleteCascade(@PathVariable int id) {
+        ingredientService.deleteWithPizzas(id);
+        return ResponseEntity.ok().build();
     }
 }

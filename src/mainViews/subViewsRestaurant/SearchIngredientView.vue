@@ -4,12 +4,16 @@
     import { ingredientRules } from '@/constants/ruleSets';
     import { INGREDIENT_TYPE, ALLERGENE_MAP } from '@/constants/types';
     import { useForm } from '@/router/composable/useForm';
+    import { commonRouter } from '@/router/composable/commonRouter';
+    import { useAlert } from '@/router/composable/useAlert';
 
     import SearchPrompt from '@/commonViews/SearchPrompt.vue';
     import SearchTemplate from '@/commonViews/SearchTemplate.vue';
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
     import FormField from '@/commonViews/FormField.vue';
     
+    const { goNext } = commonRouter();
+    const { showAlert } = useAlert();
     const API_BASE = 'http://localhost:8080/api/ingredient';
     const existingNames = ref([]);
     const schema = ingredientRules();
@@ -34,11 +38,14 @@
                     const affectedPizzas = await api.get(`${API_BASE}/${data.id}/impact`);
 
                     if(affectedPizzas.length > 0) {
-                        const pizzaList = affectedPizzas.map(name => `• ${name}`).join('\n');
-                        const proceed = confirm(
-                            `Changing the price will affect the following pizzas:\n\n${pizzaList}\n\nDo you want to proceed?`
-                        );
-                        if (!proceed) return;
+                        const choise = await showAlert({
+                            title: "Price Modification",
+                            message: `Changing "${data.name}" price, affects these pizzas:`,
+                            items: affectedPizzas,
+                            options: ['Cancel', 'Agreed'],
+                            type: 'warning'
+                        });
+                        if (choise !== 'Agreed') return;
                     }
                 } catch (e) {
                     console.error("Impact check failed", e);
@@ -47,26 +54,102 @@
 
             try {
                 await api.put(`${API_BASE}/${data.id}`, data);
-                alert('Ingredient uploaded ✅');
+                const afterSuccess = await showAlert({
+                    title: "Updated",
+                    message: changedPrice?
+                    "Ingredient Updated. Go to affected Pizzas?"
+                    : "Ingredient successfully modified ✅",
+                    options: changedPrice ? ['Close', 'Go to search'] : [],
+                    type: 'success'
+                });
+
+                if (afterSuccess === 'Go to search'){
+                    goNext(`search?ingredient=${data.id}`);
+                }
                 displayName.value = data.name;
                 reset();
-            } catch (e) {alert(e.message);}
+                fetchSearchResults();
+            } catch (e) {
+                showAlert({
+                    title: 'Error',
+                    message: e.message,
+                    type: 'error',
+                    options: ['Close']
+                });
+            }
         }
     });
 
     watch([search, selectedType], fetchSearchResults);
     
     const handleRemove = async () => {
-    if (!form.id || !confirm("Are you sure?")) return;
+    if (!form.id) return;
 
     try {
         await api.delete(`${API_BASE}/${form.id}`);
-
-        alert('Ingredient deleted! ✅');
+        showAlert({
+                title: 'Success!',
+                message: 'Ingredient succesfully deleted! ✅',
+                type: 'success'
+            });
         reset();
         fetchSearchResults();
+
     } catch (e) {
-        alert(e.message); 
+        const serverMessage = e.message || "";
+
+        if (serverMessage.includes("It is used in the following pizzas:")){
+            const pizzaListString = serverMessage.split(": ")[1];
+            const affectedPizzas = pizzaListString.split(", ");
+
+            const choise = await showAlert({
+                title: "Deletion Alert!",
+                message: "This ingredient is currently found in the following pizzas:",
+                items: affectedPizzas,
+                options: ['Quit', 'Go to pizzas', 'DELETE ALL'],
+                type: 'warning'
+            });
+
+            if(choise === 'Go to pizzas'){
+                goNext(`search?ingredient=${form.id}`);
+            } else if(choise === 'DELETE ALL') {
+                const confirmed = await showAlert({
+                    title: "!!! - WARNING - !!!",
+                    message: "Type the ingredient name to delete the ingredient and all associated pizzas.",
+                    type: 'safety',
+                    safetyCode: form.name.toUpperCase(),
+                    options: ['Cancel', 'Confirm Nuclear Reaction']
+                });
+
+                if (confirmed === 'Confirm Nuclear Reaction'){
+                    try{
+                        await api.delete(`${API_BASE}/${form.id}/cascade`);
+                        await showAlert({
+                            title: "Success...?",
+                            message: "No turning back achieved",
+                            type: 'success',      
+                        });
+                        reset();
+                        fetchSearchResults();
+                    } catch (e){
+                        showAlert({ 
+                            title: "Nuclear Failure", 
+                            message: "The reaction failed", 
+                            type: 'error', 
+                            options: ['Back to Safety', 'Retry'] 
+                        });
+                    }
+                    
+                }
+            }
+        } else {
+            showAlert({
+                title: "Error",
+                message: serverMessage,
+                type: 'error',
+                options: ['Ok']
+            })
+        }
     }
 };
 

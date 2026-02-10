@@ -61,10 +61,15 @@ export const api = {
 
         const res = await fetch(url, { method: 'DELETE'});
         if(!res.ok) {
-            const errorData = await res.json().catch(() => ({}));
-            throw new Error(errorData.message || `Delete failed: ${res.status}`);
+            let errorMessage = `Delete failed: ${res.status}`;
+            try{
+                const errorData = await res.json();
+                errorMessage = errorData.message || errorMessage;
+            } catch (e){ }
+             throw new Error(errorMessage);  
         }
-        return res.status === 204 ? true : res.json();
+        const text = await res.text();
+        return text ? JSON.parse(text) : true;
     }
 };
 

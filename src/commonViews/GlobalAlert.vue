@@ -60,9 +60,9 @@ const handleAction = (value) => {
   flex-direction: column;
   background: #333;
   height: 50%;
-  max-height: 200px;
+  max-height: 300px;
   padding: 20px;
-  max-width: 400px;
+  max-width: 600px;
   width: 50%;
   box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
@@ -75,14 +75,21 @@ h3{
 p{
     flex:0.5;
     width: 100%;
-    font-size: larger;
     text-align: center;
+    margin-bottom: 10px;
 }
-.alert-list { list-style: none;
-    flex: 2;
-    max-height: 200px;
-    overflow-y: auto; }
-
+.alert-list { 
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    flex: 1.5;
+    background-color: #111;
+    overflow-y: auto;
+}
+.alert-list li{
+    color: white;
+}
 .modal-actions {
     flex: 1;
     display: flex;
@@ -97,7 +104,12 @@ p{
 .modal-actions button:hover{
     background-color: rgb(39, 10, 10);
 }
-.safety-input { width: 100%; padding: 8px; border: 1px solid red; margin-top: 10px; }
+.safety-input {
+    height: 3rem;
+    width: 98%;
+    border: 1px solid red;
+    margin-top: 5px;
+}
 .fade-enter-active, .fade-leave-active { transition: opacity 0.3s; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
 </style>

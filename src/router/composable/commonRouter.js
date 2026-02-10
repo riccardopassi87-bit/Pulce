@@ -21,7 +21,7 @@ export function commonRouter(){
  // ROUTE CHECK - to select button text depending on parent route
 
     const isRestaurant = computed(() => {
-        return route.matched[0]?.path === '/restaurant' || ['addPizza, searchPizza'].includes(route.name)
+        return route.matched[0]?.path === '/restaurant' || ['addPizza', 'searchPizza'].includes(route.name)
     })
     const addButtonText = computed(() => {
         return isRestaurant.value ? 'Add Pizza' : 'Add Product';

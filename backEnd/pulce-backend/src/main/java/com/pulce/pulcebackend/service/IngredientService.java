@@ -69,6 +69,16 @@ public class IngredientService {
         ingredientRepository.delete(ingredient);
     }
 
+    @Transactional
+    public void deleteWithPizzas(int id) {
+        List<Pizza> pizzas = pizzaRepository.findByIngredientsId(id);
+
+        if(!pizzas.isEmpty()){
+            pizzaRepository.deleteAll(pizzas);
+        }
+        ingredientRepository.deleteById(id);
+    }
+
     public List<String> getImpactNames(int id){
         List<Pizza> linkedPizzas = pizzaRepository.findByIngredientsId(id);
         return linkedPizzas.stream()
