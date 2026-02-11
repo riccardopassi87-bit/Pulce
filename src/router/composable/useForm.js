@@ -92,19 +92,6 @@ export function useForm({ initialState, rules, API_BASE, SEARCH_URL, onSubmit, e
         Object.keys(errors).forEach(k => errors[k] = '');
     };
 
-    // Delete
-    const remove = async (id) => {
-        if (!id || !confirm('Are you sure you want to remove this item?')) return;
-        try {
-            await api.delete(`${API_BASE}/${id}`);
-            alert('Deleted successfully ✅');
-            reset();
-            await fetchSearchResults();
-        } catch (e) {
-            alert(e.message);
-        }
-    };
-
     // Item Name
     const displayName = ref('')
 
@@ -114,6 +101,6 @@ export function useForm({ initialState, rules, API_BASE, SEARCH_URL, onSubmit, e
     }
 
     return{ form, errors, submitted, existingNames, search, selectedType, searchResults, displayName, selectedIngredient,
-            validateField, submit, reset, fetchSearchResults, selectItem, remove, handleSelect
+            validateField, submit, reset, fetchSearchResults, selectItem, handleSelect
     };
 }

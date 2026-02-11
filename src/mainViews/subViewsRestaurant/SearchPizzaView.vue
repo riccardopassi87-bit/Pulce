@@ -7,6 +7,7 @@
   import { useForm } from '@/router/composable/useForm';
   import { useAlert } from '@/router/composable/useAlert';
   import { useRoute } from 'vue-router';
+  import { useRemove } from '@/router/composable/useRemove';
 
   import SearchTemplate from '@/commonViews/SearchTemplate.vue';
   import SearchPrompt from '@/commonViews/SearchPrompt.vue';
@@ -32,10 +33,10 @@
   const schema = pizzaRules([]);
 
   const { search, selectedType, selectedIngredient, searchResults: pizzas,
-     applyFilter
+     applyFilter, fetchSearchResults
    } = useSearch(API_BASE);
 
-  const { form, errors, submit, submitted, reset, remove, displayName,
+  const { form, errors, submit, submitted, reset, displayName,
         selectItem, validateField
    } = useForm({
     initialState: schema.initialState,
@@ -74,6 +75,7 @@
     );
   });
 
+  const { remove } = useRemove({ API_BASE, form, showAlert, reset, onSuccess: fetchSearchResults})
 
   const handleSelect = (pizza) => {
     selectItem(pizza, (p) => ({
@@ -208,7 +210,7 @@
         :show-modify="!!form.id"
         :show-remove="!!form.id"
         @modify="submit"
-        @remove="remove(form.id)"/>
+        @remove="remove"/>
       </div>
     </div>
 </template>

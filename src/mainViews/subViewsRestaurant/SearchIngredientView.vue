@@ -6,6 +6,7 @@
     import { useForm } from '@/router/composable/useForm';
     import { commonRouter } from '@/router/composable/commonRouter';
     import { useAlert } from '@/router/composable/useAlert';
+    import { useRemove } from '@/router/composable/useRemove';
 
     import SearchPrompt from '@/commonViews/SearchPrompt.vue';
     import SearchTemplate from '@/commonViews/SearchTemplate.vue';
@@ -80,29 +81,14 @@
         }
     });
 
+    const { remove: baseRemove } = useRemove({ API_BASE, form, showAlert, reset, fetchSearchResults})
+
     watch([search, selectedType], fetchSearchResults);
     
     const handleRemove = async () => {
-    
-    if (!form.id) return;
-    try {
-        const normaleDelete = await showAlert({
-                title: 'Remove Item',
-                message: 'Are you sure you want to permanently remove this item?',
-                type: 'warning',
-                options: ['Quit', 'Confirm']
-            });
-        if (normaleDelete !== 'Quit'){
-            showAlert({
-                title: 'Success!',
-                message: 'Ingredient succesfully deleted! ✅',
-                type: 'success'
-            })
-            await api.delete(`${API_BASE}/${form.id}`);
-            reset();
-            fetchSearchResults();
-        }
-    } catch (e) {
+        try {
+            await baseRemove();
+        } catch (e) {
         const serverMessage = e.message || "";
 
         if (serverMessage.includes("It is used in the following pizzas:")){

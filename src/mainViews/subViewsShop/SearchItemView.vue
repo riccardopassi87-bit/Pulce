@@ -5,6 +5,7 @@
     import { PRODUCT_TYPE } from '@/constants/types';
     import { useForm } from '@/router/composable/useForm';
     import { useAlert } from '@/router/composable/useAlert';
+    import { useRemove } from '@/router/composable/useRemove';
 
     import SearchTemplate from '@/commonViews/SearchTemplate.vue';
     import SearchPrompt from '@/commonViews/SearchPrompt.vue';
@@ -16,7 +17,7 @@
     const existingNames = ref([]);
     const schema = productRules([]);
 
-    const { form, errors, submit, submitted, reset, remove, search, selectedType, displayName, handleSelect,
+    const { form, errors, submit, submitted, reset, search, selectedType, displayName, handleSelect,
         searchResults: products, fetchSearchResults, validateField
     } = useForm ({
         initialState: schema.initialState,
@@ -44,6 +45,8 @@
             }
         }
     });
+
+    const { remove } = useRemove({ API_BASE, form, showAlert, reset, onSuccess: fetchSearchResults})
 
     watch([search, selectedType], fetchSearchResults);
 
@@ -121,7 +124,7 @@
             :show-modify="!!form.id"
             :show-remove="!!form.id"
             @modify="submit"
-            @remove="remove(form.id)"/>
+            @remove="remove"/>
         </div>
     </div>
 </template>

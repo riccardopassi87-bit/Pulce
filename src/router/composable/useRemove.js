@@ -1,18 +1,29 @@
-export async function standardDelete(API_BASE, form){
-    const normaleDelete = await showAlert({
-            title: 'Remove Item',
-            message: 'Are you sure you want to permanently remove this item?',
-            type: 'warning',
-            options: ['Quit', 'Confirm']
-        });
-    if (normaleDelete !== 'Quit'){
-        showAlert({
-            title: 'Success!',
-            message: 'Item succesfully deleted! ✅',
-            type: 'success'
-        })
-        await api.delete(`${API_BASE}/${form.id}`);
-        reset();
-        await fetchSearchResults();
-    }
+import { api } from '@/api/apiService';
+
+export function useRemove({API_BASE, form, showAlert, reset, onSuccess}){
+   
+    const remove = async () => {
+        if (!form.id) return;
+ console.log("clicke")
+        const confirmDelete = await showAlert({
+                title: 'Remove Item',
+                message: 'Are you sure you want to permanently remove this item?',
+                type: 'warning',
+                options: ['Quit', 'Confirm']
+            });
+        if (confirmDelete !== 'Quit'){
+            
+            await api.delete(`${API_BASE}/${form.id}`);
+
+            showAlert({
+                title: 'Success!',
+                message: 'Item succesfully deleted! ✅',
+                type: 'success'
+            });
+            
+            reset();
+            if(onSuccess) await onSuccess();
+        }
+    };
+    return { remove };
 }
