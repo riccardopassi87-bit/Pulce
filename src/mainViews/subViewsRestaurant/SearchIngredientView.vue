@@ -6,7 +6,7 @@
     import { useForm } from '@/router/composable/useForm';
     import { commonRouter } from '@/router/composable/commonRouter';
     import { useAlert } from '@/router/composable/useAlert';
-    import { useRemove } from '@/router/composable/useRemove';
+    import { useRemove } from '@/router/composable/useUse';
 
     import SearchPrompt from '@/commonViews/SearchPrompt.vue';
     import SearchTemplate from '@/commonViews/SearchTemplate.vue';

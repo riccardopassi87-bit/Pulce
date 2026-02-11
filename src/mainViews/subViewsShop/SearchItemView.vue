@@ -4,8 +4,7 @@
     import { PRODUCT_TYPE } from '@/constants/types';
     import { useForm } from '@/router/composable/useForm';
     import { useAlert } from '@/router/composable/useAlert';
-    import { useRemove } from '@/router/composable/useRemove';
-    import { useModify } from '@/router/composable/useModify';
+    import { useModify, useRemove } from '@/router/composable/useUse';
 
     import SearchTemplate from '@/commonViews/SearchTemplate.vue';
     import SearchPrompt from '@/commonViews/SearchPrompt.vue';

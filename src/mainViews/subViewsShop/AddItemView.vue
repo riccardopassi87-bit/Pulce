@@ -1,10 +1,10 @@
 <script setup>
     import { productRules } from '@/constants/ruleSets';
     import { ref } from 'vue';
-    import { api } from '@/api/apiService';
     import { PRODUCT_TYPE } from '@/constants/types';
     import { useForm } from '@/router/composable/useForm';
     import { useAlert } from '@/router/composable/useAlert';
+    import { useAdd } from '@/router/composable/useUse';
 
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
     import FormField from '@/commonViews/FormField.vue';
@@ -21,26 +21,11 @@
     rules: schema.rules,
     existingNamesRef: existingNames,
     API_BASE: API_BASE,
-    onSubmit: async (data) => {
-        try{
-            await api.post(API_BASE, data);
-            showAlert({
-                title: 'Success!',
-                message: 'Product saved succesfully ✅',
-                type: 'success'
-            });
-            existingNames.value.push(data.name);
-            reset();
-        }catch (e) {
-            showAlert({
-                title: 'Error',
-                message: 'Upload failed! ❌',
-                type: 'error',
-                options: ['Close']
-            });
-        }
-    }
-});
+    onSubmit: async () => await applyAdd()
+    });
+
+    const { add } = useAdd({ API_BASE, form, showAlert, reset, existingNames});
+    const applyAdd = async () => {await add();};
 </script>
 
 <template>

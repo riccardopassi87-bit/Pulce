@@ -1,10 +1,10 @@
 <script setup>
     import { ref, watch, computed } from 'vue';
-    import { api } from '@/api/apiService';
     import { pizzaRules } from '@/constants/ruleSets';
     import { PIZZA_TYPE, INGREDIENT_TYPE } from '@/constants/types';
     import { useForm } from '@/router/composable/useForm';
     import { useAlert } from '@/router/composable/useAlert';
+    import { useAdd } from '@/router/composable/useUse';
 
     import SearchPrompt from '@/commonViews/SearchPrompt.vue';
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
@@ -27,26 +27,11 @@
         existingNamesRef: existingNames,
         API_BASE: API_BASE,
         SEARCH_URL: ING_SEARCH_URL,
-        onSubmit: async (data) => {
-            try {
-                await api.post(API_BASE, data);
-                showAlert({
-                    title: 'Success!',
-                    message: 'Pizza saved succesfully ✅',
-                    type: 'success'
-                })
-                existingNames.value.push(data.name);
-                handleReset();
-            } catch (e) { 
-                showAlert({
-                    title: 'Error',
-                    message: 'Upload failed! ❌',
-                    type: 'error',
-                    options: ['Close']
-                })
-             }
-        }
+        onSubmit: async () => await applyAdd()
     });
+
+    const { add } = useAdd({ API_BASE, form, showAlert, reset, existingNames});
+    const applyAdd = async () => {await add();};
 
     watch([search, selectedType], fetchSearchResults);
 
