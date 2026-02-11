@@ -4,7 +4,7 @@ export function useRemove({API_BASE, form, showAlert, reset, onSuccess}){
    
     const remove = async () => {
         if (!form.id) return;
- console.log("clicke")
+
         const confirmDelete = await showAlert({
                 title: 'Remove Item',
                 message: 'Are you sure you want to permanently remove this item?',
@@ -20,7 +20,7 @@ export function useRemove({API_BASE, form, showAlert, reset, onSuccess}){
                 message: 'Item succesfully deleted! ✅',
                 type: 'success'
             });
-            
+
             reset();
             if(onSuccess) await onSuccess();
         }

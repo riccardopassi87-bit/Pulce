@@ -8,6 +8,7 @@
   import { useAlert } from '@/router/composable/useAlert';
   import { useRoute } from 'vue-router';
   import { useRemove } from '@/router/composable/useRemove';
+  import { useModify } from '@/router/composable/useModify';
 
   import SearchTemplate from '@/commonViews/SearchTemplate.vue';
   import SearchPrompt from '@/commonViews/SearchPrompt.vue';
@@ -15,8 +16,6 @@
   import FormField from '@/commonViews/FormField.vue';
 
   const route = useRoute();
-
-  
   const { showAlert } = useAlert();
   const API_BASE = 'http://localhost:8080/api/pizza';
   const allIngredients = ref([]);
@@ -44,26 +43,11 @@
     existingNamesRef: existingNames,
     API_BASE: API_BASE,
     SEARCH_URL: API_BASE,
-    onSubmit: async (data) => {
-      try {
-        await api.put(`${API_BASE}/${data.id}`, data);
-        showAlert({
-          title: 'Success!',
-          message: 'Pizza successfully modified ✅',
-          type: 'success'
-        })
-        displayName.value = data.name;
-        reset();
-      } catch (e) {
-        showAlert({
-          title: 'Error',
-          message: 'Upload Failed! ❌',
-          type: 'error',
-          options: ['Close']
-        })
-       }
-    }
+    onSubmit: async () => await applyModify()
   });
+
+  const { modify } = useModify({ API_BASE, form, showAlert, reset, displayName})
+  const applyModify = async () => {modify();};
 
   const filteredPizzas = computed(() =>{
     if(!selectedIngredient.value || selectedIngredient.value === "") return pizzas.value;

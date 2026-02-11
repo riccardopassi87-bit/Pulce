@@ -1,11 +1,11 @@
 <script setup>
     import { ref, watch } from 'vue';
-    import { api } from '@/api/apiService';
     import { productRules } from '@/constants/ruleSets';
     import { PRODUCT_TYPE } from '@/constants/types';
     import { useForm } from '@/router/composable/useForm';
     import { useAlert } from '@/router/composable/useAlert';
     import { useRemove } from '@/router/composable/useRemove';
+    import { useModify } from '@/router/composable/useModify';
 
     import SearchTemplate from '@/commonViews/SearchTemplate.vue';
     import SearchPrompt from '@/commonViews/SearchPrompt.vue';
@@ -17,7 +17,7 @@
     const existingNames = ref([]);
     const schema = productRules([]);
 
-    const { form, errors, submit, submitted, reset, search, selectedType, displayName, handleSelect,
+    const { form, errors, submit, submitted, search, selectedType, reset, displayName, handleSelect,
         searchResults: products, fetchSearchResults, validateField
     } = useForm ({
         initialState: schema.initialState,
@@ -25,26 +25,11 @@
         existingNamesRef: existingNames,
         API_BASE: API_BASE,
         SEARCH_URL: API_BASE,
-        onSubmit: async (data) => {
-            try {
-                await api.put(`${API_BASE}/${data.id}`, data);
-                showAlert({
-                    title: 'Success!',
-                    message: 'Product successfully modified! ✅',
-                    type: 'success'
-                })
-                displayName.value = data.name;
-                reset();
-            } catch (e) {
-                showAlert({
-                    title: 'Error',
-                    message: 'Upload failed! ❌',
-                    type: 'error',
-                    options: ['Close']
-                })
-            }
-        }
+        onSubmit: async () => await applyModify()
     });
+
+    const { modify } = useModify({ API_BASE, form, showAlert, reset, displayName});
+    const applyModify = async () => {await modify();};
 
     const { remove } = useRemove({ API_BASE, form, showAlert, reset, onSuccess: fetchSearchResults})
 
