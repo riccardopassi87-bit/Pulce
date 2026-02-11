@@ -10,7 +10,8 @@ public record ItemDTO
     @NotNull @DecimalMin(value = "0.0", inclusive = false) BigDecimal sellingPrice,
     @NotBlank String type,
     @NotNull LocalDate expirationDate,
-    @Min(1) int amount){}
+    @Min(1) int amount)
+{}
 
 
 

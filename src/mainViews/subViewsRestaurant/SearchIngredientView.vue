@@ -59,7 +59,7 @@
                     message: changedPrice?
                     "Ingredient Updated. Go to affected Pizzas?"
                     : "Ingredient successfully modified ✅",
-                    options: changedPrice ? ['Close', 'Go to search'] : [],
+                    options: changedPrice ? ['Close', 'Go to pizzas'] : [],
                     type: 'success'
                 });
 
@@ -83,18 +83,25 @@
     watch([search, selectedType], fetchSearchResults);
     
     const handleRemove = async () => {
+    
     if (!form.id) return;
-
     try {
-        await api.delete(`${API_BASE}/${form.id}`);
-        showAlert({
+        const normaleDelete = await showAlert({
+                title: 'Remove Item',
+                message: 'Are you sure you want to permanently remove this item?',
+                type: 'warning',
+                options: ['Quit', 'Confirm']
+            });
+        if (normaleDelete !== 'Quit'){
+            showAlert({
                 title: 'Success!',
                 message: 'Ingredient succesfully deleted! ✅',
                 type: 'success'
-            });
-        reset();
-        fetchSearchResults();
-
+            })
+            await api.delete(`${API_BASE}/${form.id}`);
+            reset();
+            fetchSearchResults();
+        }
     } catch (e) {
         const serverMessage = e.message || "";
 

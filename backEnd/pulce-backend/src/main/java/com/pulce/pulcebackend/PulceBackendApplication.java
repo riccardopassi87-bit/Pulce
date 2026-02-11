@@ -9,5 +9,4 @@ public class PulceBackendApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(PulceBackendApplication.class, args);
 	}
-
 }

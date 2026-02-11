@@ -33,7 +33,7 @@ const handleAction = (value) => {
 
                 <div class="modal-actions">
                     <button v-for="btn in activeAlert.options" :key="btn"
-                    :disabled="activeAlert.type === 'safety' && btn === 'Delete' && safetyInput !== activeAlert.safetyCode"
+                    :disabled="activeAlert.type === 'safety' && btn.toLowerCase().includes('confirm') && safetyInput !== activeAlert.safetyCode"
                     @click="handleAction(btn)">{{ btn }}</button>
                 </div>
             </div>
@@ -112,4 +112,19 @@ p{
 }
 .fade-enter-active, .fade-leave-active { transition: opacity 0.3s; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
+button{
+    font-size: 1rem;
+}
+button:hover{
+    font-size: 1.2rem;
+}
+button:disabled:hover{
+    cursor: unset;
+    font-size: 1rem;
+    background-color: #111;
+}
+button:disabled{
+    background-image: url(/src/assets/tape.png);
+    background-color: #111;
+}
 </style>
