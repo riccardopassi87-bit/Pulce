@@ -3,11 +3,10 @@
     import { api } from '@/api/apiService';
     import { ingredientRules } from '@/constants/ruleSets';
     import { INGREDIENT_TYPE, ALLERGENE_MAP } from '@/constants/types';
-    import { useSearch } from '@/router/composable/useSearch';
     import { useForm } from '@/router/composable/useForm';
     import { commonRouter } from '@/router/composable/commonRouter';
     import { useAlert } from '@/router/composable/useAlert';
-    import { useRemove } from '@/router/composable/useUse';
+    import { useRemove, useSearch } from '@/router/composable/useService';
 
     import SearchPrompt from '@/commonViews/SearchPrompt.vue';
     import SearchTemplate from '@/commonViews/SearchTemplate.vue';
@@ -21,7 +20,7 @@
     const schema = ingredientRules();
 
     const { search, selectedType, searchResults: ingredients,
-        fetchSearchResults
+        fetchSearchResults, resetFilters
     } = useSearch(API_BASE);
 
     const { form, errors, submit, submitted, reset, displayName,
@@ -31,7 +30,6 @@
         rules: schema.rules,
         existingNamesRef: existingNames,
         API_BASE: API_BASE,
-        SEARCH_URL: API_BASE,
         onSubmit: async (data) => {
 
             const originalPrice = ingredients.value.find(i => i.id === data.id);
@@ -72,7 +70,7 @@
                     goNext(`search?ingredient=${data.id}`);
                 }
                 displayName.value = data.name;
-                reset();
+                await handleReset();
                 fetchSearchResults();
             } catch (e) {
                 showAlert({
@@ -85,7 +83,12 @@
         }
     });
 
-    const { remove: baseRemove } = useRemove({ API_BASE, form, showAlert, reset, fetchSearchResults})
+    const handleReset = async () => {
+        reset();
+        resetFilters();
+    }
+
+    const { remove: baseRemove } = useRemove({ API_BASE, form, showAlert, reset: handleReset, fetchSearchResults})
     
     const handleRemove = async () => {
         try {

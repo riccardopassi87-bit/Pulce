@@ -4,7 +4,7 @@
     import { ALLERGENE_MAP, INGREDIENT_TYPE } from '@/constants/types';
     import { useForm } from '@/router/composable/useForm';
     import { useAlert } from '@/router/composable/useAlert';
-    import { useAdd } from '@/router/composable/useUse';
+    import { useAdd } from '@/router/composable/useService';
     
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
     import FormField from '@/commonViews/FormField.vue';

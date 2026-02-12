@@ -3,7 +3,7 @@
   import { api } from '@/api/apiService';
   import { pizzaRules } from '@/constants/ruleSets';
   import { PIZZA_TYPE } from '@/constants/types';
-  import { useSearch } from '@/router/composable/useSearch';
+  import { useSearch } from '@/router/composable/useService';
   import { useForm } from '@/router/composable/useForm';
 
   import SearchTemplate from '@/commonViews/SearchTemplate.vue';

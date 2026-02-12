@@ -4,8 +4,7 @@
     import { PIZZA_TYPE, INGREDIENT_TYPE } from '@/constants/types';
     import { useForm } from '@/router/composable/useForm';
     import { useAlert } from '@/router/composable/useAlert';
-    import { useAdd } from '@/router/composable/useUse';
-    import { useSearch } from '@/router/composable/useSearch';
+    import { useAdd, useSearch } from '@/router/composable/useService';
 
     import SearchPrompt from '@/commonViews/SearchPrompt.vue';
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
