@@ -5,13 +5,15 @@ export function useModify({API_BASE, form, showAlert, reset, displayName}){
     const modify = async () => {
         try {
         await api.put(`${API_BASE}/${form.id}`, form);
+        const updateName = form.name;
         showAlert({
           title: 'Success!',
           message: 'Item successfully modified! ✅',
           type: 'success'
         })
-        reset();
-        displayName.value = form.name;
+        if (displayName) displayName.value = updateName;
+        if (reset) reset();
+        
       } catch (e) {
         showAlert({
           title: 'Error',
@@ -58,13 +60,14 @@ export function useAdd ({API_BASE, form, showAlert, reset, existingNames}){
   const add = async () => {
   try {
       await api.post(API_BASE, form);
+      const newExistingName = form.name;
       showAlert({
           title: 'Success!',
           message: 'Item saved succesfully! ✅',
           type: 'success'
       });
-      existingNames.value.push(form.name);
-      reset();
+      if(existingNames) existingNames.value.push(newExistingName);
+      if(reset)reset();
     } catch (e) {
       showAlert({
           title: 'Error',

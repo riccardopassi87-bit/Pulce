@@ -3,11 +3,11 @@
   import { api } from '@/api/apiService';
   import { pizzaRules } from '@/constants/ruleSets';
   import { PIZZA_TYPE } from '@/constants/types';
-  import { useSearch } from '@/router/composable/useSearch';
   import { useForm } from '@/router/composable/useForm';
   import { useAlert } from '@/router/composable/useAlert';
   import { useRoute } from 'vue-router';
   import { useModify, useRemove } from '@/router/composable/useUse';
+  import { useSearch } from '@/router/composable/useSearch';
 
   import SearchTemplate from '@/commonViews/SearchTemplate.vue';
   import SearchPrompt from '@/commonViews/SearchPrompt.vue';
@@ -31,22 +31,30 @@
   const schema = pizzaRules([]);
 
   const { search, selectedType, selectedIngredient, searchResults: pizzas,
-     applyFilter, fetchSearchResults
+     applyFilter, fetchSearchResults, resetFilters
    } = useSearch(API_BASE);
 
-  const { form, errors, submit, submitted, reset, displayName,
-        selectItem, validateField
+  const { form, errors, submit, submitted, reset: resetForm, displayName,
+        handleSelect, validateField
    } = useForm({
     initialState: schema.initialState,
     rules: schema.rules,
     existingNamesRef: existingNames,
     API_BASE: API_BASE,
-    SEARCH_URL: API_BASE,
     onSubmit: async () => await applyModify()
   });
+  
+  const handleReset = () => {
+    resetForm();
+    resetFilters();
+  }
 
-  const { modify } = useModify({ API_BASE, form, showAlert, reset, displayName})
-  const applyModify = async () => {modify();};
+  const { modify } = useModify({ API_BASE, form, showAlert, resetForm: handleReset, displayName})
+  const applyModify = async () => {
+    await modify();
+    handleReset();
+    await fetchSearchResults();
+  };
 
   const filteredPizzas = computed(() =>{
     if(!selectedIngredient.value || selectedIngredient.value === "") return pizzas.value;
@@ -58,10 +66,10 @@
     );
   });
 
-  const { remove } = useRemove({ API_BASE, form, showAlert, reset, onSuccess: fetchSearchResults})
+  const { remove } = useRemove({ API_BASE, form, showAlert, reset: handleReset, onSuccess: fetchSearchResults})
 
-  const handleSelect = (pizza) => {
-    selectItem(pizza, (p) => ({
+  const handlePizzaSelect = (pizza) => {
+    handleSelect(pizza, (p) => ({
       ...p,
       sellingPrice: Number(p.sellingPrice),
       productionPrice: Number(p.productionPrice),
@@ -89,6 +97,8 @@
   const currentIngredients = computed(() =>
     allIngredients.value.filter(i => form.ingredientIds.includes(i.id))
     );
+
+  
 </script>
 
 <template>
@@ -120,7 +130,7 @@
                   <template #results>
                     <div class="fsf">
                       <ul>
-                        <li v-for="p in filteredPizzas" :key="p.id" @click="handleSelect(p)"
+                        <li v-for="p in filteredPizzas" :key="p.id" @click="handlePizzaSelect(p)"
                         :class="{selected: form.id === p.id}">
                           {{ p.name }}
                         </li>

@@ -14,9 +14,18 @@ export function useSearch(SEARCH_URL) {
         selectedIngredient
     };
 
+    const resetFilters = () => {
+        search.value = '';
+        selectedType.value = '';
+        selectedIngredient.value = '';
+        searchResults.value = [];
+    }
+
     const fetchSearchResults = async () => {
 
-    if (!search.value && !selectedType.value && !selectedIngredient.value) return;
+    if (!search.value && !selectedType.value && !selectedIngredient.value){ 
+        searchResults.value = [];
+        return;}
 
     const params = new URLSearchParams();
     if (search.value) params.append('name', search.value);
@@ -60,6 +69,7 @@ export function useSearch(SEARCH_URL) {
         selectedIngredient,
         searchResults,
         fetchSearchResults,
-        applyFilter
+        applyFilter,
+        resetFilters
     };
 }

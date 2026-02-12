@@ -1,8 +1,9 @@
 <script setup>
-    import { ref, watch } from 'vue';
+    import { ref } from 'vue';
     import { api } from '@/api/apiService';
     import { ingredientRules } from '@/constants/ruleSets';
     import { INGREDIENT_TYPE, ALLERGENE_MAP } from '@/constants/types';
+    import { useSearch } from '@/router/composable/useSearch';
     import { useForm } from '@/router/composable/useForm';
     import { commonRouter } from '@/router/composable/commonRouter';
     import { useAlert } from '@/router/composable/useAlert';
@@ -19,8 +20,12 @@
     const existingNames = ref([]);
     const schema = ingredientRules();
 
-    const { form, errors, submit, submitted, reset, search, selectedType, displayName,
-        searchResults: ingredients, fetchSearchResults, validateField, handleSelect
+    const { search, selectedType, searchResults: ingredients,
+        fetchSearchResults
+    } = useSearch(API_BASE);
+
+    const { form, errors, submit, submitted, reset, displayName,
+         validateField, handleSelect
      } = useForm({
         initialState: schema.initialState,
         rules: schema.rules,
@@ -31,8 +36,7 @@
 
             const originalPrice = ingredients.value.find(i => i.id === data.id);
             const changedPrice = originalPrice && (originalPrice.portionPrice !== data.portionPrice ||
-                originalPrice.kgPrice !== data.kgPrice
-            );
+                originalPrice.kgPrice !== data.kgPrice);
 
             if (changedPrice) {
                 try {
@@ -60,7 +64,7 @@
                     message: changedPrice?
                     "Ingredient Updated. Go to affected Pizzas?"
                     : "Ingredient successfully modified ✅",
-                    options: changedPrice ? ['Close', 'Go to pizzas'] : [],
+                    options: changedPrice? ['Close', 'Go to pizzas'] : [],
                     type: 'success'
                 });
 
@@ -82,8 +86,6 @@
     });
 
     const { remove: baseRemove } = useRemove({ API_BASE, form, showAlert, reset, fetchSearchResults})
-
-    watch([search, selectedType], fetchSearchResults);
     
     const handleRemove = async () => {
         try {

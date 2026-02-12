@@ -1,10 +1,11 @@
 <script setup>
-    import { ref, watch } from 'vue';
+    import { ref} from 'vue';
     import { productRules } from '@/constants/ruleSets';
     import { PRODUCT_TYPE } from '@/constants/types';
     import { useForm } from '@/router/composable/useForm';
     import { useAlert } from '@/router/composable/useAlert';
     import { useModify, useRemove } from '@/router/composable/useUse';
+    import { useSearch } from '@/router/composable/useSearch';
 
     import SearchTemplate from '@/commonViews/SearchTemplate.vue';
     import SearchPrompt from '@/commonViews/SearchPrompt.vue';
@@ -16,23 +17,29 @@
     const existingNames = ref([]);
     const schema = productRules([]);
 
-    const { form, errors, submit, submitted, search, selectedType, reset, displayName, handleSelect,
-        searchResults: products, fetchSearchResults, validateField
+    const { search, selectedType, searchResults: products, fetchSearchResults, resetFilters} = useSearch(API_BASE);
+
+    const { form, errors, submit, submitted, reset, displayName, handleSelect, validateField
     } = useForm ({
         initialState: schema.initialState,
         rules: schema.rules,
         existingNamesRef: existingNames,
         API_BASE: API_BASE,
-        SEARCH_URL: API_BASE,
         onSubmit: async () => await applyModify()
     });
 
-    const { modify } = useModify({ API_BASE, form, showAlert, reset, displayName});
-    const applyModify = async () => {await modify();};
+    const handleReset = () => {
+        reset();
+        resetFilters();
+    }
 
-    const { remove } = useRemove({ API_BASE, form, showAlert, reset, onSuccess: fetchSearchResults})
+    const { modify } = useModify({ API_BASE, form, showAlert, reset: handleReset, displayName});
+    const applyModify = async () => {
+        await modify();
+        await fetchSearchResults();
+    };
 
-    watch([search, selectedType], fetchSearchResults);
+    const { remove } = useRemove({ API_BASE, form, showAlert, reset: handleReset, onSuccess: fetchSearchResults})
 
 </script>
 

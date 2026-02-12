@@ -1,10 +1,11 @@
 <script setup>
-    import { ref, watch, computed } from 'vue';
+    import { ref, computed } from 'vue';
     import { pizzaRules } from '@/constants/ruleSets';
     import { PIZZA_TYPE, INGREDIENT_TYPE } from '@/constants/types';
     import { useForm } from '@/router/composable/useForm';
     import { useAlert } from '@/router/composable/useAlert';
     import { useAdd } from '@/router/composable/useUse';
+    import { useSearch } from '@/router/composable/useSearch';
 
     import SearchPrompt from '@/commonViews/SearchPrompt.vue';
     import ButtonsFooter from '@/commonViews/ButtonsFooter.vue';
@@ -19,21 +20,28 @@
 
     const schema = pizzaRules(existingNames);
 
-    const { form, errors, submit, submitted, search, selectedType,
-        searchResults, validateField, reset, fetchSearchResults
+    const { search, selectedType, searchResults: ingredients, resetFilters} = useSearch(ING_SEARCH_URL);
+
+    const { form, errors, submit, submitted, validateField, reset: resetForm
     } = useForm({
         initialState: schema.initialState,
         rules: schema.rules,
         existingNamesRef: existingNames,
         API_BASE: API_BASE,
-        SEARCH_URL: ING_SEARCH_URL,
         onSubmit: async () => await applyAdd()
     });
+    
+    const handleReset = () => {
+        resetForm();
+        resetFilters();
+        selectedIngredients.value = [];
+    };
 
-    const { add } = useAdd({ API_BASE, form, showAlert, reset, existingNames});
-    const applyAdd = async () => {await add();};
-
-    watch([search, selectedType], fetchSearchResults);
+    const { add } = useAdd({ API_BASE, form, showAlert, resetForm: handleReset, existingNames});
+    const applyAdd = async () => {
+        await add();
+        handleReset();
+    };
 
     const addIngredient = (ing) => {
         if(selectedIngredients.value.length >= 6) return;
@@ -56,11 +64,6 @@
         );
         return Number((pizzaBase + ingredientCost).toFixed(2));
     });
-
-    const handleReset = () => {
-        reset();
-        selectedIngredients.value = [];
-    };
 </script>
 
 <template>
@@ -103,7 +106,7 @@
                         </template>
                         <template #results>
                             <ul>
-                                <li v-for="i in searchResults" :key="i.id">
+                                <li v-for="i in ingredients" :key="i.id">
                                     <p @click="addIngredient(i)">{{ i.name }} - {{ i.portionPrice.toFixed(2) }} €</p>
                                 </li>
                             </ul>
