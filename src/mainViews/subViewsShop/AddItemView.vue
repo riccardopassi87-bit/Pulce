@@ -69,4 +69,7 @@
         flex-direction: column;
         flex: 9;
     }
+    select{
+        width: 49%;
+    }
 </style>

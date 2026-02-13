@@ -48,6 +48,9 @@
             <SearchTemplate>
                 <template #left-search>
                     <SearchPrompt>
+                        <template #section-header>
+                            - Search Product -
+                        </template>
                         <template #input>
                             <input class="own-input" v-model="search" placeholder="search by name"/>
                         </template>
@@ -125,16 +128,16 @@
     }
     select{
         height: 70%;
-        width: 70%;
         background-color: #222;
     }
     li{
         font-size: 1.3rem;
     }
-    #search-result input{
-        width: 68%;
-    }
     #search-result select{
         height: 100%;
+        width: 70%;
+    }
+    #search-result input{
+        width: 68%;
     }
 </style>

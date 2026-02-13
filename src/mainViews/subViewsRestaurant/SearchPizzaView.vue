@@ -106,6 +106,9 @@
       <SearchTemplate>
           <template #left-search>
               <SearchPrompt>
+                <template #section-header>
+                  - Search Pizza -
+                </template>
                 <template #input>
                         <input class="own-input" v-model="search" placeholder="search by name"/>
                 </template>
@@ -213,7 +216,7 @@
   }
   select{
     height: 70%;
-    width: 48%;
+    flex: 1;
     background-color: #222;
   }
   .title{

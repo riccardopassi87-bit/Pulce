@@ -92,6 +92,9 @@
                 <div class="fsf" id="add-ingredients">
                     <p>Add Ingredient (Max 6)</p>
                     <SearchPrompt>
+                        <template #section-header>
+                            <p style="font-size: 1rem;">- Select Ingredients -</p>
+                        </template>
                         <template #input>
                             <input class="own-input" v-model="search" placeholder="search by name"/>
                         </template>

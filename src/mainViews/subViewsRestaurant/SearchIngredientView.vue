@@ -159,6 +159,9 @@
             <SearchTemplate>
                 <template #left-search>
                     <SearchPrompt>
+                        <template #section-header>
+                            - Search Ingredient -
+                        </template>
                         <template #input>
                             <input class="own-input" v-model="search" placeholder="search by name"/>
                         </template>
@@ -236,7 +239,6 @@
     }
     select{
         height: 70%;
-        width: 70%;
         background-color: #222;
     }
     li{
@@ -247,5 +249,6 @@
     }
     #search-result select{
         height: 100%;
+        width: 70%;
     }
 </style>

@@ -13,6 +13,30 @@
   const API_BASE = 'http://localhost:8080/api/pizza';
   const allIngredients = ref([]);
   const printList = ref([]);
+  
+  const isMainTitle = ref(false);
+  const toggleMainTitle = async () => {
+    
+    if (isMainTitle.value) {
+        isMainTitle.value = false;
+        isFull.value = false;
+        return;
+    }
+    isMainTitle.value = true;
+    await nextTick();
+
+
+    if(paperContent.value){
+        const hasOverflowed = paperContent.value.scrollHeight > paperContent.value.clientHeight;
+        
+        if(hasOverflowed) {
+            isMainTitle.value = false;
+
+            isFull.value = true;
+            setTimeout(() => { isFull.value = false;}, 500);
+        }
+    }
+  };
 
   onMounted(async () => {
     allIngredients.value = await api.get('http://localhost:8080/api/ingredient');
@@ -79,14 +103,18 @@
 </script>
 
 <template>
-      <div class="parent-view fsf">
+    <div class="parent-view fsf">
     <div id="search-pizza" class="fsf">
       <SearchTemplate>
           <template #left-search>
               <SearchPrompt>
+                <template #section-header>
+                        <button id="first-page" @click="toggleMainTitle"
+                        :class="{ 'first-page-remove' : isMainTitle }">{{ isMainTitle ? 'Remove first page header' : 'Add first page header' }}</button>
+                </template>
                 <template #input>
                     <input class="own-input" v-model="search" placeholder="search by name"/>
-                </template>
+                  </template>
                   <template #filter>
                       <select v-model="selectedType" 
                       @change="e => applyFilter('selectedType', e.target.value, ['selectedIngredient'])">
@@ -121,7 +149,7 @@
                 <template #result>
                     <div class="fsf search-result">
                         <div id="paper" ref="paperContent" :class="{ overflowing: isFull }">
-                            <p v-if="isMainTitle" id="main-title"></p>
+                            <p v-if="isMainTitle" id="main-title"> Speisen </p>
                             <p id="title">Pizza</p>
 
                             <FormPrint 
@@ -152,6 +180,12 @@
     font-weight: normal;
     font-style: normal;
     }
+    @font-face {
+    font-family: 'Beyond';
+    src: url('../../assets/fonts/Beyond\ Wonderland.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    }
     @keyframes shake {
     0% { transform: translateX(0); }
     10% { transform: translateX(-4px); }
@@ -165,12 +199,25 @@
     90% { transform: translateX(-4px); }
     100% { transform: translateX(0); }
     }
+    #first-page{
+        flex: 1;
+        width: 60%;
+        font-size: 0.7rem;
+        border: 1px solid rgb(151, 216, 151);
+        transition: all 0.2s ease;
+    }
+    #first-page.first-page-remove{
+        border: 1px solid rgb(182, 43, 43);
+    }
+    #first-page:hover{
+        font-size: 0.75rem;
+    }
     #search-pizza{
         flex: 9;
     }
     select{
         height: 70%;
-        width: 48%;
+        flex: 1;
         background-color: #222;
     }
     button{
@@ -217,6 +264,13 @@
     }
     .already-in-print{
         color: #444;
+    }
+    #main-title{
+        font-family: 'beyond';
+        text-align: center;
+        font-size: 3.5rem;
+        margin-top: 5%;
+        color: black;
     }
 </style>
 
