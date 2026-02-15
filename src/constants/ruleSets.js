@@ -5,7 +5,7 @@ export const ingredientRules = (existingNamesArray) => ({
     initialState: {name: '', portionPrice: null, kgPrice: null, type: '', allergene: ''},
     rules: {
         name: [{ validator: validators.required, message: 'Name is required' },
-               { validator: (val) => validators.unique(existingNamesArray)(val),
+               { validator: (val, form, orig) => validators.unique(existingNamesArray)(val, form, orig),
                 message: 'Name already taken!'}],
         portionPrice: [
             { validator: validators.required, message: 'Required' },
@@ -27,7 +27,7 @@ export const productRules = (existingNamesArray) => ({
     initialState: {name: '', originalPrice: null, sellingPrice: null, type: '', expirationDate: '', amount: null},
     rules: {
         name: [{ validator: validators.required, message: 'Name is required'},
-               { validator: (val) => validators.unique(existingNamesArray)(val),
+               { validator: (val, form, orig) => validators.unique(existingNamesArray)(val, form, orig),
                 message: 'Name already taken!'}],
         originalPrice: [
             { validator: validators.required, message: 'Required'},
@@ -53,7 +53,7 @@ export const pizzaRules = (existingNamesArray) => ({
     initialState: {name: '', sellingPrice: null, productionPrice: null, type: '', ingredientIds: []},
     rules: {
         name: [{ validator: validators.required, message: 'Name is required'},
-               { validator: (val) => validators.unique(existingNamesArray)(val),
+               { validator: (val, form, orig) => validators.unique(existingNamesArray)(val, form, orig),
                 message: 'Name already taken!'}],
         sellingPrice: [
             { validator: validators.required, message: 'Required'},

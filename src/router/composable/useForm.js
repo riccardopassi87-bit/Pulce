@@ -24,7 +24,7 @@ export function useForm({ initialState, rules, API_BASE, onSubmit, existingNames
         errors[field] = '';
         if (!rules[field]) return true;
         for(const { validator, message } of rules[field]) {
-            if(!validator(form[field], form)) {
+            if(!validator(form[field], form, originalName.value)) {
                 errors[field] = message;
                 return false;
             }
@@ -53,20 +53,25 @@ export function useForm({ initialState, rules, API_BASE, onSubmit, existingNames
         Object.keys(errors).forEach(k => errors[k] = '');
         submitted.value = false;
         displayName.value = '';
+        originalName.value = '';
     };
 
 
     // Item Name
+
+    const originalName = ref('');
     const handleSelect = (item, customMapping) => {
         const data = customMapping? customMapping(item) : toRaw(item);
         Object.assign(form, data);
+
+        originalName.value = item.name || '';
 
         displayName.value = item.name || '';
         submitted.value = false;
         Object.keys(errors).forEach( k => errors[k] = '');
     }
 
-    return{ form, errors, submitted, existingNames, displayName,
+    return{ form, errors, submitted, existingNames, displayName, originalName,
             validateField, submit, reset, handleSelect
     };
 }

@@ -17,7 +17,7 @@
     const { showAlert } = useAlert();
     const API_BASE = 'http://localhost:8080/api/ingredient';
     const existingNames = ref([]);
-    const schema = ingredientRules();
+    const schema = ingredientRules(existingNames);
 
     const { search, selectedType, searchResults: ingredients,
         fetchSearchResults, resetFilters

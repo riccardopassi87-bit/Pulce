@@ -27,7 +27,7 @@
   });
 
   const existingNames = ref([]);
-  const schema = pizzaRules([]);
+  const schema = pizzaRules(existingNames);
 
   const { search, selectedType, selectedIngredient, searchResults: pizzas,
      applyFilter, fetchSearchResults, resetFilters

@@ -14,7 +14,7 @@
     const { showAlert } = useAlert();
     const API_BASE = 'http://localhost:8080/api/item';
     const existingNames = ref([]);
-    const schema = productRules([]);
+    const schema = productRules(existingNames);
 
     const { search, selectedType, searchResults: products, fetchSearchResults, resetFilters} = useSearch(API_BASE);
 
