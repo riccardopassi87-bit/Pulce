@@ -30,7 +30,9 @@ export const validators = {
             : listRef;
 
         if (!val || !values) return true;
-        return !values.includes(val);
+
+        const searchVal = val.trim().toLowerCase();
+        return !values.some(existingName => existingName.toLowerCase() === searchVal);
     },
 
 }

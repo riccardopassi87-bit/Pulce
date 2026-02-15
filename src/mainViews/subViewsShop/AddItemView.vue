@@ -1,6 +1,6 @@
 <script setup>
     import { productRules } from '@/constants/ruleSets';
-    import { ref } from 'vue';
+    import { ref, onMounted } from 'vue';
     import { PRODUCT_TYPE } from '@/constants/types';
     import { useForm } from '@/router/composable/useForm';
     import { useAlert } from '@/router/composable/useAlert';

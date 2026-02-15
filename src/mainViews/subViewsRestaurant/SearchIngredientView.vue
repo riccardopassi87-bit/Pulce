@@ -167,7 +167,7 @@
                         </template>
                         <template #filter>
                             <select v-model="selectedType">
-                                <option disabled selected hidden></option>
+                                <option value=""></option>
                                 <option v-for="t in INGREDIENT_TYPE" :key="t" :value="t">
                                     {{ t }}
                                 </option>

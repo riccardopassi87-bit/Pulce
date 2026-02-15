@@ -9,6 +9,7 @@
   import SearchTemplate from '@/commonViews/SearchTemplate.vue';
   import SearchPrompt from '@/commonViews/SearchPrompt.vue';
   import FormPrint from './FormPrint.vue';
+  import html2pdf from 'html2pdf.js';
   
   const API_BASE = 'http://localhost:8080/api/pizza';
   const allIngredients = ref([]);
@@ -100,6 +101,36 @@
         }
     }
   };
+
+  const handlePrint = () =>{
+    const element = document.getElementById('paper');
+
+    const options = {
+        margin: 0,
+        filename: 'pizza-menu.pdf',
+        image: { type: 'jpeg', quality: 1.0 },
+        html2canvas: {
+            scale: 4,
+            useCORS: true,
+            backgroundColor: '#ffffff',
+            width: element.offsetWidth,
+            height: element.offsetHeight,
+            scrollY: 0,
+            scrollX: 0
+        },
+        jsPDF: {
+            unit: 'px',
+            format: [element.offsetWidth, element.offsetHeight],
+            orientation: 'portrait',
+        }
+    };
+    html2pdf().set(options).from(element).toPdf().get('pdf').then((pdf) => {
+        const totalPages = pdf.internal.getNumberOfPages();
+        for (let i = totalPages; i > 1; i--) {
+            pdf.deletePage(i);
+        }
+    }).save();
+  };
 </script>
 
 <template>
@@ -162,7 +193,7 @@
             </SearchTemplate>
         </div>
         <div class="footer-buttons">
-            <button>
+            <button @click="handlePrint">
                 <p>&#9888; PRINT</p>
                 <p>-</p>
                 <p>Keeping in mind that wasting paper is not good</p>
@@ -237,13 +268,12 @@
         align-items: center;
     }
     #paper{
-        background-color: antiquewhite;
+        background-color: white;
         display: flex;
         flex-direction: column;
-        width: auto;
-        height: 96%;
-        aspect-ratio: 1 / 1.4142;
-        padding: 3%;
+        width: 400px;
+        height: 566px;
+        padding: 20px;
         transition: border 0.3s ease, box-shadow 0.3s ease;
         border: 2px solid transparent;
         overflow: hidden;
@@ -254,9 +284,9 @@
         animation: shake 0.4s ease-in-out;
     }
     #title{
-        font-size: 1.5rem;
+        font-size: 24px;
         font-family: 'InkFree';
-        margin-bottom: 3%;
+        margin-bottom: 12px;
         color: black;
     }
     li{
@@ -268,8 +298,9 @@
     #main-title{
         font-family: 'beyond';
         text-align: center;
-        font-size: 3.5rem;
-        margin-top: 5%;
+        font-size: 68px;
+        
+        margin-bottom: 10px;
         color: black;
     }
 </style>

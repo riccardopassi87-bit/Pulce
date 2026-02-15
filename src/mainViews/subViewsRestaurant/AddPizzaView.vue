@@ -109,7 +109,7 @@
                         <template #results>
                             <ul>
                                 <li v-for="i in ingredients" :key="i.id">
-                                    <p @click="addIngredient(i)">{{ i.name }} - {{ i.portionPrice.toFixed(2) }} €</p>
+                                    <p v-show="!form.ingredientIds.includes(i.id)" @click="addIngredient(i)">{{ i.name }} - {{ i.portionPrice.toFixed(2) }} €</p>
                                 </li>
                             </ul>
                         </template>

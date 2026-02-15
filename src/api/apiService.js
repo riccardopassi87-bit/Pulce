@@ -1,5 +1,5 @@
 
-// EsterEgg, comment to disable!!!!
+// EsterEgg, FALSE to disable!!!!
 import { reactive } from "vue";
 import sound from "@/assets/easterEgg.wav";
 

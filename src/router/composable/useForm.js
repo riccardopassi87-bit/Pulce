@@ -14,7 +14,9 @@ export function useForm({ initialState, rules, API_BASE, onSubmit, existingNames
 
     // ExistingName Validation
     onMounted(() => {
-        if (API_BASE && !existingNamesRef) nameLoader(existingNames, API_BASE)
+        if (API_BASE) {
+            nameLoader(existingNames, API_BASE);
+        }
     });
 
     // Validation Logic

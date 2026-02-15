@@ -76,30 +76,6 @@ const getAllergeneCodes = (ingredients) => {
   height: 100%;
   background: transparent;
 }
-@media print{
-    @page {
-    size: A5;
-    margin: 0;
-  }
-  body * {
-    visibility: hidden;
-  }
-  .print-container, .print-container * {
-    visibility: visible;
-  }
-  .print-container {
-    position: absolute;
-    left: 0;
-    top: 0;
-  }
-}
-
-#pizza-container{
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: auto;
-}
 #top-layer{
     display: flex;
     height: auto;
@@ -120,33 +96,36 @@ const getAllergeneCodes = (ingredients) => {
 }
 #name{
     font-family: 'OpenSansBold';
-    font-size: 0.7rem;
+    font-size: 15px;
     color: black;
 }
 #type{
     font-family: 'OpenSansBold';
-    font-size: 0.5rem;
+    font-size: 11px;
     color: #55d400ff;
 }
 #spacing{
     flex-grow: 1;
-    border-bottom: 2px dotted black;
     height: 1px;
     position: relative;
+    background-image: linear-gradient(to right, black 33%, rgba(255, 255, 255, 0) 0%);
+    background-position: bottom;
+    background-size: 3px 1px;
+    background-repeat: repeat-x;
 }
 #allergene-codes{
     font-family: 'OpenSansBold';
-    font-size: 0.5rem;
+    font-size: 11px;
     color: black;
 }
 #price{
     font-family: 'OpenSansBold';
-    font-size: 0.7rem;
+    font-size: 15px;
     color: #ffcc00ff;
 }
 .ingredient{
     font-family: 'OpenSansLightItalic';
-    font-size: 0.5rem;
+    font-size: 11px;
     color: black;
 }
 .ingredient:not(:last-child)::after{
@@ -158,7 +137,6 @@ const getAllergeneCodes = (ingredients) => {
 }
 .pizza-row{
     cursor: grab;
-    padding: 5px;
 }
 .pizza-row:active{
     cursor: grabbing;
