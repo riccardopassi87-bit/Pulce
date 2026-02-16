@@ -1,0 +1,39 @@
+services:
+  # The MySQL Database (Replaces XAMPP)
+  db:
+    image: mariadb:10.11
+    container_name: pulce-db
+    environment:
+      MYSQL_DATABASE: pulce
+      MYSQL_ROOT_PASSWORD: root
+      MARIADB_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./db_data:/var/lib/mysql
+
+  # The Java API
+  backend:
+    build: ./backEnd
+    container_name: pulce-api
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://db:3306/pulce
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+
+  # The Vue UI
+  frontend:
+    build: ./
+    container_name: pulce-ui
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    volumes:
+    - ./:/app
+    - /app/node_modules

@@ -100,6 +100,7 @@ export function useSearch(SEARCH_URL) {
         selectedType.value = '';
         selectedIngredient.value = '';
         searchResults.value = [];
+
     }
 
     const fetchSearchResults = async () => {

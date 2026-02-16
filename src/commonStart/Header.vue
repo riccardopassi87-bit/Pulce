@@ -5,7 +5,7 @@
 <template>
     <header>
         <div id="logo">
-            <img src="C:\Users\Dell\Desktop\Abschluss projekt\shop-manager\src\assets\Logo.png">
+            <img src="../assets/Logo.png">
         </div>
         <div id="buttons">
             <NavButtons />
