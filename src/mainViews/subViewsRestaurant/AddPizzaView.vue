@@ -16,6 +16,10 @@
     const pizzaBase = 8;
     const existingNames = ref([])
     const selectedIngredients = ref([]);
+    
+    const isSelected = (id) => {
+        return selectedIngredients.value.some(i => i.id === id);
+    };
 
     const schema = pizzaRules(existingNames);
 
@@ -109,7 +113,8 @@
                         <template #results>
                             <ul>
                                 <li v-for="i in ingredients" :key="i.id">
-                                    <p @click="addIngredient(i)">{{ i.name }} - {{ i.portionPrice.toFixed(2) }} €</p>
+                                    <p @click="addIngredient(i)"
+                                    :class="{ 'selected': isSelected(i.id) }">{{ i.name }} - {{ i.portionPrice.toFixed(2) }} €</p>
                                 </li>
                             </ul>
                         </template>
@@ -218,5 +223,9 @@
         font-size: 2rem;
         font-weight: bolder;
         background-color: #222;
+    }
+    .selected{
+        color: #444;
+        background-color: transparent;
     }
 </style>

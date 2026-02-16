@@ -66,7 +66,7 @@
                     type: 'success'
                 });
 
-                if (afterSuccess === 'Go to search'){
+                if (afterSuccess === 'Go to pizzas'){
                     goNext(`search?ingredient=${data.id}`);
                 }
                 displayName.value = data.name;
@@ -127,7 +127,7 @@
                             message: "No turning back achieved",
                             type: 'success',      
                         });
-                        reset();
+                        await handleReset();
                         fetchSearchResults();
                     } catch (e){
                         showAlert({ 
