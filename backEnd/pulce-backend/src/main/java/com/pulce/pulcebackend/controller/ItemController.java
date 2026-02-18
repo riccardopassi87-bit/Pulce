@@ -1,5 +1,6 @@
 package com.pulce.pulcebackend.controller;
 
+import com.pulce.pulcebackend.dto.ExpirationAlertsDTO;
 import com.pulce.pulcebackend.dto.ItemDTO;
 import com.pulce.pulcebackend.entity.Item;
 import com.pulce.pulcebackend.service.ItemService;
@@ -31,15 +32,15 @@ public class ItemController {
     }
 
     @GetMapping("/expiring")
-    public ResponseEntity<Map<String, List<Item>>> getExpiringItem(){
+    public ResponseEntity<ExpirationAlertsDTO> getExpiringItem(){
 
-        Map<String,List<Item>> expiring = new HashMap<>();
+        ExpirationAlertsDTO alerts = new ExpirationAlertsDTO(
+                itemService.getUrgentExpiration(),
+                itemService.getWarningExpiration(),
+                itemService.getUpcomingExpiration()
+        );
 
-        expiring.put("urgent", itemService.getUrgentExpiration());
-        expiring.put("warning", itemService.getWarningExpiration());
-        expiring.put("upcoming", itemService.getUpcomingExpiration());
-
-        return ResponseEntity.ok(expiring);
+        return ResponseEntity.ok(alerts);
     }
 
     @PostMapping

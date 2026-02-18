@@ -5,6 +5,8 @@ import com.pulce.pulcebackend.repository.ItemRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -29,14 +31,31 @@ public class NotificationScheduler {
 
     @Scheduled(cron = "0 0 10 * * ?")
     @Transactional
-    public void sendExpirationReminder() {
-        List<Item> itemsExpiringSoon30 = itemRepository.findByExpirationInDays(30);
-        List<Item> itemsExpiringSoon20 = itemRepository.findByExpirationInDays(20);
-        List<Item> itemsExpiringSoon7 = itemRepository.findByExpirationInDays(7);
+    public void scheduleCheck(){
+        performCheck();
+    }
 
-        sendEmail(itemsExpiringSoon30, 30);
-        sendEmail(itemsExpiringSoon20, 20);
-        sendEmail(itemsExpiringSoon7, 7);
+    @EventListener(ApplicationReadyEvent.class)
+    @Transactional
+    public void onStartup(){
+        performCheck();
+    }
+
+    private void performCheck(){
+        int[] threshold = {7, 20, 30};
+
+        for (int days : threshold){
+            List<Item> needingNotification = itemRepository.findItemsNeedingNotification(days);
+
+            if(!needingNotification.isEmpty()){
+                sendEmail(needingNotification, days);
+
+                for(Item item: needingNotification){
+                    item.setLastNotificationSent(days);
+                    itemRepository.save(item);
+                }
+            }
+        }
     }
 
     private void sendEmail(List<Item> expiringItems, int days) {

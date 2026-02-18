@@ -9,6 +9,19 @@ const expiring = ref ({
     upcoming: []
 })
 
+const formatExpirationDate = (dateString) => {
+    if (!dateString) return '---';
+const parts = dateString.split('-');
+if (parts.length !== 3) return dateString;
+
+const year = parseInt(parts[0]);
+const month = parseInt(parts[1]) - 1;
+const day = parseInt(parts[2]);
+
+const date = new Date(year, month, day);
+return date.toLocaleDateString('de-AT', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
 const fetchAlerts = async () => {
     try {
         const res = await fetch('http://localhost:8080/api/item/expiring');
@@ -54,7 +67,7 @@ onMounted(() => {
                         <li v-for="i in expiring.urgent" :key="i.id" class="list-info">
                             <p class="left">{{ i.name }}</p>
                             <p>{{ i.amount }}</p>
-                            <p class="right">{{ i.expirationDate }}</p>
+                            <p class="right">{{ formatExpirationDate(i.expirationDate) }}</p>
                         </li>
                     </ul>
                 </div>
@@ -64,7 +77,7 @@ onMounted(() => {
                         <li v-for="i in expiring.warning" :key="i.id" class="list-info">
                             <p class="left">{{ i.name }}</p>
                             <p>{{ i.amount }}</p>
-                            <p class="right">{{ i.expirationDate }}</p>
+                            <p class="right">{{ formatExpirationDate(i.expirationDate) }}</p>
                         </li>
                     </ul>
                 </div>
@@ -74,7 +87,7 @@ onMounted(() => {
                         <li v-for="i in expiring.upcoming" :key="i.id" class="list-info">
                             <p class="left">{{ i.name }}</p>
                             <p>{{ i.amount }}</p>
-                            <p class="right">{{ i.expirationDate }}</p>
+                            <p class="right">{{ formatExpirationDate(i.expirationDate) }}</p>
                         </li>
                     </ul>
                 </div>

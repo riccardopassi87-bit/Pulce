@@ -40,6 +40,11 @@ public class ItemService {
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Item not found"));
 
+        if(!item.getExpirationDate().equals(dto.expirationDate())){
+            item.setExpirationDate(dto.expirationDate());
+            item.setLastNotificationSent(99);
+        }
+
         itemMapper.updateEntityFromDTO(dto, item);
 
         return itemRepository.save(item);
@@ -54,12 +59,12 @@ public class ItemService {
 
     // EXPIRATION LOGIC FOR PERSISTING LIST
     public List<Item> getUrgentExpiration(){
-        return itemRepository.findByExpirationDate(1,7);
+        return itemRepository.findByExpirationWindow(0,7);
     }
     public List<Item> getWarningExpiration(){
-        return itemRepository.findByExpirationDate(8,19);
+        return itemRepository.findByExpirationWindow(8,20);
     }
     public List<Item> getUpcomingExpiration(){
-        return itemRepository.findByExpirationDate(20,30);
+        return itemRepository.findByExpirationWindow(21,30);
     }
 }

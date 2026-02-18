@@ -1,8 +1,9 @@
 package com.pulce.pulcebackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
-
+import java.time.temporal.ChronoUnit;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -27,12 +28,16 @@ public class Item {
     @Column(nullable = false)
     private String type;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(nullable = false)
     private LocalDate expirationDate;
 
     @Min(1)
     @Column(nullable = false)
     private int amount;
+
+    @Column(nullable = false)
+    private int lastNotificationSent = 99;
 
     protected Item() {}
 
@@ -43,6 +48,18 @@ public class Item {
         this.type = type;
         this.expirationDate = expirationDate;
         this.amount = amount;
+    }
+
+    @Transient
+    public String getUrgency(){
+        if (expirationDate == null) return "UNKNOWN";
+
+        long daysLeft = ChronoUnit.DAYS.between(LocalDate.now(), expirationDate);
+
+        if (daysLeft <= 7) return "URGENT";
+        if (daysLeft <= 20) return "WARNING";
+        if (daysLeft <= 30) return "UPCOMING";
+        return "OK";
     }
 
     // GETTERS
@@ -74,6 +91,10 @@ public class Item {
         return amount;
     }
 
+    public int getLastNotificationSent() {
+        return lastNotificationSent;
+    }
+
     // SETTERS
 
 
@@ -99,5 +120,9 @@ public class Item {
 
     public void setAmount(int amount) {
         this.amount = amount;
+    }
+
+    public void setLastNotificationSent(int lastNotificationSent) {
+        this.lastNotificationSent = lastNotificationSent;
     }
 }

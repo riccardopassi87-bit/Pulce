@@ -132,7 +132,7 @@
                   <template #results>
                     <div class="fsf">
                       <ul>
-                        <li v-for="p in filteredPizzas" :key="p.id" @click="handlePizzaSelect(p)"
+                        <li class="result-element" v-for="p in filteredPizzas" :key="p.id" @click="handlePizzaSelect(p)"
                         :class="{selected: form.id === p.id}">
                           {{ p.name }}
                         </li>
@@ -192,7 +192,6 @@
                     </ul>
                   </div>
                 </div>
-
               </div>
             </div>
             <div v-else class="fsf search-result"></div>
@@ -229,7 +228,8 @@
   }
   #mid-layer select{
     width: 100%;
-    height: 100%
+    height: 100%;
+    background-color: #333;
   }
   #mid-layer input{
     width: 100%;
@@ -258,6 +258,7 @@
     background-color: #111;
   }
   #actual-content ul{
+    display: flex;
     gap: 1%;
     padding: 0;
     height: auto;
@@ -270,7 +271,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 5px;
     margin-bottom: 1%;
     background-color: #222;
   }

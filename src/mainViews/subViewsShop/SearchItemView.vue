@@ -136,6 +136,7 @@
     #search-result select{
         height: 100%;
         width: 70%;
+        background-color: #333;
     }
     #search-result input{
         width: 68%;

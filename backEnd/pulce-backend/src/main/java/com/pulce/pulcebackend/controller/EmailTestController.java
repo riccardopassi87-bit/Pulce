@@ -17,7 +17,7 @@ public class EmailTestController {
 
     @GetMapping("/send-now")
     public String triggerEmail() {
-        notificationScheduler.sendExpirationReminder();
+        notificationScheduler.scheduleCheck();
         return "Email task triggered manually!";
     }
 }
