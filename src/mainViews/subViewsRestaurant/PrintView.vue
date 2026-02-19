@@ -196,7 +196,7 @@
             <button @click="handlePrint">
                 <p>&#9888; PRINT</p>
                 <p>-</p>
-                <p>Keeping in mind that wasting paper is not good</p>
+                <p>Keeping in mind that you are so not clever</p>
                 <p>-</p>
                 <p>PRINT &#9888;</p>
             </button>

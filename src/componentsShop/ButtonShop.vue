@@ -10,7 +10,7 @@
 </script>
 
 <template>
-    <button type="button" id="notification" @click="goNext('notification')" :class="getButtonClass('notification')">Notification & Reminders</button>
+    <button type="button" id="notification" @click="goNext('notification')" :class="getButtonClass('notification')">Expiration Reminders</button>
     
     <!--EasterEgg 
     <button type="button" @click="togglePerformance">Improve Performance</button>
