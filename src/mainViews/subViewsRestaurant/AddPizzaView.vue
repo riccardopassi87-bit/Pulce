@@ -50,13 +50,13 @@
         if(selectedIngredients.value.length >= 6) return;
         if (selectedIngredients.value.find(i => i.id === ing.id)) return;
         selectedIngredients.value.push(ing);
-        form.ingredientIds.push(ing.id);
+        form.ingredientIds = selectedIngredients.value.map(i => i.id);
         if (submitted.value) validateField('ingredientIds');
     };
 
     const removeIngredient = (id) => {
         selectedIngredients.value = selectedIngredients.value.filter(i => i.id !== id);
-        form.ingredientIds = form.ingredientIds.filter(itemId => itemId !== id);
+        form.ingredientIds = selectedIngredients.value.map(i => i.id);
         if (submitted.value) validateField('ingredientIds');
     };
 
@@ -220,7 +220,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        font-size: 2rem;
+        font-size: 1.5rem;
         font-weight: bolder;
         background-color: #222;
     }

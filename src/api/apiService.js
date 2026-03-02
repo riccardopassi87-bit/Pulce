@@ -80,4 +80,4 @@ export async function nameLoader(refToUpdate, url) {
     } catch (e) {
         console.error("NameLoader Error:", e.message);
     }
-}
+};

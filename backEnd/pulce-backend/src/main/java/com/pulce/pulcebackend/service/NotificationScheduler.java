@@ -2,14 +2,12 @@ package com.pulce.pulcebackend.service;
 
 import com.pulce.pulcebackend.entity.Item;
 import com.pulce.pulcebackend.repository.ItemRepository;
-import com.sun.jdi.event.ExceptionEvent;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -74,13 +72,15 @@ public class NotificationScheduler {
                 helper.setSubject(subjectEmoji + item.getName() + " expires in " + days + " days");
 
                 String htmlContent = String.format(
-                        "</div>",
                         "<div style='font-family: Arial, sans-serif; font-size: 18px; color: #333;'>" +
-                        "The product <b style='color: red; font-size: 22px;'>%s</b> " +
-                        "is going to expire in <b style='color: red; font-size: 22px;'>%d</b> days!" +
-                        "<br><br>" +
-                        "Expiration Date: <strong>%s</strong>" +
-                        item.getName(), days, item.getExpirationDate()
+                                "The product <b style='color: red; font-size: 22px;'>%s</b> " +
+                                "is going to expire in <b style='color: red; font-size: 22px;'>%d</b> days!" +
+                                "<br><br>" +
+                                "Expiration Date: <strong>%s</strong>" +
+                                "</div>",
+                        item.getName(),
+                        days,
+                        item.getExpirationDate()
                 );
                 helper.setText(htmlContent, true);
 

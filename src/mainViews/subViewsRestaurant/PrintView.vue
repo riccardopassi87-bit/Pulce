@@ -194,11 +194,11 @@
         </div>
         <div class="footer-buttons">
             <button @click="handlePrint">
-                <p>&#9888; PRINT</p>
+                <p>&#9888; Download</p>
                 <p>-</p>
-                <p>Keeping in mind that you are so not clever</p>
+                <p>Export pdf - format A5</p>
                 <p>-</p>
-                <p>PRINT &#9888;</p>
+                <p>Download &#9888;</p>
             </button>
         </div>
     </div>
