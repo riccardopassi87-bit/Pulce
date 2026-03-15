@@ -14,24 +14,29 @@ const playSound = () => {
     audio.volume = 0.5;
     audio.play();
 }
-
 // END EasterEgg - Calls in APIs, Expands from -App.vue- via -ButtonShop-
 
+// API generic calls
 const headers = { 'Content-Type': 'application/json' }
 
 export const api = {
+    // API GET
     async get(url) {
 
+        // Easter egg - IGNORE ---------------------------------------- //
         if(apiSettings.performanceMode) {playSound(); await sleep(3500);}
+        // ------------------------------------------------------------ //
 
         const res = await fetch(url);
         if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
         return res.json();
     },
-
+    // API POST
     async post(url, data) {
         
-        if(apiSettings.performanceMode) await sleep(3500);
+        // Easter egg - IGNORE ---------------------------------------- //
+        if(apiSettings.performanceMode) {playSound(); await sleep(3500);}
+        // ------------------------------------------------------------ //
 
         const res = await fetch(url, {
             method: 'POST',
@@ -41,10 +46,12 @@ export const api = {
         if(!res.ok) throw new Error(`Save failed: ${res.status}`);
         return res.json();
     },
-
+    // API PUT
     async put(url, data) {
         
-        if(apiSettings.performanceMode) await sleep(3500);
+        // Easter egg - IGNORE ---------------------------------------- //
+        if(apiSettings.performanceMode) {playSound(); await sleep(3500);}
+        // ------------------------------------------------------------ //
 
         const res = await fetch(url, {
             method: 'PUT',
@@ -54,10 +61,12 @@ export const api = {
         if(!res.ok) throw new Error(`Update failed: ${res.status}`);
         return res.json();
     },
-    
+    // API DELETE
     async delete(url) {
         
-        if(apiSettings.performanceMode) await sleep(3500);
+        // Easter egg - IGNORE ---------------------------------------- //
+        if(apiSettings.performanceMode) {playSound(); await sleep(3500);}
+        // ------------------------------------------------------------ //
 
         const res = await fetch(url, { method: 'DELETE'});
         if(!res.ok) {
@@ -72,7 +81,7 @@ export const api = {
         return text ? JSON.parse(text) : true;
     }
 };
-
+// Name loader checks if the given article/item NAME is already present in the DB
 export async function nameLoader(refToUpdate, url) {
     try {
         const data = await api.get(url);

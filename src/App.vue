@@ -13,7 +13,7 @@ watch(() => apiSettings.performanceMode, (isSlow) => {
   if (isSlow) {
     root.style.setProperty('--font-color', '#bb9650' ); 
   } else {
-    root.style.setProperty('--font-color','rebeccapurple');
+    root.style.setProperty('--font-color', 'rebeccapurple' );
   }
 }, { immediate: true });
 // END

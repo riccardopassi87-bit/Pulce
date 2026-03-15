@@ -19,11 +19,13 @@ export function useForm({ initialState, rules, API_BASE, onSubmit, existingNames
         }
     });
 
-    // Validation Logic
+    // Validation Logic for each field in the form
+    // uses validation logic given in the RULE SET
     const validateField = (field) => {
         errors[field] = '';
         if (!rules[field]) return true;
         for(const { validator, message } of rules[field]) {
+            //shows message related to field if validation fails
             if(!validator(form[field], form, originalName.value)) {
                 errors[field] = message;
                 return false;
@@ -31,7 +33,8 @@ export function useForm({ initialState, rules, API_BASE, onSubmit, existingNames
         }
         return true;
     };
-
+    // validate the whole form at submit
+    // if no validation message is present, the form is good to submit
     const validateForm = () => {
         let valid = true;
         for (const field in rules) {
@@ -41,6 +44,7 @@ export function useForm({ initialState, rules, API_BASE, onSubmit, existingNames
     }
 
     // Submission
+    // if validateForm is goot to go, submits
     const submit = async () => {
         submitted.value = true;
         if(!validateForm()) return;
@@ -48,8 +52,11 @@ export function useForm({ initialState, rules, API_BASE, onSubmit, existingNames
     };
 
     // Reset
+    // clear all fields
     const reset = () => {
+        //clears based on initial state of form in RULE SET
         Object.assign(form, initialState);
+        //clear all field errors if any occured
         Object.keys(errors).forEach(k => errors[k] = '');
         submitted.value = false;
         displayName.value = '';
@@ -58,7 +65,9 @@ export function useForm({ initialState, rules, API_BASE, onSubmit, existingNames
 
 
     // Item Name
-
+    // this is necessary when modifying an element's name in the db
+    // the form shows the original name at all time even while modifing the name
+    // entry, till submission is given
     const originalName = ref('');
     const handleSelect = (item, customMapping) => {
         const data = customMapping? customMapping(item) : toRaw(item);

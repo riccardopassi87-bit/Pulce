@@ -1,9 +1,11 @@
 package com.pulce.pulcebackend.service;
 
 import com.pulce.pulcebackend.dto.ItemDTO;
+import com.pulce.pulcebackend.dto.ItemReductionDTO;
 import com.pulce.pulcebackend.entity.Item;
 import com.pulce.pulcebackend.mapper.ItemMapper;
 import com.pulce.pulcebackend.repository.ItemRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +37,24 @@ public class ItemService {
         Item item = itemMapper.toEntity(dto);
         return itemRepository.save(item);
     }
+
+    public void updateStock(List<ItemReductionDTO> items){
+        for (ItemReductionDTO dto : items){
+            List<Item> foundItems = itemRepository.findByNameContainingIgnoreCase(dto.name());
+
+            if (foundItems.isEmpty()){
+                System.out.println("Skipping item (not an item): " + dto.name());
+                continue;
+            }
+
+            Item item = foundItems.get(0);
+            item.setAmount(item.getAmount() - dto.amount());
+            itemRepository.save(item);
+
+            System.out.println("Successfully reduced stock for: " + dto.name());
+        }
+    }
+
     @Transactional
     public Item update(int id, ItemDTO dto) {
         Item item = itemRepository.findById(id)

@@ -15,7 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/ingredient")
-@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174"})
+@CrossOrigin(origins = "http://localhost:5173")
 
 public class IngredientController {
 
@@ -53,10 +53,8 @@ public class IngredientController {
     public ResponseEntity<?> deleteIngredient(@PathVariable int id) {
         try {
             ingredientService.delete(id);
-            return ResponseEntity.noContent().build(); // Return 204 on success
+            return ResponseEntity.noContent().build();
         } catch (IllegalStateException e) {
-            // We catch the error here and send it back as a 409 Conflict
-            // with the specific pizza list message
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(Map.of("message", e.getMessage()));
         }

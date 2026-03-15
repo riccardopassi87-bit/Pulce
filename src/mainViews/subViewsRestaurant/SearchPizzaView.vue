@@ -233,6 +233,7 @@
   }
   #mid-layer input{
     width: 100%;
+    padding: 0 2.5%;
   }
   .mod-panel{
     display: flex;
@@ -266,12 +267,13 @@
     flex-wrap: wrap;
   }
   #pizza-ingredient{
-    height: 3.8rem;
+    height: 3.3rem;
     width: 49.5%;
     display: flex;
     justify-content: center;
     align-items: center;
     margin-bottom: 1%;
+    font-size: 1.1rem;
     background-color: #222;
   }
 </style>

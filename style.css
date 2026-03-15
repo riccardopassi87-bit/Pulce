@@ -40,13 +40,13 @@
     /* INPUTS */
     input{
         all: unset;
-        width: 47%;
+        width: 46%;
         height: 100%;
         background-color: #333;
         border-radius: 5px;
         color: rgb(187, 150, 80);
         font-size: 1rem;
-        padding: 0 1%;
+        padding: 0 1.5%;
     }
     input::placeholder{
         text-align: center;

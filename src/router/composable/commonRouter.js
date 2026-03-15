@@ -1,7 +1,6 @@
 import { computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
-
 // ROUTE CHECK - to divert between children routes depending on the parent
 export function commonRouter(){
     const router = useRouter()
@@ -18,7 +17,7 @@ export function commonRouter(){
         router.push(`${parentPath}/${path}`)
     }
 
- // ROUTE CHECK - to select button text depending on parent route
+ // ROUTE CHECK - to select button text on common buttons depending on parent route
 
     const isRestaurant = computed(() => {
         return route.matched[0]?.path === '/restaurant' || ['addPizza', 'searchPizza'].includes(route.name)

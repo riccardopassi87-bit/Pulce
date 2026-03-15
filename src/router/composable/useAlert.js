@@ -3,6 +3,8 @@ import { ref } from "vue";
 const activeAlert = ref(null);
 
 export function useAlert() {
+
+    // main alert body for custome alert style and logic
     /** 
     *@param {Object} config - { title, message, items, options, type, safetyCode }
     */
@@ -17,7 +19,7 @@ export function useAlert() {
                 safetyCode: config.safetyCode || null,
                 resolve
             };
-
+            // at successfull alert, automatically close the alert after a set given time
             if (config.type === 'success' && (!config.options || config.options.length === 0)) {
                 setTimeout(() => {
                     closeAlert(null);
@@ -26,6 +28,7 @@ export function useAlert() {
         });
     };
 
+    // alert closing logic
     const closeAlert = (value) => {
         if(activeAlert.value?.resolve){
             activeAlert.value.resolve(value);
