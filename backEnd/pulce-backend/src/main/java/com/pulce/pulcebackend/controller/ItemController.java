@@ -34,6 +34,7 @@ public class ItemController {
     public ResponseEntity<ExpirationAlertsDTO> getExpiringItem(){
 
         ExpirationAlertsDTO alerts = new ExpirationAlertsDTO(
+                itemService.getExpiredExpiration(),
                 itemService.getUrgentExpiration(),
                 itemService.getWarningExpiration(),
                 itemService.getUpcomingExpiration()

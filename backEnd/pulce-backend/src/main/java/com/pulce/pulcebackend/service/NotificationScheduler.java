@@ -43,7 +43,7 @@ public class NotificationScheduler {
     }
 
     private void performCheck(){
-        int[] threshold = {7, 20, 30};
+        int[] threshold = {-1, 7, 20, 30};
 
         for (int days : threshold){
             List<Item> needingNotification = itemRepository.findItemsNeedingNotification(days);
@@ -68,22 +68,38 @@ public class NotificationScheduler {
                 helper.setTo(adminEmail);
                 helper.setFrom(senderEmail);
 
-                String subjectEmoji = (days <= 7) ? "🚨 URGENT: " : "📅 REMINDER: ";
-                helper.setSubject(subjectEmoji + item.getName() + " expires in " + days + " days");
+                if (days < 0) {
+                    String subjectEmoji = "!!! EXPIRED !!!";
+                    helper.setSubject(subjectEmoji + item.getName() + " is expired!");
 
-                String htmlContent = String.format(
-                        "<div style='font-family: Arial, sans-serif; font-size: 18px; color: #333;'>" +
-                                "The product <b style='color: red; font-size: 22px;'>%s</b> " +
-                                "is going to expire in <b style='color: red; font-size: 22px;'>%d</b> days!" +
-                                "<br><br>" +
-                                "Expiration Date: <strong>%s</strong>" +
-                                "</div>",
-                        item.getName(),
-                        days,
-                        item.getExpirationDate()
-                );
-                helper.setText(htmlContent, true);
+                    String htmlContent = String.format(
+                            "<div style='font-family: Arial, sans-serif; font-size: 18px; color: #333;'>" +
+                                    "The product <b style='color: red; font-size: 22px;'>%s</b> " +
+                                    "expired the <strong>%s</strong>" +
+                                    "<br><br>" +
+                                    "Please throw it awy." +
+                                    "</div>",
+                            item.getName(),
+                            item.getExpirationDate()
+                    );
+                    helper.setText(htmlContent, true);
+                } else {
+                    String subjectEmoji = (days <= 7) ? "🚨 URGENT: " : "📅 REMINDER: ";
+                    helper.setSubject(subjectEmoji + item.getName() + " expires in " + days + " days");
 
+                    String htmlContent = String.format(
+                            "<div style='font-family: Arial, sans-serif; font-size: 18px; color: #333;'>" +
+                                    "The product <b style='color: red; font-size: 22px;'>%s</b> " +
+                                    "is going to expire in <b style='color: red; font-size: 22px;'>%d</b> days!" +
+                                    "<br><br>" +
+                                    "Expiration Date: <strong>%s</strong>" +
+                                    "</div>",
+                            item.getName(),
+                            days,
+                            item.getExpirationDate()
+                    );
+                    helper.setText(htmlContent, true);
+                }
                 mailSender.send(message);
             }
         } catch (Exception e){

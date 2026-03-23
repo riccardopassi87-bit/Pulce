@@ -16,7 +16,7 @@ public interface ItemRepository extends JpaRepository<Item, Integer>
     // Notification Scheduler
     @Query(value = "SELECT * FROM items WHERE " +
             "DATEDIFF(expiration_date, CURDATE()) <= :days " +
-            "AND (last_notification_sent = 0 OR last_notification_sent > :days)",
+            "AND (last_notification_sent = -7 OR last_notification_sent > :days)",
             nativeQuery = true)
     List<Item> findItemsNeedingNotification(@Param("days") int days);
 

@@ -64,7 +64,8 @@ export const productRules = (existingNamesArray) => ({
         // expirationDate is REQUIRED and must be a VALIDA DATE
         expirationDate: [
             { validator: validators.required, message: 'Expiration date required'},
-            { validator: validators.dateIsValid, message: 'What year are we in?'}],
+            // { validator: validators.dateIsValid, message: 'What year are we in?'}
+            ],
         // amount is REQUIRED and must be a NUMBER
         amount: [
             { validator: validators.required, message: 'Amount required'},

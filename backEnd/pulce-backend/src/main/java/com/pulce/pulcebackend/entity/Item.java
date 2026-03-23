@@ -56,8 +56,7 @@ public class Item {
 
         long daysLeft = ChronoUnit.DAYS.between(LocalDate.now(), expirationDate);
 
-        // Still ADD EXPIRED LOGIC AND EMAIL
-
+        if (daysLeft < 0) return "EXPIRED";
         if (daysLeft <= 7) return "URGENT";
         if (daysLeft <= 20) return "WARNING";
         if (daysLeft <= 30) return "UPCOMING";

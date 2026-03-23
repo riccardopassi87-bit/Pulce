@@ -1,9 +1,13 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, reactive } from 'vue';
+import { useAlert } from '@/router/composable/useAlert';
+import { useRemove } from '@/router/composable/useService';
 
+const { showAlert } = useAlert();
 const actualDate = ref('')
 
 const expiring = ref ({
+    expired: [],
     urgent: [],
     warning: [],
     upcoming: []
@@ -44,12 +48,27 @@ onMounted(() => {
     fetchAlerts();
 })
 
+const deleteForm = reactive({ id: null});
+
+const { remove } = useRemove({
+    API_BASE: 'http://localhost:8080/api/item',
+    form: deleteForm,
+    showAlert,
+    reset: () => {deleteForm.id = null; },
+    onSuccess: fetchAlerts
+});
+
+const handleRemove = async (itemId) => {
+    deleteForm.id = itemId;
+    await remove();
+};
+
 </script>
 
 <template>
     <div  class="fsf" id="all-notifications">
         
-        <div v-if="expiring.urgent.length == 0 && expiring.warning.length == 0 && expiring.upcoming.length == 0" class="fsf" id="date-placeholder">
+        <div v-if="expiring.expired.length == 0 && expiring.urgent.length == 0 && expiring.warning.length == 0 && expiring.upcoming.length == 0" class="fsf" id="date-placeholder">
             <p>Today is: <span>{{ actualDate }}</span></p>
         </div>
 
@@ -61,6 +80,21 @@ onMounted(() => {
             </div>
         
             <div class="fsf" id="expiration-content">
+                <div v-if="expiring.expired.length > 0" class="expiration" id="expired">
+                    <h4>EXPIRED</h4>
+                    <ul class="fsf">
+                        <li v-for="i in expiring.expired" :key="i.id">
+                            <div class="list-info">
+                                <p class="left">{{ i.name }}</p>
+                                <p>{{ i.amount }}</p>
+                                <p class="right">{{ formatExpirationDate(i.expirationDate) }}</p>
+                            </div>
+                            <div class="remove-button">
+                                <button class="remove-from-db" @click="handleRemove(i.id)">Remove from database 🗑️</button>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
                 <div v-if="expiring.urgent.length > 0" class="expiration" id="urgent">
                     <h4>URGENT !- one week left -!</h4>
                     <ul class="fsf">
@@ -155,6 +189,31 @@ p{
     padding: 1%;
     background-color: #222;
 }
+.remove-button{
+    height: 2rem;
+    width: 100%;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+}
+.remove-from-db{
+    height:100%;
+    width: 30%;
+    border: 1px solid #777;
+    border-top: 0;
+    font-size: 1rem;
+}
+.remove-from-db:hover{
+    font-size: 1rem;
+    background-color: rgb(39, 10, 10);
+}
+#expired{
+    border: 1px solid rgb(83, 50, 4);
+}
+#expired h4{
+    background-color: rgb(83, 50, 4);
+}
+
 #urgent{
     border: 1px solid red;
 }

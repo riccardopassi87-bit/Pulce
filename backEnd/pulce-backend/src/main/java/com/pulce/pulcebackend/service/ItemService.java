@@ -78,9 +78,8 @@ public class ItemService {
     }
 
     // EXPIRATION LOGIC FOR PERSISTING LIST
-    public List<Item> getUrgentExpiration(){
-        return itemRepository.findByExpirationWindow(0,7);
-    }
+    public List<Item> getExpiredExpiration(){ return itemRepository.findByExpirationWindow(-7,-1); }
+    public List<Item> getUrgentExpiration(){ return itemRepository.findByExpirationWindow(0,7); }
     public List<Item> getWarningExpiration(){
         return itemRepository.findByExpirationWindow(8,20);
     }

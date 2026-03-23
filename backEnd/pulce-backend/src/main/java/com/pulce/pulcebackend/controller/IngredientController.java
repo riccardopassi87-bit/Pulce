@@ -2,8 +2,6 @@ package com.pulce.pulcebackend.controller;
 
 import com.pulce.pulcebackend.dto.IngredientDTO;
 import com.pulce.pulcebackend.entity.Ingredient;
-import com.pulce.pulcebackend.entity.Pizza;
-import com.pulce.pulcebackend.repository.PizzaRepository;
 import com.pulce.pulcebackend.service.IngredientService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
